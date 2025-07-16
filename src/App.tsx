@@ -48,6 +48,17 @@ import StaffManagement from './pages/StaffManagement';
 import UserGuide from './pages/UserGuide';
 import CleaningRobot from './pages/CleaningRobot';
 import SecuritySystem from './pages/SecuritySystem';
+import AccessControl from './pages/AccessControl';
+import PerformanceReport from './pages/PerformanceReport';
+import EnergyAnalysis from './pages/EnergyAnalysis';
+import GuestSatisfaction from './pages/GuestSatisfaction';
+import RoomManagement from './pages/RoomManagement';
+import MaintenanceSchedule from './pages/MaintenanceSchedule';
+import InventoryManagement from './pages/InventoryManagement';
+import UserManagement from './pages/UserManagement';
+import RolePermissions from './pages/RolePermissions';
+import SystemLogs from './pages/SystemLogs';
+import BackupRestore from './pages/BackupRestore';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -521,6 +532,17 @@ const AppLayout: React.FC = () => {
             <Route path="/user-guide" element={<UserGuide />} />
             <Route path="/cleaning-robot" element={<CleaningRobot />} />
             <Route path="/security-system" element={<SecuritySystem />} />
+            <Route path="/access-control" element={<AccessControl />} />
+            <Route path="/performance-report" element={<PerformanceReport />} />
+            <Route path="/energy-analysis" element={<EnergyAnalysis />} />
+            <Route path="/guest-satisfaction" element={<GuestSatisfaction />} />
+            <Route path="/room-management" element={<RoomManagement />} />
+            <Route path="/maintenance-schedule" element={<MaintenanceSchedule />} />
+            <Route path="/inventory-management" element={<InventoryManagement />} />
+            <Route path="/user-management" element={<UserManagement />} />
+            <Route path="/role-permissions" element={<RolePermissions />} />
+            <Route path="/system-logs" element={<SystemLogs />} />
+            <Route path="/backup-restore" element={<BackupRestore />} />
             <Route path="*" element={<Welcome />} />
           </Routes>
         </Content>
