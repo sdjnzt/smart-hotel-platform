@@ -8,7 +8,7 @@
 2. 点击右上角的 "+" 按钮，选择 "New repository"
 3. 填写仓库信息：
    - **Repository name**: `jinkexing-fusion-platform` (或其他名称)
-   - **Description**: `山东金科星机电股份有限公司融合通信管理平台`
+   - **Description**: `邹城市择邻山庄有限公司智慧酒店管理平台`
    - **Visibility**: Public (公开) 或 Private (私有)
 4. 不要勾选 "Add a README file"（因为我们已经有了）
 5. 点击 "Create repository"
@@ -25,7 +25,7 @@ git init
 git add .
 
 # 提交代码
-git commit -m "Initial commit: 山东金科星融合通信管理平台"
+git commit -m "Initial commit: 山东邹城市择邻山庄有限公司智慧酒店管理平台"
 
 # 添加远程仓库（替换为你的仓库地址）
 git remote add origin https://github.com/your-username/your-repo-name.git

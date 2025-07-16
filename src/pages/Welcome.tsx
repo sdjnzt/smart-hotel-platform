@@ -414,24 +414,24 @@ const Welcome: React.FC = () => {
       </Row>
 
       {/* 底部信息 */}
-      <Row style={{ marginTop: 24 }}>
-        <Col span={24}>
-          <Card 
-            className="welcome-card"
-            style={{ textAlign: 'center' }}
-          >
-            <Space direction="vertical" size="small">
-              <Text type="secondary">
-                © 2025 邹城市择邻山庄有限公司智慧酒店管理平台
-              </Text>
-              <Space size="large">
-                <Text type="secondary">技术支持：山东金科星机电股份有限公司</Text>
-                <Text type="secondary">版本：v1.0.0</Text>
-              </Space>
-            </Space>
-          </Card>
-        </Col>
-      </Row>
+      {/*<Row style={{ marginTop: 24 }}>*/}
+      {/*  <Col span={24}>*/}
+      {/*    <Card */}
+      {/*      className="welcome-card"*/}
+      {/*      style={{ textAlign: 'center' }}*/}
+      {/*    >*/}
+      {/*      <Space direction="vertical" size="small">*/}
+      {/*        <Text type="secondary">*/}
+      {/*          © 2025 邹城市择邻山庄有限公司智慧酒店管理平台*/}
+      {/*        </Text>*/}
+      {/*        <Space size="large">*/}
+      {/*          <Text type="secondary">技术支持：山东金科星机电股份有限公司</Text>*/}
+      {/*          <Text type="secondary">版本：v1.0.0</Text>*/}
+      {/*        </Space>*/}
+      {/*      </Space>*/}
+      {/*    </Card>*/}
+      {/*  </Col>*/}
+      {/*</Row>*/}
     </div>
   );
 };

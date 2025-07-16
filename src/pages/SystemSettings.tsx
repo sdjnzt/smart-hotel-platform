@@ -312,7 +312,7 @@ const UserManagement: React.FC = () => {
 // 系统配置组件
 const SystemConfiguration: React.FC = () => {
   const [config, setConfig] = useState({
-    systemName: '山东金科星机电股份有限公司融合通信管理平台',
+    systemName: '邹城市择邻山庄有限公司智慧酒店管理平台',
     version: 'v2.1.0',
     timezone: 'Asia/Shanghai',
     language: 'zh-CN',

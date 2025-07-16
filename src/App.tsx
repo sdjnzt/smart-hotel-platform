@@ -200,11 +200,11 @@ const menuItems = [
     icon: <ToolOutlined />,
     label: '系统管理',
     children: [
-      {
-        key: '/system-settings',
-        icon: <SettingOutlined />,
-        label: '系统设置',
-      },
+      // {
+      //   key: '/system-settings',
+      //   icon: <SettingOutlined />,
+      //   label: '系统设置',
+      // },
       {
         key: '/user-management',
         icon: <UserOutlined />,
@@ -230,33 +230,33 @@ const menuItems = [
   {
     type: 'divider' as const,
   },
-  {
-    key: 'help',
-    icon: <QuestionCircleOutlined />,
-    label: '帮助支持',
-    children: [
-      {
-        key: '/user-guide',
-        icon: <FileTextOutlined />,
-        label: '用户指南',
-      },
-      {
-        key: '/faq',
-        icon: <QuestionCircleOutlined />,
-        label: '常见问题',
-      },
-      {
-        key: '/contact-support',
-        icon: <InfoCircleOutlined />,
-        label: '联系支持',
-      },
-      {
-        key: '/about-system',
-        icon: <InfoCircleOutlined />,
-        label: '关于系统',
-      },
-    ],
-  },
+  // {
+  //   key: 'help',
+  //   icon: <QuestionCircleOutlined />,
+  //   label: '帮助支持',
+  //   children: [
+  //     {
+  //       key: '/user-guide',
+  //       icon: <FileTextOutlined />,
+  //       label: '用户指南',
+  //     },
+  //     {
+  //       key: '/faq',
+  //       icon: <QuestionCircleOutlined />,
+  //       label: '常见问题',
+  //     },
+  //     {
+  //       key: '/contact-support',
+  //       icon: <InfoCircleOutlined />,
+  //       label: '联系支持',
+  //     },
+  //     {
+  //       key: '/about-system',
+  //       icon: <InfoCircleOutlined />,
+  //       label: '关于系统',
+  //     },
+  //   ],
+  // },
 ];
 
 const AppLayout: React.FC = () => {
@@ -279,34 +279,34 @@ const AppLayout: React.FC = () => {
       icon: <SettingOutlined />,
       label: '系统设置',
     },
-    {
-      key: 'notifications',
-      icon: <BellOutlined />,
-      label: '消息通知',
-    },
-    {
-      key: 'language',
-      icon: <GlobalOutlined />,
-      label: '语言设置',
-    },
-    {
-      key: 'theme',
-      icon: <StarOutlined />,
-      label: '主题切换',
-    },
-    {
-      type: 'divider' as const,
-    },
-    {
-      key: 'help',
-      icon: <QuestionCircleOutlined />,
-      label: '帮助文档',
-    },
-    {
-      key: 'about',
-      icon: <InfoCircleOutlined />,
-      label: '关于系统',
-    },
+    // {
+    //   key: 'notifications',
+    //   icon: <BellOutlined />,
+    //   label: '消息通知',
+    // },
+    // {
+    //   key: 'language',
+    //   icon: <GlobalOutlined />,
+    //   label: '语言设置',
+    // },
+    // {
+    //   key: 'theme',
+    //   icon: <StarOutlined />,
+    //   label: '主题切换',
+    // },
+    // {
+    //   type: 'divider' as const,
+    // },
+    // {
+    //   key: 'help',
+    //   icon: <QuestionCircleOutlined />,
+    //   label: '帮助文档',
+    // },
+    // {
+    //   key: 'about',
+    //   icon: <InfoCircleOutlined />,
+    //   label: '关于系统',
+    // },
     {
       type: 'divider' as const,
     },
@@ -374,7 +374,7 @@ const AppLayout: React.FC = () => {
         }}
       >
         <div className="logo">
-          {collapsed ? '择邻山庄' : '择邻山庄智慧酒店'}
+          {collapsed ? '择邻山庄' : '酒店管理平台'}
         </div>
         <Menu
           theme="dark"
