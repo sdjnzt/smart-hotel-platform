@@ -116,7 +116,7 @@ const EnergyAnalysis: React.FC = () => {
       unit: 'kWh',
       status: 'normal',
       efficiency: 85,
-      lastUpdate: '2024-01-15 14:30:00',
+      lastUpdate: '2025-07-15 14:30:00',
     },
     {
       id: '2',
@@ -129,7 +129,7 @@ const EnergyAnalysis: React.FC = () => {
       unit: 'm³',
       status: 'normal',
       efficiency: 90,
-      lastUpdate: '2024-01-15 14:30:00',
+      lastUpdate: '2025-07-15 14:30:00',
     },
     {
       id: '3',
@@ -142,7 +142,7 @@ const EnergyAnalysis: React.FC = () => {
       unit: 'm³',
       status: 'high',
       efficiency: 75,
-      lastUpdate: '2024-01-15 14:30:00',
+      lastUpdate: '2025-07-15 14:30:00',
     },
     {
       id: '4',
@@ -155,7 +155,7 @@ const EnergyAnalysis: React.FC = () => {
       unit: 'kWh',
       status: 'normal',
       efficiency: 88,
-      lastUpdate: '2024-01-15 14:30:00',
+      lastUpdate: '2025-07-15 14:30:00',
     },
     {
       id: '5',
@@ -168,7 +168,7 @@ const EnergyAnalysis: React.FC = () => {
       unit: 'kWh',
       status: 'warning',
       efficiency: 82,
-      lastUpdate: '2024-01-15 14:30:00',
+      lastUpdate: '2025-07-15 14:30:00',
     },
   ];
 
@@ -183,7 +183,7 @@ const EnergyAnalysis: React.FC = () => {
       dailyUsage: 186,
       monthlyUsage: 5580,
       efficiency: 88,
-      lastMaintenance: '2024-01-10',
+      lastMaintenance: '2025-07-10',
       nextMaintenance: '2024-02-10',
     },
     {
@@ -196,7 +196,7 @@ const EnergyAnalysis: React.FC = () => {
       dailyUsage: 98.4,
       monthlyUsage: 2952,
       efficiency: 95,
-      lastMaintenance: '2024-01-05',
+      lastMaintenance: '2025-07-05',
       nextMaintenance: '2024-02-05',
     },
     {
@@ -209,7 +209,7 @@ const EnergyAnalysis: React.FC = () => {
       dailyUsage: 153.6,
       monthlyUsage: 4608,
       efficiency: 78,
-      lastMaintenance: '2024-01-08',
+      lastMaintenance: '2025-07-08',
       nextMaintenance: '2024-02-08',
     },
     {
@@ -222,7 +222,7 @@ const EnergyAnalysis: React.FC = () => {
       dailyUsage: 84,
       monthlyUsage: 2520,
       efficiency: 85,
-      lastMaintenance: '2024-01-12',
+      lastMaintenance: '2025-07-12',
       nextMaintenance: '2024-02-12',
     },
     {
@@ -235,7 +235,7 @@ const EnergyAnalysis: React.FC = () => {
       dailyUsage: 81.6,
       monthlyUsage: 2448,
       efficiency: 92,
-      lastMaintenance: '2024-01-15',
+      lastMaintenance: '2025-07-15',
       nextMaintenance: '2024-02-15',
     },
   ];
@@ -247,7 +247,7 @@ const EnergyAnalysis: React.FC = () => {
       severity: 'medium',
       location: '厨房',
       description: '燃气消耗异常增加，较上月增长9%',
-      timestamp: '2024-01-15 14:30:00',
+      timestamp: '2025-07-15 14:30:00',
       status: 'active',
     },
     {
@@ -256,7 +256,7 @@ const EnergyAnalysis: React.FC = () => {
       severity: 'low',
       location: '公共区域',
       description: '制冷系统效率偏低，建议检查维护',
-      timestamp: '2024-01-15 14:25:00',
+      timestamp: '2025-07-15 14:25:00',
       status: 'acknowledged',
     },
     {
@@ -265,7 +265,7 @@ const EnergyAnalysis: React.FC = () => {
       severity: 'high',
       location: '中央空调-01',
       description: '设备运行异常，需要立即检查',
-      timestamp: '2024-01-15 14:20:00',
+      timestamp: '2025-07-15 14:20:00',
       status: 'active',
     },
     {
@@ -274,7 +274,7 @@ const EnergyAnalysis: React.FC = () => {
       severity: 'medium',
       location: '全酒店',
       description: '本月能耗成本超出预算5%',
-      timestamp: '2024-01-15 14:15:00',
+      timestamp: '2025-07-15 14:15:00',
       status: 'resolved',
     },
   ];

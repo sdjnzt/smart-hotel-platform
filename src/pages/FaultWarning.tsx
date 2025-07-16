@@ -116,7 +116,7 @@ const FaultWarningPage: React.FC = () => {
       warningId: 'warning_001',
       action: 'acknowledged',
       operator: '张工程师',
-      timestamp: '2024-01-15 14:25:00',
+      timestamp: '2025-07-15 14:25:00',
       comment: '已确认传感器故障，正在安排维修人员'
     },
     {
@@ -124,7 +124,7 @@ const FaultWarningPage: React.FC = () => {
       warningId: 'warning_001',
       action: 'assigned',
       operator: '李主管',
-      timestamp: '2024-01-15 14:30:00',
+      timestamp: '2025-07-15 14:30:00',
       comment: '已分配给维修团队处理',
       assignedTo: '王维修师'
     }

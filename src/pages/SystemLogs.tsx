@@ -133,7 +133,7 @@ const SystemLogs: React.FC = () => {
   const mockLogs: LogEntry[] = [
     {
       id: '1',
-      timestamp: '2024-01-15 14:30:25',
+      timestamp: '2025-07-15 14:30:25',
       level: 'info',
       category: 'operation',
       user: 'admin',
@@ -146,7 +146,7 @@ const SystemLogs: React.FC = () => {
     },
     {
       id: '2',
-      timestamp: '2024-01-15 14:25:10',
+      timestamp: '2025-07-15 14:25:10',
       level: 'warning',
       category: 'security',
       user: 'unknown',
@@ -158,7 +158,7 @@ const SystemLogs: React.FC = () => {
     },
     {
       id: '3',
-      timestamp: '2024-01-15 14:20:15',
+      timestamp: '2025-07-15 14:20:15',
       level: 'info',
       category: 'operation',
       user: 'manager',
@@ -171,7 +171,7 @@ const SystemLogs: React.FC = () => {
     },
     {
       id: '4',
-      timestamp: '2024-01-15 14:15:30',
+      timestamp: '2025-07-15 14:15:30',
       level: 'error',
       category: 'database',
       user: 'system',
@@ -184,7 +184,7 @@ const SystemLogs: React.FC = () => {
     },
     {
       id: '5',
-      timestamp: '2024-01-15 14:10:45',
+      timestamp: '2025-07-15 14:10:45',
       level: 'info',
       category: 'system',
       user: 'system',
@@ -200,7 +200,7 @@ const SystemLogs: React.FC = () => {
   const mockLoginLogs: LoginLog[] = [
     {
       id: '1',
-      timestamp: '2024-01-15 14:30:25',
+      timestamp: '2025-07-15 14:30:25',
       username: 'admin',
       ipAddress: '192.168.1.100',
       userAgent: 'Chrome/120.0.0.0',
@@ -210,7 +210,7 @@ const SystemLogs: React.FC = () => {
     },
     {
       id: '2',
-      timestamp: '2024-01-15 14:25:10',
+      timestamp: '2025-07-15 14:25:10',
       username: 'guest',
       ipAddress: '192.168.1.101',
       userAgent: 'Firefox/121.0.0.0',
@@ -220,7 +220,7 @@ const SystemLogs: React.FC = () => {
     },
     {
       id: '3',
-      timestamp: '2024-01-15 14:20:15',
+      timestamp: '2025-07-15 14:20:15',
       username: 'manager',
       ipAddress: '192.168.1.102',
       userAgent: 'Chrome/120.0.0.0',
@@ -230,7 +230,7 @@ const SystemLogs: React.FC = () => {
     },
     {
       id: '4',
-      timestamp: '2024-01-15 14:15:30',
+      timestamp: '2025-07-15 14:15:30',
       username: 'staff001',
       ipAddress: '192.168.1.103',
       userAgent: 'Safari/17.0.0.0',
@@ -240,7 +240,7 @@ const SystemLogs: React.FC = () => {
     },
     {
       id: '5',
-      timestamp: '2024-01-15 14:10:45',
+      timestamp: '2025-07-15 14:10:45',
       username: 'unknown',
       ipAddress: '192.168.1.104',
       userAgent: 'PostmanRuntime/7.32.0',
@@ -253,7 +253,7 @@ const SystemLogs: React.FC = () => {
   const mockErrorLogs: ErrorLog[] = [
     {
       id: '1',
-      timestamp: '2024-01-15 14:15:30',
+      timestamp: '2025-07-15 14:15:30',
       level: 'error',
       module: '数据库连接',
       message: '数据库连接超时，连接池耗尽',
@@ -264,7 +264,7 @@ const SystemLogs: React.FC = () => {
     },
     {
       id: '2',
-      timestamp: '2024-01-15 14:10:15',
+      timestamp: '2025-07-15 14:10:15',
       level: 'warning',
       module: '内存监控',
       message: '内存使用率超过80%',
@@ -274,7 +274,7 @@ const SystemLogs: React.FC = () => {
     },
     {
       id: '3',
-      timestamp: '2024-01-15 14:05:20',
+      timestamp: '2025-07-15 14:05:20',
       level: 'critical',
       module: '文件系统',
       message: '磁盘空间不足，剩余空间小于10%',
@@ -284,7 +284,7 @@ const SystemLogs: React.FC = () => {
     },
     {
       id: '4',
-      timestamp: '2024-01-15 14:00:10',
+      timestamp: '2025-07-15 14:00:10',
       level: 'error',
       module: 'API接口',
       message: '用户认证失败，Token已过期',

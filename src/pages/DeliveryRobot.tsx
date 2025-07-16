@@ -158,7 +158,7 @@ const DeliveryRobot: React.FC = () => {
         currentTask: '配送房间201的午餐',
         speed: 2.5,
         temperature: 25,
-        lastUpdate: '2025-01-15 14:30:00',
+        lastUpdate: '2025-07-15 14:30:00',
         totalDeliveries: 156,
         totalDistance: 45.2,
         uptime: 120
@@ -172,7 +172,7 @@ const DeliveryRobot: React.FC = () => {
         currentLocation: '充电站A',
         speed: 0,
         temperature: 24,
-        lastUpdate: '2025-01-15 14:25:00',
+        lastUpdate: '2025-07-15 14:25:00',
         totalDeliveries: 142,
         totalDistance: 38.7,
         uptime: 98
@@ -187,7 +187,7 @@ const DeliveryRobot: React.FC = () => {
         currentTask: '配送房间105的下午茶',
         speed: 2.8,
         temperature: 26,
-        lastUpdate: '2025-01-15 14:32:00',
+        lastUpdate: '2025-07-15 14:32:00',
         totalDeliveries: 203,
         totalDistance: 67.3,
         uptime: 156
@@ -201,7 +201,7 @@ const DeliveryRobot: React.FC = () => {
         currentLocation: '维修间',
         speed: 0,
         temperature: 22,
-        lastUpdate: '2025-01-15 14:20:00',
+        lastUpdate: '2025-07-15 14:20:00',
         totalDeliveries: 89,
         totalDistance: 23.1,
         uptime: 67,
@@ -225,8 +225,8 @@ const DeliveryRobot: React.FC = () => {
         items: ['宫保鸡丁', '米饭', '汤'],
         estimatedTime: 8,
         actualTime: 6,
-        createdAt: '2025-01-15 14:25:00',
-        startedAt: '2025-01-15 14:26:00',
+        createdAt: '2025-07-15 14:25:00',
+        startedAt: '2025-07-15 14:26:00',
         operator: '李厨师',
         notes: '客人要求15分钟内送达'
       },
@@ -243,8 +243,8 @@ const DeliveryRobot: React.FC = () => {
         roomNumber: '105',
         items: ['咖啡', '蛋糕', '水果'],
         estimatedTime: 5,
-        createdAt: '2025-01-15 14:30:00',
-        startedAt: '2025-01-15 14:31:00',
+        createdAt: '2025-07-15 14:30:00',
+        startedAt: '2025-07-15 14:31:00',
         operator: '前台小王'
       },
       {
@@ -259,9 +259,9 @@ const DeliveryRobot: React.FC = () => {
         items: ['电池检查', '系统更新'],
         estimatedTime: 30,
         actualTime: 25,
-        createdAt: '2025-01-15 13:00:00',
-        startedAt: '2025-01-15 13:05:00',
-        completedAt: '2025-01-15 13:30:00',
+        createdAt: '2025-07-15 13:00:00',
+        startedAt: '2025-07-15 13:05:00',
+        completedAt: '2025-07-15 13:30:00',
         operator: '技术员老张'
       }
     ];
@@ -277,7 +277,7 @@ const DeliveryRobot: React.FC = () => {
         title: '机器人电量低',
         message: '送餐机器人-02电量低于20%，建议及时充电',
         robotId: 'robot_002',
-        timestamp: '2025-01-15 14:25:00',
+        timestamp: '2025-07-15 14:25:00',
         read: false
       },
       {
@@ -286,7 +286,7 @@ const DeliveryRobot: React.FC = () => {
         title: '机器人故障',
         message: '送餐机器人-04左轮电机异常，需要维修',
         robotId: 'robot_004',
-        timestamp: '2025-01-15 14:20:00',
+        timestamp: '2025-07-15 14:20:00',
         read: false
       },
       {
@@ -295,7 +295,7 @@ const DeliveryRobot: React.FC = () => {
         title: '任务完成',
         message: '房间201的午餐配送任务已完成',
         robotId: 'robot_001',
-        timestamp: '2025-01-15 14:15:00',
+        timestamp: '2025-07-15 14:15:00',
         read: true
       }
     ];

@@ -69,7 +69,7 @@ const EnvironmentMonitor: React.FC = () => {
       lightIntensity: 1200,
       noiseLevel: 45,
       status: 'normal',
-      lastUpdate: '2024-01-15 14:30:00',
+      lastUpdate: '2025-07-15 14:30:00',
     },
     {
       id: '2',
@@ -80,7 +80,7 @@ const EnvironmentMonitor: React.FC = () => {
       lightIntensity: 800,
       noiseLevel: 52,
       status: 'normal',
-      lastUpdate: '2024-01-15 14:30:00',
+      lastUpdate: '2025-07-15 14:30:00',
     },
     {
       id: '3',
@@ -91,7 +91,7 @@ const EnvironmentMonitor: React.FC = () => {
       lightIntensity: 600,
       noiseLevel: 38,
       status: 'warning',
-      lastUpdate: '2024-01-15 14:30:00',
+      lastUpdate: '2025-07-15 14:30:00',
     },
     {
       id: '4',
@@ -102,7 +102,7 @@ const EnvironmentMonitor: React.FC = () => {
       lightIntensity: 1000,
       noiseLevel: 42,
       status: 'normal',
-      lastUpdate: '2024-01-15 14:30:00',
+      lastUpdate: '2025-07-15 14:30:00',
     },
     {
       id: '5',
@@ -113,7 +113,7 @@ const EnvironmentMonitor: React.FC = () => {
       lightIntensity: 900,
       noiseLevel: 48,
       status: 'normal',
-      lastUpdate: '2024-01-15 14:30:00',
+      lastUpdate: '2025-07-15 14:30:00',
     },
   ];
 

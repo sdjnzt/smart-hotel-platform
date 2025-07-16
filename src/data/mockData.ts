@@ -2291,7 +2291,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '101',
     floor: 1,
     location: '标准客房101',
-    lastUpdate: '2025-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     temperature: 22,
     humidity: 45,
     power: 1200,
@@ -2308,7 +2308,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '101',
     floor: 1,
     location: '标准客房101',
-    lastUpdate: '2025-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     brightness: 80,
     power: 45,
     energyConsumption: 2.1,
@@ -2324,7 +2324,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '101',
     floor: 1,
     location: '标准客房101',
-    lastUpdate: '2025-01-15 14:29:30',
+    lastUpdate: '2025-07-15 14:29:30',
     power: 150,
     energyConsumption: 3.6,
     isOnline: true,
@@ -2339,7 +2339,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '101',
     floor: 1,
     location: '标准客房101',
-    lastUpdate: '2025-01-15 14:28:45',
+    lastUpdate: '2025-07-15 14:28:45',
     power: 30,
     energyConsumption: 0.8,
     isOnline: true,
@@ -2354,7 +2354,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '101',
     floor: 1,
     location: '标准客房101门口',
-    lastUpdate: '2025-01-15 14:30:15',
+    lastUpdate: '2025-07-15 14:30:15',
     battery: 78,
     power: 5,
     energyConsumption: 0.1,
@@ -2372,7 +2372,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '102',
     floor: 1,
     location: '标准客房102',
-    lastUpdate: '2024-01-15 14:25:00',
+    lastUpdate: '2025-07-15 14:25:00',
     temperature: 25,
     humidity: 55,
     power: 1300,
@@ -2391,7 +2391,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '102',
     floor: 1,
     location: '标准客房102',
-    lastUpdate: '2024-01-15 14:20:00',
+    lastUpdate: '2025-07-15 14:20:00',
     temperature: 28,
     humidity: 65,
     power: 2,
@@ -2412,7 +2412,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '201',
     floor: 2,
     location: '豪华客房201',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     temperature: 21,
     humidity: 42,
     power: 1500,
@@ -2429,7 +2429,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '201',
     floor: 2,
     location: '豪华客房201',
-    lastUpdate: '2024-01-15 14:29:00',
+    lastUpdate: '2025-07-15 14:29:00',
     temperature: 4,
     power: 80,
     energyConsumption: 1.9,
@@ -2445,7 +2445,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '201',
     floor: 2,
     location: '豪华客房201',
-    lastUpdate: '2024-01-15 14:30:10',
+    lastUpdate: '2025-07-15 14:30:10',
     battery: 92,
     power: 3,
     energyConsumption: 0.07,
@@ -2463,7 +2463,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '103',
     floor: 1,
     location: '标准客房103',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     temperature: 23,
     humidity: 48,
     power: 1200,
@@ -2480,7 +2480,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '103',
     floor: 1,
     location: '标准客房103',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     brightness: 60,
     power: 45,
     energyConsumption: 1.8,
@@ -2496,7 +2496,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '103',
     floor: 1,
     location: '标准客房103',
-    lastUpdate: '2024-01-15 14:29:30',
+    lastUpdate: '2025-07-15 14:29:30',
     power: 150,
     energyConsumption: 3.5,
     isOnline: true,
@@ -2511,7 +2511,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '103',
     floor: 1,
     location: '标准客房103',
-    lastUpdate: '2024-01-15 14:28:45',
+    lastUpdate: '2025-07-15 14:28:45',
     power: 30,
     energyConsumption: 0.8,
     isOnline: true,
@@ -2526,7 +2526,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '103',
     floor: 1,
     location: '标准客房103门口',
-    lastUpdate: '2024-01-15 14:30:15',
+    lastUpdate: '2025-07-15 14:30:15',
     battery: 85,
     power: 5,
     energyConsumption: 0.1,
@@ -2544,7 +2544,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '104',
     floor: 1,
     location: '标准客房104',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     temperature: 20,
     humidity: 42,
     power: 1200,
@@ -2561,7 +2561,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '104',
     floor: 1,
     location: '标准客房104',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     brightness: 0,
     power: 45,
     energyConsumption: 0,
@@ -2577,7 +2577,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '104',
     floor: 1,
     location: '标准客房104',
-    lastUpdate: '2024-01-15 14:29:30',
+    lastUpdate: '2025-07-15 14:29:30',
     power: 150,
     energyConsumption: 0,
     isOnline: true,
@@ -2592,7 +2592,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '104',
     floor: 1,
     location: '标准客房104',
-    lastUpdate: '2024-01-15 14:28:45',
+    lastUpdate: '2025-07-15 14:28:45',
     power: 30,
     energyConsumption: 0,
     isOnline: true,
@@ -2607,7 +2607,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '104',
     floor: 1,
     location: '标准客房104门口',
-    lastUpdate: '2024-01-15 14:30:15',
+    lastUpdate: '2025-07-15 14:30:15',
     battery: 88,
     power: 5,
     energyConsumption: 0.1,
@@ -2625,7 +2625,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '105',
     floor: 1,
     location: '标准客房105',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     temperature: 24,
     humidity: 50,
     power: 1200,
@@ -2642,7 +2642,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '105',
     floor: 1,
     location: '标准客房105',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     brightness: 90,
     power: 45,
     energyConsumption: 2.5,
@@ -2658,7 +2658,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '105',
     floor: 1,
     location: '标准客房105',
-    lastUpdate: '2024-01-15 14:29:30',
+    lastUpdate: '2025-07-15 14:29:30',
     power: 150,
     energyConsumption: 4.6,
     isOnline: true,
@@ -2673,7 +2673,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '105',
     floor: 1,
     location: '标准客房105',
-    lastUpdate: '2024-01-15 14:28:45',
+    lastUpdate: '2025-07-15 14:28:45',
     power: 30,
     energyConsumption: 0.8,
     isOnline: true,
@@ -2688,7 +2688,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '105',
     floor: 1,
     location: '标准客房105门口',
-    lastUpdate: '2024-01-15 14:30:15',
+    lastUpdate: '2025-07-15 14:30:15',
     battery: 82,
     power: 5,
     energyConsumption: 0.1,
@@ -2706,7 +2706,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '106',
     floor: 1,
     location: '标准客房106',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     temperature: 20,
     humidity: 40,
     power: 1200,
@@ -2723,7 +2723,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '106',
     floor: 1,
     location: '标准客房106',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     brightness: 0,
     power: 45,
     energyConsumption: 0,
@@ -2739,7 +2739,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '106',
     floor: 1,
     location: '标准客房106',
-    lastUpdate: '2024-01-15 14:29:30',
+    lastUpdate: '2025-07-15 14:29:30',
     power: 150,
     energyConsumption: 0,
     isOnline: true,
@@ -2754,7 +2754,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '106',
     floor: 1,
     location: '标准客房106',
-    lastUpdate: '2024-01-15 14:28:45',
+    lastUpdate: '2025-07-15 14:28:45',
     power: 30,
     energyConsumption: 0,
     isOnline: true,
@@ -2769,7 +2769,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '106',
     floor: 1,
     location: '标准客房106门口',
-    lastUpdate: '2024-01-15 14:30:15',
+    lastUpdate: '2025-07-15 14:30:15',
     battery: 90,
     power: 5,
     energyConsumption: 0.1,
@@ -2787,7 +2787,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '107',
     floor: 1,
     location: '标准客房107',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     temperature: 21,
     humidity: 45,
     power: 1200,
@@ -2804,7 +2804,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '107',
     floor: 1,
     location: '标准客房107',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     brightness: 70,
     power: 45,
     energyConsumption: 2.0,
@@ -2820,7 +2820,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '107',
     floor: 1,
     location: '标准客房107',
-    lastUpdate: '2024-01-15 14:29:30',
+    lastUpdate: '2025-07-15 14:29:30',
     power: 150,
     energyConsumption: 3.9,
     isOnline: true,
@@ -2835,7 +2835,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '107',
     floor: 1,
     location: '标准客房107',
-    lastUpdate: '2024-01-15 14:28:45',
+    lastUpdate: '2025-07-15 14:28:45',
     power: 30,
     energyConsumption: 0.8,
     isOnline: true,
@@ -2850,7 +2850,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '107',
     floor: 1,
     location: '标准客房107门口',
-    lastUpdate: '2024-01-15 14:30:15',
+    lastUpdate: '2025-07-15 14:30:15',
     battery: 87,
     power: 5,
     energyConsumption: 0.1,
@@ -2868,7 +2868,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '108',
     floor: 1,
     location: '标准客房108',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     temperature: 26,
     humidity: 58,
     power: 1200,
@@ -2885,7 +2885,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '108',
     floor: 1,
     location: '标准客房108',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     brightness: 0,
     power: 45,
     energyConsumption: 0,
@@ -2901,7 +2901,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '108',
     floor: 1,
     location: '标准客房108',
-    lastUpdate: '2024-01-15 14:29:30',
+    lastUpdate: '2025-07-15 14:29:30',
     power: 150,
     energyConsumption: 0,
     isOnline: true,
@@ -2916,7 +2916,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '108',
     floor: 1,
     location: '标准客房108',
-    lastUpdate: '2024-01-15 14:28:45',
+    lastUpdate: '2025-07-15 14:28:45',
     power: 30,
     energyConsumption: 0,
     isOnline: true,
@@ -2931,7 +2931,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: '108',
     floor: 1,
     location: '标准客房108门口',
-    lastUpdate: '2024-01-15 14:30:15',
+    lastUpdate: '2025-07-15 14:30:15',
     battery: 75,
     power: 5,
     energyConsumption: 0.1,
@@ -2949,7 +2949,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: 'lobby',
     floor: 1,
     location: '酒店大堂',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     battery: 85,
     power: 200,
     energyConsumption: 2.5,
@@ -2968,7 +2968,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: 'kitchen',
     floor: 1,
     location: '厨房',
-    lastUpdate: '2024-01-15 14:25:00',
+    lastUpdate: '2025-07-15 14:25:00',
     battery: 72,
     power: 200,
     energyConsumption: 3.2,
@@ -2976,7 +2976,7 @@ export const hotelDevices: HotelDevice[] = [
     signal: 88,
     currentTask: '送餐中',
     destination: '201',
-    estimatedArrival: '2024-01-15 14:35:00'
+    estimatedArrival: '2025-07-15 14:35:00'
   },
   {
     id: 'access_main',
@@ -2987,14 +2987,14 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: 'main_entrance',
     floor: 1,
     location: '酒店主入口',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     battery: 95,
     power: 15,
     energyConsumption: 0.3,
     isOnline: true,
     signal: 98,
     accessLevel: 'guest',
-    lastAccess: '2024-01-15 14:28:00'
+    lastAccess: '2025-07-15 14:28:00'
   },
   {
     id: 'access_parking',
@@ -3005,14 +3005,14 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: 'parking',
     floor: -1,
     location: '地下停车场入口',
-    lastUpdate: '2024-01-15 14:29:00',
+    lastUpdate: '2025-07-15 14:29:00',
     battery: 92,
     power: 15,
     energyConsumption: 0.2,
     isOnline: true,
     signal: 96,
     accessLevel: 'guest',
-    lastAccess: '2024-01-15 14:25:00'
+    lastAccess: '2025-07-15 14:25:00'
   },
   {
     id: 'elevator_01',
@@ -3023,7 +3023,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: 'elevator_01',
     floor: 2,
     location: '酒店大堂',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     power: 500,
     energyConsumption: 8.5,
     isOnline: true,
@@ -3041,7 +3041,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: 'elevator_02',
     floor: 1,
     location: '酒店大堂',
-    lastUpdate: '2024-01-15 14:29:00',
+    lastUpdate: '2025-07-15 14:29:00',
     power: 500,
     energyConsumption: 7.8,
     isOnline: true,
@@ -3059,7 +3059,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: 'lobby',
     floor: 1,
     location: '酒店大堂',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     battery: 98,
     power: 5,
     energyConsumption: 0.1,
@@ -3075,7 +3075,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: 'guest_area',
     floor: 2,
     location: '2楼客房区',
-    lastUpdate: '2024-01-15 14:29:00',
+    lastUpdate: '2025-07-15 14:29:00',
     battery: 96,
     power: 5,
     energyConsumption: 0.1,
@@ -3091,7 +3091,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: 'lobby',
     floor: 1,
     location: '酒店大堂',
-    lastUpdate: '2024-01-15 14:30:00',
+    lastUpdate: '2025-07-15 14:30:00',
     power: 25,
     energyConsumption: 0.6,
     isOnline: true,
@@ -3108,7 +3108,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: 'parking',
     floor: -1,
     location: '地下停车场',
-    lastUpdate: '2024-01-15 14:29:00',
+    lastUpdate: '2025-07-15 14:29:00',
     power: 25,
     energyConsumption: 0.6,
     isOnline: true,
@@ -3125,7 +3125,7 @@ export const hotelDevices: HotelDevice[] = [
     roomNumber: 'elevator_01',
     floor: 1,
     location: '客梯内部',
-    lastUpdate: '2024-01-15 14:28:00',
+    lastUpdate: '2025-07-15 14:28:00',
     power: 25,
     energyConsumption: 0.6,
     isOnline: true,
@@ -3145,15 +3145,15 @@ export const hotelRooms: HotelRoom[] = [
     type: 'standard',
     status: 'occupied',
     guestName: '张先生',
-    checkInTime: '2024-01-14 15:00:00',
-    checkOutTime: '2024-01-16 12:00:00',
+    checkInTime: '2025-07-14 15:00:00',
+    checkOutTime: '2025-07-16 12:00:00',
     deviceCount: 5,
     onlineDeviceCount: 5,
     temperature: 22,
     humidity: 45,
     lightLevel: 80,
     energyConsumption: 15.1,
-    lastCleanTime: '2024-01-14 14:30:00'
+    lastCleanTime: '2025-07-14 14:30:00'
   },
   {
     id: 'room_102',
@@ -3161,14 +3161,14 @@ export const hotelRooms: HotelRoom[] = [
     floor: 1,
     type: 'standard',
     status: 'vacant_dirty',
-    checkOutTime: '2024-01-15 11:30:00',
+    checkOutTime: '2025-07-15 11:30:00',
     deviceCount: 6,
     onlineDeviceCount: 4,
     temperature: 25,
     humidity: 55,
     lightLevel: 0,
     energyConsumption: 12.8,
-    lastCleanTime: '2024-01-13 16:00:00'
+    lastCleanTime: '2025-07-13 16:00:00'
   },
   {
     id: 'room_103',
@@ -3177,15 +3177,15 @@ export const hotelRooms: HotelRoom[] = [
     type: 'standard',
     status: 'occupied',
     guestName: '王女士',
-    checkInTime: '2024-01-15 14:00:00',
-    checkOutTime: '2024-01-18 12:00:00',
+    checkInTime: '2025-07-15 14:00:00',
+    checkOutTime: '2025-07-18 12:00:00',
     deviceCount: 5,
     onlineDeviceCount: 5,
     temperature: 23,
     humidity: 48,
     lightLevel: 60,
     energyConsumption: 13.5,
-    lastCleanTime: '2024-01-15 13:30:00'
+    lastCleanTime: '2025-07-15 13:30:00'
   },
   {
     id: 'room_104',
@@ -3199,7 +3199,7 @@ export const hotelRooms: HotelRoom[] = [
     humidity: 42,
     lightLevel: 0,
     energyConsumption: 4.8,
-    lastCleanTime: '2024-01-15 11:00:00'
+    lastCleanTime: '2025-07-15 11:00:00'
   },
   {
     id: 'room_105',
@@ -3208,15 +3208,15 @@ export const hotelRooms: HotelRoom[] = [
     type: 'standard',
     status: 'occupied',
     guestName: '刘先生',
-    checkInTime: '2024-01-14 18:00:00',
-    checkOutTime: '2024-01-16 12:00:00',
+    checkInTime: '2025-07-14 18:00:00',
+    checkOutTime: '2025-07-16 12:00:00',
     deviceCount: 5,
     onlineDeviceCount: 4,
     temperature: 24,
     humidity: 50,
     lightLevel: 90,
     energyConsumption: 16.2,
-    lastCleanTime: '2024-01-14 17:30:00'
+    lastCleanTime: '2025-07-14 17:30:00'
   },
   {
     id: 'room_106',
@@ -3230,7 +3230,7 @@ export const hotelRooms: HotelRoom[] = [
     humidity: 40,
     lightLevel: 0,
     energyConsumption: 4.5,
-    lastCleanTime: '2024-01-15 09:30:00'
+    lastCleanTime: '2025-07-15 09:30:00'
   },
   {
     id: 'room_107',
@@ -3239,15 +3239,15 @@ export const hotelRooms: HotelRoom[] = [
     type: 'standard',
     status: 'occupied',
     guestName: '陈女士',
-    checkInTime: '2024-01-15 12:00:00',
-    checkOutTime: '2024-01-17 12:00:00',
+    checkInTime: '2025-07-15 12:00:00',
+    checkOutTime: '2025-07-17 12:00:00',
     deviceCount: 5,
     onlineDeviceCount: 5,
     temperature: 21,
     humidity: 45,
     lightLevel: 70,
     energyConsumption: 14.8,
-    lastCleanTime: '2024-01-15 11:30:00'
+    lastCleanTime: '2025-07-15 11:30:00'
   },
   {
     id: 'room_108',
@@ -3255,14 +3255,14 @@ export const hotelRooms: HotelRoom[] = [
     floor: 1,
     type: 'standard',
     status: 'vacant_dirty',
-    checkOutTime: '2024-01-15 10:00:00',
+    checkOutTime: '2025-07-15 10:00:00',
     deviceCount: 5,
     onlineDeviceCount: 3,
     temperature: 26,
     humidity: 58,
     lightLevel: 0,
     energyConsumption: 11.2,
-    lastCleanTime: '2024-01-14 16:00:00'
+    lastCleanTime: '2025-07-14 16:00:00'
   },
 
   // 2楼 - 豪华间
@@ -3273,15 +3273,15 @@ export const hotelRooms: HotelRoom[] = [
     type: 'deluxe',
     status: 'occupied',
     guestName: '李女士',
-    checkInTime: '2024-01-15 16:00:00',
-    checkOutTime: '2024-01-17 12:00:00',
+    checkInTime: '2025-07-15 16:00:00',
+    checkOutTime: '2025-07-17 12:00:00',
     deviceCount: 8,
     onlineDeviceCount: 8,
     temperature: 21,
     humidity: 42,
     lightLevel: 75,
     energyConsumption: 18.7,
-    lastCleanTime: '2024-01-15 15:30:00'
+    lastCleanTime: '2025-07-15 15:30:00'
   },
   {
     id: 'room_202',
@@ -3295,7 +3295,7 @@ export const hotelRooms: HotelRoom[] = [
     humidity: 40,
     lightLevel: 0,
     energyConsumption: 5.2,
-    lastCleanTime: '2024-01-15 10:30:00'
+    lastCleanTime: '2025-07-15 10:30:00'
   },
   {
     id: 'room_203',
@@ -3304,15 +3304,15 @@ export const hotelRooms: HotelRoom[] = [
     type: 'deluxe',
     status: 'occupied',
     guestName: '赵先生',
-    checkInTime: '2024-01-14 20:00:00',
-    checkOutTime: '2024-01-19 12:00:00',
+    checkInTime: '2025-07-14 20:00:00',
+    checkOutTime: '2025-07-19 12:00:00',
     deviceCount: 8,
     onlineDeviceCount: 8,
     temperature: 22,
     humidity: 44,
     lightLevel: 85,
     energyConsumption: 20.1,
-    lastCleanTime: '2024-01-14 19:30:00'
+    lastCleanTime: '2025-07-14 19:30:00'
   },
   {
     id: 'room_204',
@@ -3326,7 +3326,7 @@ export const hotelRooms: HotelRoom[] = [
     humidity: 41,
     lightLevel: 0,
     energyConsumption: 5.8,
-    lastCleanTime: '2024-01-15 08:30:00'
+    lastCleanTime: '2025-07-15 08:30:00'
   },
   {
     id: 'room_205',
@@ -3335,15 +3335,15 @@ export const hotelRooms: HotelRoom[] = [
     type: 'deluxe',
     status: 'occupied',
     guestName: '孙女士',
-    checkInTime: '2024-01-15 13:00:00',
-    checkOutTime: '2024-01-18 12:00:00',
+    checkInTime: '2025-07-15 13:00:00',
+    checkOutTime: '2025-07-18 12:00:00',
     deviceCount: 8,
     onlineDeviceCount: 7,
     temperature: 23,
     humidity: 46,
     lightLevel: 80,
     energyConsumption: 19.3,
-    lastCleanTime: '2024-01-15 12:30:00'
+    lastCleanTime: '2025-07-15 12:30:00'
   },
   {
     id: 'room_206',
@@ -3357,7 +3357,7 @@ export const hotelRooms: HotelRoom[] = [
     humidity: 39,
     lightLevel: 0,
     energyConsumption: 5.5,
-    lastCleanTime: '2024-01-15 07:30:00'
+    lastCleanTime: '2025-07-15 07:30:00'
   },
 
   // 3楼 - 套房
@@ -3373,7 +3373,7 @@ export const hotelRooms: HotelRoom[] = [
     humidity: 38,
     lightLevel: 0,
     energyConsumption: 8.5,
-    lastCleanTime: '2024-01-14 09:00:00',
+    lastCleanTime: '2025-07-14 09:00:00',
     maintenanceScheduled: true
   },
   {
@@ -3383,15 +3383,15 @@ export const hotelRooms: HotelRoom[] = [
     type: 'suite',
     status: 'occupied',
     guestName: '周先生',
-    checkInTime: '2024-01-14 16:00:00',
-    checkOutTime: '2024-01-20 12:00:00',
+    checkInTime: '2025-07-14 16:00:00',
+    checkOutTime: '2025-07-20 12:00:00',
     deviceCount: 12,
     onlineDeviceCount: 12,
     temperature: 21,
     humidity: 43,
     lightLevel: 90,
     energyConsumption: 25.6,
-    lastCleanTime: '2024-01-14 15:30:00'
+    lastCleanTime: '2025-07-14 15:30:00'
   },
   {
     id: 'room_303',
@@ -3405,7 +3405,7 @@ export const hotelRooms: HotelRoom[] = [
     humidity: 40,
     lightLevel: 0,
     energyConsumption: 7.2,
-    lastCleanTime: '2024-01-15 06:30:00'
+    lastCleanTime: '2025-07-15 06:30:00'
   },
   {
     id: 'room_304',
@@ -3414,15 +3414,15 @@ export const hotelRooms: HotelRoom[] = [
     type: 'suite',
     status: 'occupied',
     guestName: '吴女士',
-    checkInTime: '2024-01-15 17:00:00',
-    checkOutTime: '2024-01-21 12:00:00',
+    checkInTime: '2025-07-15 17:00:00',
+    checkOutTime: '2025-07-21 12:00:00',
     deviceCount: 12,
     onlineDeviceCount: 12,
     temperature: 22,
     humidity: 45,
     lightLevel: 95,
     energyConsumption: 28.3,
-    lastCleanTime: '2024-01-15 16:30:00'
+    lastCleanTime: '2025-07-15 16:30:00'
   },
 
   // 4楼 - 总统套房
@@ -3433,15 +3433,15 @@ export const hotelRooms: HotelRoom[] = [
     type: 'presidential',
     status: 'occupied',
     guestName: '郑先生',
-    checkInTime: '2024-01-14 19:00:00',
-    checkOutTime: '2024-01-22 12:00:00',
+    checkInTime: '2025-07-14 19:00:00',
+    checkOutTime: '2025-07-22 12:00:00',
     deviceCount: 15,
     onlineDeviceCount: 15,
     temperature: 21,
     humidity: 44,
     lightLevel: 100,
     energyConsumption: 35.8,
-    lastCleanTime: '2024-01-14 18:30:00'
+    lastCleanTime: '2025-07-14 18:30:00'
   },
   {
     id: 'room_402',
@@ -3455,7 +3455,7 @@ export const hotelRooms: HotelRoom[] = [
     humidity: 41,
     lightLevel: 0,
     energyConsumption: 9.5,
-    lastCleanTime: '2024-01-15 05:30:00'
+    lastCleanTime: '2025-07-15 05:30:00'
   }
 ];
 
@@ -3469,7 +3469,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'high',
     status: 'active',
-    timestamp: '2025-01-15 14:20:00',
+    timestamp: '2025-07-15 14:20:00',
     description: '环境传感器连接断开，无法获取温湿度数据',
     recommendedAction: '检查传感器电源和网络连接，必要时更换传感器',
     estimatedCost: 280
@@ -3482,9 +3482,9 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'temperature_abnormal',
     severity: 'medium',
     status: 'acknowledged',
-    timestamp: '2025-01-15 14:25:00',
+    timestamp: '2025-07-15 14:25:00',
     description: '空调温度传感器读数异常，可能影响温控效果',
-    predictedFailureTime: '2024-01-16 08:00:00',
+    predictedFailureTime: '2025-07-16 08:00:00',
     recommendedAction: '校准温度传感器或安排维修检查',
     estimatedCost: 150
   },
@@ -3496,7 +3496,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'low',
     status: 'active',
-    timestamp: '2025-01-15 09:00:00',
+    timestamp: '2025-07-15 09:00:00',
     description: '设备运行时间已达到维护周期，建议进行预防性维护',
     recommendedAction: '安排设备维护保养，更换滤网和检查制冷剂',
     estimatedCost: 450
@@ -3509,7 +3509,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'energy_overconsumption',
     severity: 'medium',
     status: 'active',
-    timestamp: '2025-01-15 13:30:00',
+    timestamp: '2025-07-15 13:30:00',
     description: '迷你吧能耗超出正常范围30%，可能存在制冷系统问题',
     recommendedAction: '检查制冷系统密封性和温控设置',
     estimatedCost: 320
@@ -3523,9 +3523,9 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'critical',
     status: 'active',
-    timestamp: '2025-01-15 15:45:00',
+    timestamp: '2025-07-15 15:45:00',
     description: '电梯主控制器电源异常，可能导致电梯停运',
-    predictedFailureTime: '2024-01-15 16:30:00',
+    predictedFailureTime: '2025-07-15 16:30:00',
     recommendedAction: '立即检查电源系统，联系电梯维保公司',
     estimatedCost: 1200
   },
@@ -3537,7 +3537,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'high',
     status: 'active',
-    timestamp: '2025-01-15 15:30:00',
+    timestamp: '2025-07-15 15:30:00',
     description: '烟雾传感器检测灵敏度下降，可能影响火灾预警',
     recommendedAction: '清洁传感器或更换感烟元件',
     estimatedCost: 180
@@ -3550,7 +3550,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'medium',
     status: 'acknowledged',
-    timestamp: '2025-01-15 08:00:00',
+    timestamp: '2025-07-15 08:00:00',
     description: '门禁控制器运行12个月，需要进行定期保养',
     recommendedAction: '安排门禁系统维护，更新软件和清理设备',
     estimatedCost: 300
@@ -3563,7 +3563,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'medium',
     status: 'resolved',
-    timestamp: '2025-01-15 12:15:00',
+    timestamp: '2025-07-15 12:15:00',
     description: '摄像头图像模糊，影响监控效果',
     recommendedAction: '清洁镜头或调整焦距',
     estimatedCost: 50
@@ -3576,7 +3576,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'low',
     status: 'active',
-    timestamp: '2025-01-15 16:20:00',
+    timestamp: '2025-07-15 16:20:00',
     description: '部分LED灯条无法正常点亮',
     recommendedAction: '检查LED驱动器和线路连接',
     estimatedCost: 120
@@ -3589,7 +3589,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'temperature_abnormal',
     severity: 'low',
     status: 'false_alarm',
-    timestamp: '2025-01-15 11:45:00',
+    timestamp: '2025-07-15 11:45:00',
     description: '电视背板温度偏高报警',
     recommendedAction: '检查散热系统和环境温度',
     estimatedCost: 0
@@ -3602,9 +3602,9 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'medium',
     status: 'acknowledged',
-    timestamp: '2025-01-15 14:50:00',
+    timestamp: '2025-07-15 14:50:00',
     description: '机器人电池续航能力下降，充电时间延长',
-    predictedFailureTime: '2024-01-16 10:00:00',
+    predictedFailureTime: '2025-07-16 10:00:00',
     recommendedAction: '检查电池状态，必要时更换电池组',
     estimatedCost: 800
   },
@@ -3616,7 +3616,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'low',
     status: 'active',
-    timestamp: '2025-01-15 07:30:00',
+    timestamp: '2025-07-15 07:30:00',
     description: '窗帘电机运行声音异常，需要润滑保养',
     recommendedAction: '对电机进行润滑保养，检查传动机构',
     estimatedCost: 150
@@ -3629,9 +3629,9 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'energy_overconsumption',
     severity: 'high',
     status: 'active',
-    timestamp: '2025-01-15 16:00:00',
+    timestamp: '2025-07-15 16:00:00',
     description: '空调能耗超出正常值40%，疑似制冷剂泄漏',
-    predictedFailureTime: '2024-01-16 12:00:00',
+    predictedFailureTime: '2025-07-16 12:00:00',
     recommendedAction: '检查制冷剂管路，补充制冷剂或维修泄漏点',
     estimatedCost: 600
   },
@@ -3643,7 +3643,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'medium',
     status: 'active',
-    timestamp: '2025-01-15 15:15:00',
+    timestamp: '2025-07-15 15:15:00',
     description: '摄像头间歇性断电，影响录像连续性',
     recommendedAction: '检查电源适配器和供电线路',
     estimatedCost: 200
@@ -3656,7 +3656,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'medium',
     status: 'resolved',
-    timestamp: '2025-01-15 10:30:00',
+    timestamp: '2025-07-15 10:30:00',
     description: '湿度传感器读数异常，显示100%湿度',
     recommendedAction: '重新校准传感器或更换感湿元件',
     estimatedCost: 160
@@ -3669,7 +3669,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'low',
     status: 'acknowledged',
-    timestamp: '2025-01-15 06:00:00',
+    timestamp: '2025-07-15 06:00:00',
     description: '门禁读卡器需要清洁维护',
     recommendedAction: '清洁读卡器感应区域，检查天线连接',
     estimatedCost: 80
@@ -3682,7 +3682,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'temperature_abnormal',
     severity: 'medium',
     status: 'active',
-    timestamp: '2025-01-15 15:00:00',
+    timestamp: '2025-07-15 15:00:00',
     description: '电梯机房温度过高，影响设备运行',
     recommendedAction: '检查通风系统，确保机房散热正常',
     estimatedCost: 350
@@ -3695,7 +3695,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'energy_overconsumption',
     severity: 'low',
     status: 'resolved',
-    timestamp: '2025-01-15 13:00:00',
+    timestamp: '2025-07-15 13:00:00',
     description: '迷你吧制冷效率下降，能耗增加15%',
     recommendedAction: '清洁冷凝器，检查制冷剂充注量',
     estimatedCost: 100
@@ -3708,9 +3708,9 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'critical',
     status: 'active',
-    timestamp: '2025-01-15 16:30:00',
+    timestamp: '2025-07-15 16:30:00',
     description: '报警器主电源故障，已切换到备用电源',
-    predictedFailureTime: '2024-01-15 20:00:00',
+    predictedFailureTime: '2025-07-15 20:00:00',
     recommendedAction: '立即检查主电源线路，修复供电故障',
     estimatedCost: 400
   },
@@ -3722,7 +3722,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'medium',
     status: 'active',
-    timestamp: '2025-01-15 14:00:00',
+    timestamp: '2025-07-15 14:00:00',
     description: '门锁机械部件磨损，开锁时间延长',
     recommendedAction: '润滑锁体机械部件，检查电机状态',
     estimatedCost: 200
@@ -3735,7 +3735,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'low',
     status: 'acknowledged',
-    timestamp: '2025-01-15 09:30:00',
+    timestamp: '2025-07-15 09:30:00',
     description: '电梯内摄像头夜视功能异常',
     recommendedAction: '检查红外补光灯和摄像头设置',
     estimatedCost: 120
@@ -3748,7 +3748,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'medium',
     status: 'active',
-    timestamp: '2025-01-15 15:40:00',
+    timestamp: '2025-07-15 15:40:00',
     description: '激光雷达传感器精度下降，影响导航',
     recommendedAction: '清洁激光雷达镜面，重新校准导航系统',
     estimatedCost: 250
@@ -3761,9 +3761,9 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'temperature_abnormal',
     severity: 'high',
     status: 'active',
-    timestamp: '2025-01-15 16:10:00',
+    timestamp: '2025-07-15 16:10:00',
     description: '压缩机过热保护频繁触发',
-    predictedFailureTime: '2024-01-15 18:00:00',
+    predictedFailureTime: '2025-07-15 18:00:00',
     recommendedAction: '立即停机检查，清洁冷凝器和检查制冷剂',
     estimatedCost: 500
   },
@@ -3775,7 +3775,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'low',
     status: 'resolved',
-    timestamp: '2025-01-15 12:45:00',
+    timestamp: '2025-07-15 12:45:00',
     description: '调光器故障，无法调节亮度',
     recommendedAction: '更换调光模块',
     estimatedCost: 80
@@ -3788,7 +3788,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'low',
     status: 'active',
-    timestamp: '2025-01-15 05:00:00',
+    timestamp: '2025-07-15 05:00:00',
     description: '传感器校准周期到期，需要重新校准',
     recommendedAction: '使用标准样品对传感器进行校准',
     estimatedCost: 100
@@ -3826,7 +3826,7 @@ export const deviceLinkages: DeviceLinkage[] = [
     isEnabled: true,
     roomNumbers: ['101', '102', '201', '202'],
     executionCount: 24,
-    lastExecuted: '2025-01-15 16:00:00'
+    lastExecuted: '2025-07-15 16:00:00'
   },
   {
     id: 'linkage_002',
@@ -3857,7 +3857,7 @@ export const deviceLinkages: DeviceLinkage[] = [
     isEnabled: true,
     roomNumbers: ['101', '102', '201', '202', '301'],
     executionCount: 156,
-    lastExecuted: '2025-01-15 13:45:00'
+    lastExecuted: '2025-07-15 13:45:00'
   },
   {
     id: 'linkage_003',
@@ -3888,14 +3888,14 @@ export const deviceLinkages: DeviceLinkage[] = [
     isEnabled: true,
     roomNumbers: ['101', '201'],
     executionCount: 8,
-    lastExecuted: '2025-01-14 23:00:00'
+    lastExecuted: '2025-07-14 23:00:00'
   }
 ];
 
 // 运营分析数据
 export const operationData: OperationData[] = [
   {
-    date: '2024-01-08',
+    date: '2025-07-08',
     roomOccupancyRate: 65,
     energyConsumption: 1250,
     energyCost: 875,
@@ -3907,7 +3907,7 @@ export const operationData: OperationData[] = [
     co2Emission: 625
   },
   {
-    date: '2024-01-09',
+    date: '2025-07-09',
     roomOccupancyRate: 72,
     energyConsumption: 1380,
     energyCost: 966,
@@ -3919,7 +3919,7 @@ export const operationData: OperationData[] = [
     co2Emission: 690
   },
   {
-    date: '2024-01-10',
+    date: '2025-07-10',
     roomOccupancyRate: 68,
     energyConsumption: 1320,
     energyCost: 924,
@@ -3931,7 +3931,7 @@ export const operationData: OperationData[] = [
     co2Emission: 660
   },
   {
-    date: '2024-01-11',
+    date: '2025-07-11',
     roomOccupancyRate: 78,
     energyConsumption: 1420,
     energyCost: 994,
@@ -3943,7 +3943,7 @@ export const operationData: OperationData[] = [
     co2Emission: 710
   },
   {
-    date: '2024-01-12',
+    date: '2025-07-12',
     roomOccupancyRate: 82,
     energyConsumption: 1480,
     energyCost: 1036,
@@ -3955,7 +3955,7 @@ export const operationData: OperationData[] = [
     co2Emission: 740
   },
   {
-    date: '2024-01-13',
+    date: '2025-07-13',
     roomOccupancyRate: 85,
     energyConsumption: 1520,
     energyCost: 1064,
@@ -3967,7 +3967,7 @@ export const operationData: OperationData[] = [
     co2Emission: 760
   },
   {
-    date: '2024-01-14',
+    date: '2025-07-14',
     roomOccupancyRate: 88,
     energyConsumption: 1580,
     energyCost: 1106,
@@ -3991,7 +3991,7 @@ export const deviceAdjustments: DeviceAdjustment[] = [
     oldValue: 24,
     newValue: 22,
     adjustedBy: 'guest',
-    timestamp: '2025-01-15 14:15:00',
+    timestamp: '2025-07-15 14:15:00',
     reason: '客人调节房间温度',
     energyImpact: 2.3
   },
@@ -4004,7 +4004,7 @@ export const deviceAdjustments: DeviceAdjustment[] = [
     oldValue: 100,
     newValue: 75,
     adjustedBy: 'auto_system',
-    timestamp: '2024-01-15 13:30:00',
+    timestamp: '2025-07-15 13:30:00',
     reason: '根据环境光线自动调节',
     energyImpact: -0.8
   },
@@ -4017,7 +4017,7 @@ export const deviceAdjustments: DeviceAdjustment[] = [
     oldValue: 'on',
     newValue: 'off',
     adjustedBy: 'staff',
-    timestamp: '2024-01-15 12:00:00',
+    timestamp: '2025-07-15 12:00:00',
     reason: '客人退房后关闭设备',
     energyImpact: -12.5
   }

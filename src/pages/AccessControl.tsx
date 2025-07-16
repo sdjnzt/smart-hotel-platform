@@ -111,7 +111,7 @@ const AccessControl: React.FC = () => {
       location: '大堂入口',
       type: 'card',
       status: 'normal',
-      lastAccess: '2024-01-15 14:30:00',
+      lastAccess: '2025-07-15 14:30:00',
       authorizedUsers: 45,
       deniedAttempts: 2,
       battery: 85,
@@ -123,7 +123,7 @@ const AccessControl: React.FC = () => {
       location: '员工通道',
       type: 'fingerprint',
       status: 'normal',
-      lastAccess: '2024-01-15 14:25:00',
+      lastAccess: '2025-07-15 14:25:00',
       authorizedUsers: 28,
       deniedAttempts: 0,
       battery: 92,
@@ -135,7 +135,7 @@ const AccessControl: React.FC = () => {
       location: '设备机房',
       type: 'face',
       status: 'locked',
-      lastAccess: '2024-01-15 12:30:00',
+      lastAccess: '2025-07-15 12:30:00',
       authorizedUsers: 5,
       deniedAttempts: 1,
       battery: 78,
@@ -147,7 +147,7 @@ const AccessControl: React.FC = () => {
       location: '财务室',
       type: 'password',
       status: 'normal',
-      lastAccess: '2024-01-15 14:15:00',
+      lastAccess: '2025-07-15 14:15:00',
       authorizedUsers: 8,
       deniedAttempts: 0,
       battery: 95,
@@ -159,7 +159,7 @@ const AccessControl: React.FC = () => {
       location: '地下停车场',
       type: 'mobile',
       status: 'maintenance',
-      lastAccess: '2024-01-15 10:00:00',
+      lastAccess: '2025-07-15 10:00:00',
       authorizedUsers: 120,
       deniedAttempts: 5,
       battery: 45,
@@ -176,9 +176,9 @@ const AccessControl: React.FC = () => {
       role: 'staff',
       status: 'active',
       accessLevel: 'staff',
-      validFrom: '2024-01-01',
+      validFrom: '2025-07-01',
       validTo: '2024-12-31',
-      lastAccess: '2024-01-15 14:30:00',
+      lastAccess: '2025-07-15 14:30:00',
       accessCount: 156,
     },
     {
@@ -189,9 +189,9 @@ const AccessControl: React.FC = () => {
       role: 'manager',
       status: 'active',
       accessLevel: 'restricted',
-      validFrom: '2024-01-01',
+      validFrom: '2025-07-01',
       validTo: '2024-12-31',
-      lastAccess: '2024-01-15 14:25:00',
+      lastAccess: '2025-07-15 14:25:00',
       accessCount: 89,
     },
     {
@@ -202,9 +202,9 @@ const AccessControl: React.FC = () => {
       role: 'guest',
       status: 'active',
       accessLevel: 'public',
-      validFrom: '2024-01-15',
-      validTo: '2024-01-17',
-      lastAccess: '2024-01-15 14:20:00',
+      validFrom: '2025-07-15',
+      validTo: '2025-07-17',
+      lastAccess: '2025-07-15 14:20:00',
       accessCount: 12,
     },
     {
@@ -215,9 +215,9 @@ const AccessControl: React.FC = () => {
       role: 'admin',
       status: 'active',
       accessLevel: 'admin',
-      validFrom: '2024-01-01',
+      validFrom: '2025-07-01',
       validTo: '2024-12-31',
-      lastAccess: '2024-01-15 14:15:00',
+      lastAccess: '2025-07-15 14:15:00',
       accessCount: 234,
     },
   ];
@@ -230,7 +230,7 @@ const AccessControl: React.FC = () => {
       deviceId: '1',
       deviceName: '大堂门禁-01',
       accessType: 'granted',
-      timestamp: '2024-01-15 14:30:00',
+      timestamp: '2025-07-15 14:30:00',
       location: '大堂入口',
     },
     {
@@ -240,7 +240,7 @@ const AccessControl: React.FC = () => {
       deviceId: '2',
       deviceName: '员工通道门禁-01',
       accessType: 'granted',
-      timestamp: '2024-01-15 14:25:00',
+      timestamp: '2025-07-15 14:25:00',
       location: '员工通道',
     },
     {
@@ -250,7 +250,7 @@ const AccessControl: React.FC = () => {
       deviceId: '1',
       deviceName: '大堂门禁-01',
       accessType: 'denied',
-      timestamp: '2024-01-15 14:20:00',
+      timestamp: '2025-07-15 14:20:00',
       location: '大堂入口',
       reason: '权限不足',
     },
@@ -261,7 +261,7 @@ const AccessControl: React.FC = () => {
       deviceId: '3',
       deviceName: '机房门禁-01',
       accessType: 'granted',
-      timestamp: '2024-01-15 14:15:00',
+      timestamp: '2025-07-15 14:15:00',
       location: '设备机房',
     },
   ];
@@ -697,7 +697,7 @@ const AccessControl: React.FC = () => {
           <Card>
             <Statistic
               title="今日访问"
-              value={records.filter(r => r.timestamp.includes('2024-01-15')).length}
+              value={records.filter(r => r.timestamp.includes('2025-07-15')).length}
               prefix={<ClockCircleOutlined />}
               valueStyle={{ color: '#fa8c16' }}
             />
