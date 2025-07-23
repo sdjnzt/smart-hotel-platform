@@ -252,7 +252,7 @@ const menuItems = [
   //       label: '联系支持',
   //     },
   //     {
-  //       key: '/about-system',
+  //       key: 'about-system',
   //       icon: <InfoCircleOutlined />,
   //       label: '关于系统',
   //     },
@@ -445,19 +445,7 @@ const AppLayout: React.FC = () => {
           
           {/* 管理员区域 */}
           <div style={{ display: 'flex', alignItems: 'center', marginRight: 24 }}>
-            <Space size="middle">
-              {/* 实时时间 */}
-              <div style={{ 
-                fontSize: '14px', 
-                color: '#666',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                backgroundColor: '#f5f5f5'
-              }}>
-                <ClockCircleOutlined style={{ marginRight: 8 }} />
-                {new Date().toLocaleString('zh-CN')}
-              </div>
-              
+            <Space size="middle">              
               {/* 系统状态 */}
               <Button
                 type="text"
