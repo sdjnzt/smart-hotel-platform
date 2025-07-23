@@ -40,6 +40,14 @@ import { hotelDevices, hotelRooms, faultWarnings, deviceLinkages, operationData,
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
 
+interface RoomStatusData {
+  value: number;
+  name: string;
+  itemStyle: {
+    color: string;
+  };
+}
+
 const Dashboard: React.FC = () => {
   const [devices] = useState<HotelDevice[]>(hotelDevices);
   const [rooms] = useState<HotelRoom[]>(hotelRooms);
@@ -79,63 +87,141 @@ const Dashboard: React.FC = () => {
   const deviceUptime = (onlineDevices / totalDevices) * 100;
   
   // 房间状态分布图
-  const roomStatusData = [
-    { type: '已入住', value: rooms.filter(r => r.status === 'occupied').length, color: '#52c41a' },
-    { type: '待清洁', value: rooms.filter(r => r.status === 'vacant_dirty').length, color: '#faad14' },
-    { type: '可入住', value: rooms.filter(r => r.status === 'vacant_clean').length, color: '#1890ff' },
-    { type: '维修中', value: rooms.filter(r => r.status === 'out_of_order').length, color: '#f5222d' }
+  const roomStatusData: RoomStatusData[] = [
+    { value: 70, name: '空闲', itemStyle: { color: '#FFB800' } },
+    { value: 20, name: '已入住', itemStyle: { color: '#2F54EB' } },
+    { value: 7, name: '维护中', itemStyle: { color: '#52C41A' } },
+    { value: 3, name: '已预订', itemStyle: { color: '#FF4D4F' } }
   ];
 
   const roomStatusOption = {
-    title: {
-      text: '房间状态分布',
-      left: 'center'
-    },
     tooltip: {
       trigger: 'item',
-      formatter: '{a} <br/>{b}: {c} ({d}%)'
+      formatter: '{b}: {c}间 ({d}%)'
     },
-    series: [{
-      name: '房间状态',
-      type: 'pie',
-      radius: '60%',
-      data: roomStatusData,
-      emphasis: {
-        itemStyle: {
-          shadowBlur: 10,
-          shadowOffsetX: 0,
-          shadowColor: 'rgba(0, 0, 0, 0.5)'
-        }
+    legend: {
+      orient: 'vertical',
+      right: '5%',
+      top: 'center',
+      itemWidth: 10,
+      itemHeight: 10,
+      icon: 'circle',
+      formatter: (name: string) => {
+        const item = roomStatusData.find(i => i.name === name);
+        return item ? `${name}: ${item.value}间` : name;
       }
-    }]
+    },
+    series: [
+      {
+        type: 'pie',
+        radius: ['50%', '70%'],
+        center: ['40%', '50%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 4,
+          borderWidth: 2,
+          borderColor: '#fff'
+        },
+        label: {
+          show: false
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: '14',
+            fontWeight: 'bold'
+          }
+        },
+        labelLine: {
+          show: false
+        },
+        data: roomStatusData
+      }
+    ]
   };
 
-  // 能耗趋势图
+  // 获取最近7天的日期
+  const getLast7Days = () => {
+    const dates = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      // 修改日期格式为 MM/DD
+      dates.push(date.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' }).replace('/', '-'));
+    }
+    return dates;
+  };
+
+  // 能耗趋势数据
   const energyTrendOption = {
-    title: {
-      text: '7日能耗趋势',
-      left: 'left'
+    grid: {
+      top: 30,
+      right: 20,
+      bottom: 30,
+      left: 40,
+      containLabel: true
     },
     tooltip: {
       trigger: 'axis',
-      formatter: '{b}<br/>能耗: {c} kWh'
+      formatter: (params: any) => {
+        const data = params[0];
+        return `${data.name}<br/>${data.value} kWh`;
+      }
     },
     xAxis: {
       type: 'category',
-      data: operationData.map(d => d.date.slice(5))
+      boundaryGap: false,
+      data: getLast7Days(),
+      axisLine: {
+        lineStyle: {
+          color: '#E5E5E5'
+        }
+      },
+      axisLabel: {
+        color: '#666',
+        fontSize: 12,
+        margin: 12,
+        rotate: 0,
+        formatter: (value: string) => {
+          return value;
+        }
+      }
     },
     yAxis: {
       type: 'value',
+      name: 'kWh',
+      nameTextStyle: {
+        color: '#666',
+        fontSize: 12,
+        padding: [0, 30, 0, 0]
+      },
+      min: 0,
+      max: 1800,
+      interval: 300,
+      splitLine: {
+        lineStyle: {
+          type: 'dashed',
+          color: '#E5E5E5'
+        }
+      },
       axisLabel: {
-        formatter: '{value} kWh'
+        color: '#666',
+        fontSize: 12,
+        formatter: (value: number) => {
+          return value.toLocaleString() + ' kWh';
+        }
       }
     },
     series: [{
-      data: operationData.map(d => d.energyConsumption),
+      data: [1450, 1520, 1480, 1500, 1550, 1580, 1600],
       type: 'line',
       smooth: true,
+      symbol: 'circle',
+      symbolSize: 6,
+      itemStyle: {
+        color: '#1890FF'
+      },
       areaStyle: {
-        opacity: 0.3,
         color: {
           type: 'linear',
           x: 0,
@@ -143,14 +229,13 @@ const Dashboard: React.FC = () => {
           x2: 0,
           y2: 1,
           colorStops: [{
-            offset: 0, color: '#1890ff'
+            offset: 0,
+            color: 'rgba(24,144,255,0.15)'
           }, {
-            offset: 1, color: 'rgba(24, 144, 255, 0.1)'
+            offset: 1,
+            color: 'rgba(24,144,255,0.01)'
           }]
         }
-      },
-      lineStyle: {
-        color: '#1890ff'
       }
     }]
   };
