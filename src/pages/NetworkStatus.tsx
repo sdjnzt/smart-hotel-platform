@@ -84,7 +84,7 @@ const NetworkStatus: React.FC = () => {
       latency: 12,
       packetLoss: 0.1,
       uptime: '15天 8小时 32分钟',
-      lastUpdate: '2025-07-15 14:30:00',
+      lastUpdate: '2025-07-23 14:30:00',
     },
     {
       id: '2',
@@ -96,7 +96,7 @@ const NetworkStatus: React.FC = () => {
       latency: 8,
       packetLoss: 0.05,
       uptime: '12天 16小时 45分钟',
-      lastUpdate: '2025-07-15 14:30:00',
+      lastUpdate: '2025-07-23 14:30:00',
     },
     {
       id: '3',
@@ -108,7 +108,7 @@ const NetworkStatus: React.FC = () => {
       latency: 25,
       packetLoss: 2.1,
       uptime: '8天 12小时 18分钟',
-      lastUpdate: '2025-07-15 14:30:00',
+      lastUpdate: '2025-07-23 14:30:00',
     },
     {
       id: '4',
@@ -120,7 +120,7 @@ const NetworkStatus: React.FC = () => {
       latency: 15,
       packetLoss: 0.8,
       uptime: '10天 6小时 52分钟',
-      lastUpdate: '2025-07-15 14:30:00',
+      lastUpdate: '2025-07-23 14:30:00',
     },
     {
       id: '5',
@@ -132,7 +132,7 @@ const NetworkStatus: React.FC = () => {
       latency: 5,
       packetLoss: 0.02,
       uptime: '20天 4小时 15分钟',
-      lastUpdate: '2025-07-15 14:30:00',
+      lastUpdate: '2025-07-23 14:30:00',
     },
   ];
 
@@ -145,7 +145,7 @@ const NetworkStatus: React.FC = () => {
       latency: 12,
       status: 'active',
       protocol: 'Ethernet',
-      lastUpdate: '2025-07-15 14:30:00',
+      lastUpdate: '2025-07-23 14:30:00',
     },
     {
       id: '2',
@@ -155,7 +155,7 @@ const NetworkStatus: React.FC = () => {
       latency: 25,
       status: 'active',
       protocol: 'WiFi 6',
-      lastUpdate: '2025-07-15 14:30:00',
+      lastUpdate: '2025-07-23 14:30:00',
     },
     {
       id: '3',
@@ -165,7 +165,7 @@ const NetworkStatus: React.FC = () => {
       latency: 15,
       status: 'active',
       protocol: 'WiFi 6',
-      lastUpdate: '2025-07-15 14:30:00',
+      lastUpdate: '2025-07-23 14:30:00',
     },
     {
       id: '4',
@@ -175,7 +175,7 @@ const NetworkStatus: React.FC = () => {
       latency: 5,
       status: 'active',
       protocol: 'Ethernet',
-      lastUpdate: '2025-07-15 14:30:00',
+      lastUpdate: '2025-07-23 14:30:00',
     },
   ];
 

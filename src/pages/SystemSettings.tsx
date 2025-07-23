@@ -537,9 +537,9 @@ const SystemConfiguration: React.FC = () => {
 // 数据备份组件
 const DataBackup: React.FC = () => {
   const [backupHistory, setBackupHistory] = useState([
-    { id: 1, name: 'auto_backup_20240115_140000', type: 'auto', size: '125.6 MB', date: '2025-07-15 14:00:00', status: 'success' },
-    { id: 2, name: 'manual_backup_20240115_120000', type: 'manual', size: '124.2 MB', date: '2025-07-15 12:00:00', status: 'success' },
-    { id: 3, name: 'auto_backup_20240115_020000', type: 'auto', size: '123.8 MB', date: '2025-07-15 02:00:00', status: 'success' },
+    { id: 1, name: 'auto_backup_20240115_140000', type: 'auto', size: '125.6 MB', date: '2025-07-23 14:00:00', status: 'success' },
+    { id: 2, name: 'manual_backup_20240115_120000', type: 'manual', size: '124.2 MB', date: '2025-07-23 12:00:00', status: 'success' },
+    { id: 3, name: 'auto_backup_20240115_020000', type: 'auto', size: '123.8 MB', date: '2025-07-23 02:00:00', status: 'success' },
     { id: 4, name: 'manual_backup_20240114_180000', type: 'manual', size: '122.4 MB', date: '2025-07-14 18:00:00', status: 'success' },
     { id: 5, name: 'auto_backup_20240114_140000', type: 'auto', size: '121.9 MB', date: '2025-07-14 14:00:00', status: 'failed' }
   ]);
@@ -874,9 +874,9 @@ const SystemMonitoring: React.FC = () => {
           <Card title="系统告警" size="small">
             <List
               dataSource={[
-                { type: 'warning', message: 'CPU使用率较高', time: '2025-07-15 14:30' },
-                { type: 'info', message: '定时备份完成', time: '2025-07-15 14:00' },
-                { type: 'error', message: '磁盘空间不足', time: '2025-07-15 13:45' }
+                { type: 'warning', message: 'CPU使用率较高', time: '2025-07-23 14:30' },
+                { type: 'info', message: '定时备份完成', time: '2025-07-23 14:00' },
+                { type: 'error', message: '磁盘空间不足', time: '2025-07-23 13:45' }
               ]}
               renderItem={(item: any) => (
                 <List.Item>
@@ -898,9 +898,9 @@ const SystemMonitoring: React.FC = () => {
           <Card title="系统日志" size="small">
             <List
               dataSource={[
-                { action: '用户登录', user: '张伟民', ip: '192.168.1.100', time: '2025-07-15 14:30' },
-                { action: '创建备份', user: '系统', ip: 'localhost', time: '2025-07-15 14:00' },
-                { action: '修改配置', user: '李管理', ip: '192.168.1.102', time: '2025-07-15 13:45' }
+                { action: '用户登录', user: '张伟民', ip: '192.168.1.100', time: '2025-07-23 14:30' },
+                { action: '创建备份', user: '系统', ip: 'localhost', time: '2025-07-23 14:00' },
+                { action: '修改配置', user: '李管理', ip: '192.168.1.102', time: '2025-07-23 13:45' }
               ]}
               renderItem={(item: any) => (
                 <List.Item>

@@ -92,7 +92,7 @@ const SecuritySystem: React.FC = () => {
       resolution: '4K',
       recording: true,
       motionDetection: true,
-      lastRecording: '2025-07-15 14:30:00',
+      lastRecording: '2025-07-23 14:30:00',
       storageUsage: 65,
     },
     {
@@ -103,7 +103,7 @@ const SecuritySystem: React.FC = () => {
       resolution: '1080P',
       recording: true,
       motionDetection: true,
-      lastRecording: '2025-07-15 14:29:00',
+      lastRecording: '2025-07-23 14:29:00',
       storageUsage: 78,
     },
     {
@@ -114,7 +114,7 @@ const SecuritySystem: React.FC = () => {
       resolution: '4K',
       recording: false,
       motionDetection: false,
-      lastRecording: '2025-07-15 10:15:00',
+      lastRecording: '2025-07-23 10:15:00',
       storageUsage: 45,
     },
     {
@@ -125,7 +125,7 @@ const SecuritySystem: React.FC = () => {
       resolution: '1080P',
       recording: true,
       motionDetection: true,
-      lastRecording: '2025-07-15 14:28:00',
+      lastRecording: '2025-07-23 14:28:00',
       storageUsage: 82,
     },
   ];
@@ -139,7 +139,7 @@ const SecuritySystem: React.FC = () => {
       location: '大堂摄像头-01',
       severity: 'medium',
       status: 'acknowledged',
-      timestamp: '2025-07-15 14:30:00',
+      timestamp: '2025-07-23 14:30:00',
       description: '检测到异常移动',
       handledBy: '保安张三',
     },
@@ -149,7 +149,7 @@ const SecuritySystem: React.FC = () => {
       location: '停车场摄像头-01',
       severity: 'high',
       status: 'active',
-      timestamp: '2025-07-15 14:20:00',
+      timestamp: '2025-07-23 14:20:00',
       description: '检测到可疑人员',
     },
     {
@@ -158,7 +158,7 @@ const SecuritySystem: React.FC = () => {
       location: '厨房区域',
       severity: 'critical',
       status: 'active',
-      timestamp: '2025-07-15 14:15:00',
+      timestamp: '2025-07-23 14:15:00',
       description: '烟雾报警器触发',
     },
   ];

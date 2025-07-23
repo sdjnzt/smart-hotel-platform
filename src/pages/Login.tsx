@@ -174,7 +174,7 @@ const Login: React.FC = () => {
       content: (
         <div style={{ fontSize: '16px', lineHeight: '2' }}>
           <p>请联系系统管理员重置密码：</p>
-          <p><strong>电话：</strong>0537-XXXXXXXX</p>
+          <p><strong>电话：</strong>15864126115</p>
           <p><strong>邮箱：</strong>admin@zecheng.com</p>
         </div>
       ),
