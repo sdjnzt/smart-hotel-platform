@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Layout, Menu, theme, Button, Avatar, Dropdown, Space, Typography } from 'antd';
 import {
   HomeOutlined,
@@ -59,6 +59,7 @@ import UserManagement from './pages/UserManagement';
 import RolePermissions from './pages/RolePermissions';
 import SystemLogs from './pages/SystemLogs';
 import BackupRestore from './pages/BackupRestore';
+import Login from './pages/Login';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -259,6 +260,28 @@ const menuItems = [
   // },
 ];
 
+// 添加路由保护组件
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('userToken');
+    setIsAuthenticated(!!token);
+    
+    if (!token && location.pathname !== '/login') {
+      navigate('/login', { replace: true });
+    }
+  }, [navigate, location]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  return <>{children}</>;
+};
+
 const AppLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
@@ -350,7 +373,9 @@ const AppLayout: React.FC = () => {
         break;
       case 'logout':
         // 处理退出登录
-        console.log('用户退出登录');
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('userName');
+        navigate('/login');
         break;
       default:
         break;
@@ -554,7 +579,14 @@ const AppLayout: React.FC = () => {
 const App: React.FC = () => {
   return (
     <Router basename="/smart-hotel-platform">
-      <AppLayout />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/*" element={
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        } />
+      </Routes>
     </Router>
   );
 };
