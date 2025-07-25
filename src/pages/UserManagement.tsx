@@ -566,6 +566,10 @@ const UserManagement: React.FC = () => {
   const [addRoleModalVisible, setAddRoleModalVisible] = useState(false);
   const [roleForm] = Form.useForm();
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
+  const [roleDetailsVisible, setRoleDetailsVisible] = useState(false);
+  const [roleEditVisible, setRoleEditVisible] = useState(false);
+  const [currentRole, setCurrentRole] = useState<Role | null>(null);
+  const [roleEditForm] = Form.useForm();
 
   useEffect(() => {
     loadData();
@@ -846,12 +850,45 @@ const UserManagement: React.FC = () => {
     });
   };
 
+  // 查看角色详情
   const handleViewRole = (record: Role) => {
-    message.info('查看角色详情');
+    setCurrentRole(record);
+    setRoleDetailsVisible(true);
   };
 
+  // 编辑角色
   const handleEditRole = (record: Role) => {
-    message.info('编辑角色信息');
+    setCurrentRole(record);
+    roleEditForm.setFieldsValue({
+      name: record.name,
+      description: record.description,
+      status: record.status,
+      permissions: record.permissions
+    });
+    setRoleEditVisible(true);
+  };
+
+  // 保存角色编辑
+  const handleSaveRole = (values: any) => {
+    if (!currentRole) return;
+
+    const updatedRole: Role = {
+      ...currentRole,
+      name: values.name,
+      description: values.description,
+      status: values.status,
+      permissions: values.permissions,
+      updateTime: dayjs().format('YYYY-MM-DD')
+    };
+
+    setRoleList(roleList.map(role => 
+      role.id === currentRole.id ? updatedRole : role
+    ));
+
+    message.success('角色更新成功');
+    setRoleEditVisible(false);
+    roleEditForm.resetFields();
+    setCurrentRole(null);
   };
 
   const handleDeleteRole = (record: Role) => {
@@ -1566,6 +1603,202 @@ const UserManagement: React.FC = () => {
                 setAddRoleModalVisible(false);
                 roleForm.resetFields();
                 setSelectedPermissions([]);
+              }}>
+                取消
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* 角色详情抽屉 */}
+      <Drawer
+        title="角色详情"
+        width={600}
+        open={roleDetailsVisible}
+        onClose={() => {
+          setRoleDetailsVisible(false);
+          setCurrentRole(null);
+        }}
+        extra={
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => {
+              setRoleDetailsVisible(false);
+              handleEditRole(currentRole!);
+            }}
+          >
+            编辑
+          </Button>
+        }
+      >
+        {currentRole && (
+          <>
+            <Descriptions column={2} bordered>
+              <Descriptions.Item label="角色名称" span={2}>
+                {currentRole.name}
+              </Descriptions.Item>
+              <Descriptions.Item label="状态">
+                <Badge
+                  status={getStatusBadgeStyle(currentRole.status).status as any}
+                  text={getStatusBadgeStyle(currentRole.status).text}
+                />
+              </Descriptions.Item>
+              <Descriptions.Item label="用户数量">
+                {currentRole.userCount} 人
+              </Descriptions.Item>
+              <Descriptions.Item label="创建时间">
+                {currentRole.createTime}
+              </Descriptions.Item>
+              <Descriptions.Item label="更新时间">
+                {currentRole.updateTime}
+              </Descriptions.Item>
+              <Descriptions.Item label="角色描述" span={2}>
+                {currentRole.description}
+              </Descriptions.Item>
+            </Descriptions>
+
+            <Divider orientation="left">权限列表</Divider>
+            <Space wrap style={{ marginBottom: 16 }}>
+              {currentRole.permissions.map((permission, index) => (
+                <Tag
+                  key={index}
+                  color={getPermissionTagColor(permission)}
+                >
+                  {getPermissionName(permission)}
+                </Tag>
+              ))}
+            </Space>
+
+            <Divider orientation="left">用户列表</Divider>
+            <List
+              size="small"
+              bordered
+              dataSource={userList.filter(user => user.role === currentRole.name)}
+              renderItem={user => (
+                <List.Item>
+                  <Space>
+                    <Avatar size="small" icon={<UserOutlined />} />
+                    <Text>{user.realName}</Text>
+                    <Text type="secondary">({user.username})</Text>
+                  </Space>
+                </List.Item>
+              )}
+              locale={{ emptyText: '暂无用户' }}
+            />
+          </>
+        )}
+      </Drawer>
+
+      {/* 编辑角色模态框 */}
+      <Modal
+        title="编辑角色"
+        open={roleEditVisible}
+        onCancel={() => {
+          setRoleEditVisible(false);
+          roleEditForm.resetFields();
+          setCurrentRole(null);
+        }}
+        footer={null}
+        width={800}
+      >
+        <Form
+          form={roleEditForm}
+          layout="vertical"
+          onFinish={handleSaveRole}
+        >
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="name"
+                label="角色名称"
+                rules={[
+                  { required: true, message: '请输入角色名称' },
+                  { min: 2, max: 20, message: '角色名称长度为2-20个字符' },
+                  { pattern: /^[\u4e00-\u9fa5A-Za-z0-9_-]+$/, message: '角色名称只能包含中文、英文、数字、下划线和连字符' }
+                ]}
+              >
+                <Input placeholder="请输入角色名称" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="status"
+                label="状态"
+                rules={[{ required: true, message: '请选择状态' }]}
+              >
+                <Select>
+                  <Option value="active">正常</Option>
+                  <Option value="inactive">停用</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item
+            name="description"
+            label="角色描述"
+            rules={[
+              { required: true, message: '请输入角色描述' },
+              { min: 10, max: 200, message: '角色描述长度为10-200个字符' }
+            ]}
+          >
+            <Input.TextArea
+              rows={3}
+              placeholder="请输入角色描述"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="permissions"
+            label="权限设置"
+            rules={[{ required: true, message: '请至少选择一个权限' }]}
+          >
+            <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '2px' }}>
+              {Object.entries(PERMISSIONS).map(([key, config]) => (
+                <div key={key} style={{ marginBottom: '16px' }}>
+                  <Typography.Title level={5}>{config.name}</Typography.Title>
+                  <Space wrap>
+                    {config.permissions.map(permission => {
+                      const permissionKey = `${config.prefix}:${permission.code}`;
+                      return (
+                        <Checkbox
+                          key={permissionKey}
+                          value={permissionKey}
+                          onChange={e => {
+                            const currentPermissions = roleEditForm.getFieldValue('permissions') || [];
+                            if (e.target.checked) {
+                              roleEditForm.setFieldsValue({
+                                permissions: [...currentPermissions, permissionKey]
+                              });
+                            } else {
+                              roleEditForm.setFieldsValue({
+                                permissions: currentPermissions.filter((p: string) => p !== permissionKey)
+                              });
+                            }
+                          }}
+                          checked={roleEditForm.getFieldValue('permissions')?.includes(permissionKey)}
+                        >
+                          {permission.name}
+                        </Checkbox>
+                      );
+                    })}
+                  </Space>
+                </div>
+              ))}
+            </div>
+          </Form.Item>
+
+          <Form.Item>
+            <Space>
+              <Button type="primary" htmlType="submit">
+                保存修改
+              </Button>
+              <Button onClick={() => {
+                setRoleEditVisible(false);
+                roleEditForm.resetFields();
+                setCurrentRole(null);
               }}>
                 取消
               </Button>
