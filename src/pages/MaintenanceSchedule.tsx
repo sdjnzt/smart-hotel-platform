@@ -562,7 +562,7 @@ const MaintenanceSchedule: React.FC = () => {
     setMaintenancePlans(assignedPlans);
     setMaintenanceRecords(recordData);
     setTechnicians(technicianData);
-    setLoading(false);
+      setLoading(false);
   };
 
   const getPriorityColor = (priority: string) => {
@@ -1205,20 +1205,20 @@ const MaintenanceSchedule: React.FC = () => {
             icon={<CalendarOutlined />}
             onClick={() => setAddPlanModalVisible(true)}
           >
-            新增计划
-          </Button>
+                  新增计划
+                </Button>
           <Button
             icon={<ExportOutlined />}
             onClick={handleExport}
           >
-            导出数据
-          </Button>
+                  导出数据
+                </Button>
           <Button
             icon={<ImportOutlined />}
             onClick={handleImport}
           >
-            导入数据
-          </Button>
+                  导入数据
+                </Button>
           <Button
             icon={<LineChartOutlined />}
             onClick={handleTrendAnalysis}
@@ -1228,9 +1228,9 @@ const MaintenanceSchedule: React.FC = () => {
           <Button
             icon={<SearchOutlined />}
           >
-            高级搜索
-          </Button>
-        </Space>
+                  高级搜索
+                </Button>
+              </Space>
       </Card>
 
       {/* 主要内容 */}

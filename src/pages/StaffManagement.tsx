@@ -276,7 +276,7 @@ const StaffManagement: React.FC = () => {
 
     setStaffList(staffData);
     setAttendanceList(attendanceData);
-    setLoading(false);
+      setLoading(false);
   };
 
   const getStatusColor = (status: string) => {

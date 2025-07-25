@@ -752,19 +752,19 @@ const UserManagement: React.FC = () => {
         const extraCount = record.permissions.length - 3;
 
         return (
-          <Space wrap>
+        <Space wrap>
             {mainPermissions.map(permission => (
               <Tag
                 key={permission}
                 color={getPermissionTagColor(permission)}
               >
                 {getPermissionName(permission)}
-              </Tag>
-            ))}
+            </Tag>
+          ))}
             {extraCount > 0 && (
               <Tag>+{extraCount}</Tag>
-            )}
-          </Space>
+          )}
+        </Space>
         );
       },
     },

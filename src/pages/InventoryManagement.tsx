@@ -174,44 +174,44 @@ const ITEM_CATEGORIES = {
 
 // 供应商配置
 const SUPPLIERS = [
-  {
-    id: '1',
+    {
+      id: '1',
     name: '邹城市优质纺织品有限公司',
-    contact: '陈经理',
-    phone: '0537-12345678',
-    email: 'chen@textile.com',
+      contact: '陈经理',
+      phone: '0537-12345678',
+      email: 'chen@textile.com',
     address: '山东省济宁市邹城市纺织工业园区A区12号',
     category: '客房用品',
     categories: ['客房用品'],
     baseDiscount: 0.85
-  },
-  {
-    id: '2',
+    },
+    {
+      id: '2',
     name: '邹城市洁雅日化有限公司',
-    contact: '李总',
-    phone: '0537-87654321',
-    email: 'li@clean.com',
+      contact: '李总',
+      phone: '0537-87654321',
+      email: 'li@clean.com',
     address: '山东省济宁市邹城市化工园区B区23号',
     category: '洗护用品',
     categories: ['洗护用品', '清洁用品'],
     baseDiscount: 0.88
-  },
-  {
-    id: '3',
+    },
+    {
+      id: '3',
     name: '邹城市品味食品有限公司',
-    contact: '王经理',
-    phone: '0537-11223344',
+      contact: '王经理',
+      phone: '0537-11223344',
     email: 'wang@food.com',
     address: '山东省济宁市邹城市食品工业园区C区34号',
     category: '餐饮用品',
     categories: ['餐饮用品'],
     baseDiscount: 0.9
-  },
-  {
-    id: '4',
+    },
+    {
+      id: '4',
     name: '邹城市办公伙伴贸易有限公司',
-    contact: '赵总',
-    phone: '0537-55667788',
+      contact: '赵总',
+      phone: '0537-55667788',
     email: 'zhao@office.com',
     address: '山东省济宁市邹城市商贸城D区45号',
     category: '办公用品',
@@ -426,7 +426,7 @@ const InventoryManagement: React.FC = () => {
     setInventoryItems(itemData);
     setTransactions(transactionData);
     setSuppliers(supplierData);
-    setLoading(false);
+      setLoading(false);
   };
 
   const getStatusColor = (status: string) => {
