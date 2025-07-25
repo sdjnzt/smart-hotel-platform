@@ -1139,7 +1139,7 @@ const DeliveryRobot: React.FC = () => {
           columns={robotColumns}
           dataSource={filteredRobots}
           rowKey="id"
-          pagination={false}
+          pagination={{ pageSize: 10 }}
           size="small"
           rowSelection={{
             selectedRowKeys,
