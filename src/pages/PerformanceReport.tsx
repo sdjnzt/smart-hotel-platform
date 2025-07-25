@@ -107,6 +107,296 @@ interface KPIIndicator {
   status: 'excellent' | 'good' | 'average' | 'poor';
 }
 
+// 生成更真实的员工绩效数据
+function generateEmployeePerformance(count: number): EmployeePerformance[] {
+  const departments = [
+    { name: '客房部', positions: ['客房经理', '楼层主管', '客房服务员', '布草员'] },
+    { name: '餐饮部', positions: ['餐饮经理', '厨师长', '厨师', '服务员', '传菜员'] },
+    { name: '前厅部', positions: ['前厅经理', '大堂经理', '前台接待', '礼宾员', '行李员'] },
+    { name: '工程部', positions: ['工程经理', '维修主管', '维修工程师', '空调技工', '电工'] },
+    { name: '保安部', positions: ['保安经理', '保安队长', '保安员', '监控员'] },
+    { name: '财务部', positions: ['财务经理', '会计主管', '会计', '出纳'] },
+    { name: '人事部', positions: ['人事经理', '招聘主管', '培训专员', '人事专员'] },
+    { name: '销售部', positions: ['销售经理', '销售主管', '销售代表', '客户经理'] },
+    { name: '采购部', positions: ['采购经理', '采购主管', '采购员', '仓管员'] },
+    { name: 'IT部', positions: ['IT经理', '系统工程师', '网络工程师', '技术支持'] }
+  ];
+
+  const employees: EmployeePerformance[] = [];
+  const lastNames = ['张', '李', '王', '刘', '陈', '杨', '黄', '赵', '吴', '周', '徐', '孙', '马', '朱', '胡', '郭', '何', '高', '林', '郑'];
+  const firstNames = ['伟', '芳', '娜', '秀英', '敏', '静', '丽', '强', '磊', '军', '洋', '勇', '艳', '杰', '涛', '明', '超', '秀兰', '霞', '平', '刚'];
+
+  // 生成员工数据
+  for (let i = 1; i <= count; i++) {
+    // 随机选择部门和职位
+    const department = departments[Math.floor(Math.random() * departments.length)];
+    const position = department.positions[Math.floor(Math.random() * department.positions.length)];
+    
+    // 根据职位级别调整基础分数
+    let baseScore = position.includes('经理') ? 90 : 
+                   position.includes('主管') ? 85 :
+                   position.includes('工程师') ? 82 : 75;
+    
+    // 添加随机波动
+    const randomVariation = Math.random() * 10 - 5; // -5到5的随机波动
+    const overallScore = Math.min(100, Math.max(60, Math.round(baseScore + randomVariation)));
+    
+    // 根据综合评分确定状态
+    const status = overallScore >= 90 ? 'excellent' :
+                  overallScore >= 80 ? 'good' :
+                  overallScore >= 70 ? 'average' : 'poor';
+
+    // 生成姓名
+    const name = lastNames[Math.floor(Math.random() * lastNames.length)] + 
+                firstNames[Math.floor(Math.random() * firstNames.length)];
+
+    // 生成其他指标
+    const attendance = Math.round(90 + Math.random() * 10); // 90-100
+    const efficiency = Math.round(overallScore - 5 + Math.random() * 10);
+    const quality = Math.round(overallScore - 3 + Math.random() * 6);
+    const teamwork = Math.round(overallScore - 4 + Math.random() * 8);
+    const customerSatisfaction = Math.round(overallScore - 2 + Math.random() * 4);
+    
+    // 计算目标完成情况
+    const monthlyTarget = 100;
+    const actualAchievement = Math.round(overallScore * 0.9 + Math.random() * 10);
+    const completionRate = Math.round((actualAchievement / monthlyTarget) * 100);
+    
+    // 生成上月评分和趋势
+    const lastMonthScore = Math.round(overallScore - 5 + Math.random() * 10);
+    const trend = overallScore > lastMonthScore ? 'up' :
+                 overallScore < lastMonthScore ? 'down' : 'stable';
+
+    employees.push({
+      id: i.toString().padStart(3, '0'),
+      name,
+      department: department.name,
+      position,
+      avatar: '',
+      overallScore,
+      attendance,
+      efficiency,
+      quality,
+      teamwork,
+      customerSatisfaction,
+      monthlyTarget,
+      actualAchievement,
+      completionRate,
+      lastMonthScore,
+      trend,
+      status
+    });
+  }
+
+  return employees;
+}
+
+// 生成更真实的部门绩效数据
+function generateDepartmentPerformance(employees: EmployeePerformance[]): DepartmentPerformance[] {
+  const departments = new Map<string, EmployeePerformance[]>();
+  
+  // 按部门分组员工
+  employees.forEach(emp => {
+    if (!departments.has(emp.department)) {
+      departments.set(emp.department, []);
+    }
+    departments.get(emp.department)?.push(emp);
+  });
+
+  const departmentPerformances: DepartmentPerformance[] = [];
+  let id = 1;
+
+  // 计算每个部门的绩效
+  departments.forEach((deptEmployees, deptName) => {
+    const avgOverallScore = Math.round(deptEmployees.reduce((sum, emp) => sum + emp.overallScore, 0) / deptEmployees.length);
+    const avgAttendance = Math.round(deptEmployees.reduce((sum, emp) => sum + emp.attendance, 0) / deptEmployees.length);
+    const avgEfficiency = Math.round(deptEmployees.reduce((sum, emp) => sum + emp.efficiency, 0) / deptEmployees.length);
+    const avgQuality = Math.round(deptEmployees.reduce((sum, emp) => sum + emp.quality, 0) / deptEmployees.length);
+    const avgCustomerSatisfaction = Math.round(deptEmployees.reduce((sum, emp) => sum + emp.customerSatisfaction, 0) / deptEmployees.length);
+    
+    // 计算部门目标完成情况
+    const monthlyTarget = 100;
+    const actualAchievement = Math.round(avgOverallScore * 0.9 + Math.random() * 10);
+    const completionRate = Math.round((actualAchievement / monthlyTarget) * 100);
+    
+    // 生成上月评分和趋势
+    const lastMonthScore = Math.round(avgOverallScore - 3 + Math.random() * 6);
+    const trend = avgOverallScore > lastMonthScore ? 'up' :
+                 avgOverallScore < lastMonthScore ? 'down' : 'stable';
+    
+    // 确定部门状态
+    const status = avgOverallScore >= 90 ? 'excellent' :
+                  avgOverallScore >= 80 ? 'good' :
+                  avgOverallScore >= 70 ? 'average' : 'poor';
+
+    departmentPerformances.push({
+      id: id.toString(),
+      name: deptName,
+      manager: deptEmployees.find(emp => emp.position.includes('经理'))?.name || '待定',
+      employeeCount: deptEmployees.length,
+      overallScore: avgOverallScore,
+      attendance: avgAttendance,
+      efficiency: avgEfficiency,
+      quality: avgQuality,
+      customerSatisfaction: avgCustomerSatisfaction,
+      monthlyTarget,
+      actualAchievement,
+      completionRate,
+      lastMonthScore,
+      trend,
+      status
+    });
+
+    id++;
+  });
+
+  return departmentPerformances;
+}
+
+// 生成更真实的KPI指标数据
+function generateKPIIndicators(): KPIIndicator[] {
+  const indicators: KPIIndicator[] = [
+    {
+      id: '1',
+      name: '客房入住率',
+      category: 'operational',
+      target: 85,
+      actual: Math.round(80 + Math.random() * 10),
+      unit: '%',
+      completionRate: 0,
+      lastMonth: Math.round(75 + Math.random() * 10),
+      trend: 'up',
+      status: 'good'
+    },
+    {
+      id: '2',
+      name: '平均房价',
+      category: 'financial',
+      target: 450,
+      actual: Math.round(420 + Math.random() * 60),
+      unit: '元',
+      completionRate: 0,
+      lastMonth: Math.round(400 + Math.random() * 50),
+      trend: 'up',
+      status: 'good'
+    },
+    {
+      id: '3',
+      name: '客户满意度',
+      category: 'customer',
+      target: 90,
+      actual: Math.round(85 + Math.random() * 10),
+      unit: '分',
+      completionRate: 0,
+      lastMonth: Math.round(80 + Math.random() * 10),
+      trend: 'up',
+      status: 'good'
+    },
+    {
+      id: '4',
+      name: '员工满意度',
+      category: 'employee',
+      target: 85,
+      actual: Math.round(80 + Math.random() * 10),
+      unit: '分',
+      completionRate: 0,
+      lastMonth: Math.round(75 + Math.random() * 10),
+      trend: 'up',
+      status: 'good'
+    },
+    {
+      id: '5',
+      name: '营业收入',
+      category: 'financial',
+      target: 1000000,
+      actual: Math.round(900000 + Math.random() * 200000),
+      unit: '元',
+      completionRate: 0,
+      lastMonth: Math.round(850000 + Math.random() * 150000),
+      trend: 'up',
+      status: 'good'
+    },
+    {
+      id: '6',
+      name: '成本控制率',
+      category: 'financial',
+      target: 75,
+      actual: Math.round(70 + Math.random() * 10),
+      unit: '%',
+      completionRate: 0,
+      lastMonth: Math.round(65 + Math.random() * 10),
+      trend: 'up',
+      status: 'good'
+    },
+    {
+      id: '7',
+      name: '设备完好率',
+      category: 'operational',
+      target: 95,
+      actual: Math.round(90 + Math.random() * 8),
+      unit: '%',
+      completionRate: 0,
+      lastMonth: Math.round(88 + Math.random() * 7),
+      trend: 'up',
+      status: 'good'
+    },
+    {
+      id: '8',
+      name: '培训完成率',
+      category: 'employee',
+      target: 100,
+      actual: Math.round(85 + Math.random() * 15),
+      unit: '%',
+      completionRate: 0,
+      lastMonth: Math.round(80 + Math.random() * 15),
+      trend: 'up',
+      status: 'good'
+    },
+    {
+      id: '9',
+      name: '投诉处理率',
+      category: 'customer',
+      target: 100,
+      actual: Math.round(95 + Math.random() * 5),
+      unit: '%',
+      completionRate: 0,
+      lastMonth: Math.round(93 + Math.random() * 5),
+      trend: 'up',
+      status: 'excellent'
+    },
+    {
+      id: '10',
+      name: '能源节约率',
+      category: 'operational',
+      target: 10,
+      actual: Math.round(8 + Math.random() * 4),
+      unit: '%',
+      completionRate: 0,
+      lastMonth: Math.round(7 + Math.random() * 3),
+      trend: 'up',
+      status: 'good'
+    }
+  ];
+
+  // 计算完成率和状态
+  indicators.forEach(indicator => {
+    // 计算完成率
+    indicator.completionRate = Math.round((indicator.actual / indicator.target) * 100);
+    
+    // 确定趋势
+    indicator.trend = indicator.actual > indicator.lastMonth ? 'up' :
+                     indicator.actual < indicator.lastMonth ? 'down' : 'stable';
+    
+    // 确定状态
+    const completion = indicator.completionRate;
+    indicator.status = completion >= 95 ? 'excellent' :
+                      completion >= 85 ? 'good' :
+                      completion >= 75 ? 'average' : 'poor';
+  });
+
+  return indicators;
+}
+
 const PerformanceReport: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [employees, setEmployees] = useState<EmployeePerformance[]>([]);
@@ -117,841 +407,21 @@ const PerformanceReport: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('overview');
 
-  // 模拟数据
-  const mockEmployees: EmployeePerformance[] = [
-    {
-      id: '1',
-      name: '陈美玲',
-      department: '客房部',
-      position: '客房服务员',
-      avatar: '',
-      overallScore: 92,
-      attendance: 98,
-      efficiency: 95,
-      quality: 90,
-      teamwork: 88,
-      customerSatisfaction: 96,
-      monthlyTarget: 100,
-      actualAchievement: 95,
-      completionRate: 95,
-      lastMonthScore: 88,
-      trend: 'up',
-      status: 'excellent',
-    },
-    {
-      id: '2',
-      name: '刘志强',
-      department: '餐饮部',
-      position: '服务员',
-      avatar: '',
-      overallScore: 85,
-      attendance: 95,
-      efficiency: 88,
-      quality: 85,
-      teamwork: 90,
-      customerSatisfaction: 88,
-      monthlyTarget: 100,
-      actualAchievement: 88,
-      completionRate: 88,
-      lastMonthScore: 87,
-      trend: 'down',
-      status: 'good',
-    },
-    {
-      id: '3',
-      name: '王雅婷',
-      department: '前厅部',
-      position: '前台接待',
-      avatar: '',
-      overallScore: 78,
-      attendance: 92,
-      efficiency: 80,
-      quality: 75,
-      teamwork: 85,
-      customerSatisfaction: 82,
-      monthlyTarget: 100,
-      actualAchievement: 78,
-      completionRate: 78,
-      lastMonthScore: 76,
-      trend: 'up',
-      status: 'average',
-    },
-    {
-      id: '4',
-      name: '张建国',
-      department: '工程部',
-      position: '维修工程师',
-      avatar: '',
-      overallScore: 88,
-      attendance: 96,
-      efficiency: 90,
-      quality: 85,
-      teamwork: 92,
-      customerSatisfaction: 90,
-      monthlyTarget: 100,
-      actualAchievement: 88,
-      completionRate: 88,
-      lastMonthScore: 85,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '5',
-      name: '李小红',
-      department: '客房部',
-      position: '客房主管',
-      avatar: '',
-      overallScore: 95,
-      attendance: 100,
-      efficiency: 92,
-      quality: 95,
-      teamwork: 96,
-      customerSatisfaction: 98,
-      monthlyTarget: 100,
-      actualAchievement: 95,
-      completionRate: 95,
-      lastMonthScore: 92,
-      trend: 'up',
-      status: 'excellent',
-    },
-    {
-      id: '6',
-      name: '赵明华',
-      department: '餐饮部',
-      position: '厨师长',
-      avatar: '',
-      overallScore: 90,
-      attendance: 94,
-      efficiency: 88,
-      quality: 95,
-      teamwork: 92,
-      customerSatisfaction: 94,
-      monthlyTarget: 100,
-      actualAchievement: 90,
-      completionRate: 90,
-      lastMonthScore: 88,
-      trend: 'up',
-      status: 'excellent',
-    },
-    {
-      id: '7',
-      name: '孙丽娜',
-      department: '前厅部',
-      position: '大堂经理',
-      avatar: '',
-      overallScore: 87,
-      attendance: 96,
-      efficiency: 85,
-      quality: 88,
-      teamwork: 90,
-      customerSatisfaction: 92,
-      monthlyTarget: 100,
-      actualAchievement: 87,
-      completionRate: 87,
-      lastMonthScore: 85,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '8',
-      name: '周建军',
-      department: '工程部',
-      position: '电气工程师',
-      avatar: '',
-      overallScore: 82,
-      attendance: 90,
-      efficiency: 85,
-      quality: 80,
-      teamwork: 88,
-      customerSatisfaction: 85,
-      monthlyTarget: 100,
-      actualAchievement: 82,
-      completionRate: 82,
-      lastMonthScore: 80,
-      trend: 'up',
-      status: 'average',
-    },
-    {
-      id: '9',
-      name: '吴秀英',
-      department: '客房部',
-      position: '客房服务员',
-      avatar: '',
-      overallScore: 76,
-      attendance: 88,
-      efficiency: 78,
-      quality: 75,
-      teamwork: 80,
-      customerSatisfaction: 78,
-      monthlyTarget: 100,
-      actualAchievement: 76,
-      completionRate: 76,
-      lastMonthScore: 78,
-      trend: 'down',
-      status: 'poor',
-    },
-    {
-      id: '10',
-      name: '郑伟东',
-      department: '餐饮部',
-      position: '服务员',
-      avatar: '',
-      overallScore: 83,
-      attendance: 92,
-      efficiency: 85,
-      quality: 82,
-      teamwork: 88,
-      customerSatisfaction: 85,
-      monthlyTarget: 100,
-      actualAchievement: 83,
-      completionRate: 83,
-      lastMonthScore: 81,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '11',
-      name: '马晓燕',
-      department: '前厅部',
-      position: '礼宾员',
-      avatar: '',
-      overallScore: 89,
-      attendance: 94,
-      efficiency: 88,
-      quality: 90,
-      teamwork: 92,
-      customerSatisfaction: 91,
-      monthlyTarget: 100,
-      actualAchievement: 89,
-      completionRate: 89,
-      lastMonthScore: 87,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '12',
-      name: '黄志强',
-      department: '工程部',
-      position: '空调工程师',
-      avatar: '',
-      overallScore: 85,
-      attendance: 93,
-      efficiency: 87,
-      quality: 83,
-      teamwork: 90,
-      customerSatisfaction: 88,
-      monthlyTarget: 100,
-      actualAchievement: 85,
-      completionRate: 85,
-      lastMonthScore: 83,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '13',
-      name: '林美华',
-      department: '客房部',
-      position: '客房服务员',
-      avatar: '',
-      overallScore: 91,
-      attendance: 97,
-      efficiency: 90,
-      quality: 92,
-      teamwork: 89,
-      customerSatisfaction: 93,
-      monthlyTarget: 100,
-      actualAchievement: 91,
-      completionRate: 91,
-      lastMonthScore: 89,
-      trend: 'up',
-      status: 'excellent',
-    },
-    {
-      id: '14',
-      name: '徐建国',
-      department: '餐饮部',
-      position: '厨师',
-      avatar: '',
-      overallScore: 86,
-      attendance: 95,
-      efficiency: 88,
-      quality: 90,
-      teamwork: 85,
-      customerSatisfaction: 89,
-      monthlyTarget: 100,
-      actualAchievement: 86,
-      completionRate: 86,
-      lastMonthScore: 84,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '15',
-      name: '何丽萍',
-      department: '前厅部',
-      position: '前台接待',
-      avatar: '',
-      overallScore: 79,
-      attendance: 91,
-      efficiency: 82,
-      quality: 78,
-      teamwork: 85,
-      customerSatisfaction: 81,
-      monthlyTarget: 100,
-      actualAchievement: 79,
-      completionRate: 79,
-      lastMonthScore: 77,
-      trend: 'up',
-      status: 'average',
-    },
-    {
-      id: '16',
-      name: '杨志强',
-      department: '保安部',
-      position: '保安队长',
-      avatar: '',
-      overallScore: 88,
-      attendance: 95,
-      efficiency: 90,
-      quality: 85,
-      teamwork: 92,
-      customerSatisfaction: 89,
-      monthlyTarget: 100,
-      actualAchievement: 88,
-      completionRate: 88,
-      lastMonthScore: 86,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '17',
-      name: '刘美华',
-      department: '财务部',
-      position: '会计',
-      avatar: '',
-      overallScore: 93,
-      attendance: 98,
-      efficiency: 92,
-      quality: 95,
-      teamwork: 90,
-      customerSatisfaction: 88,
-      monthlyTarget: 100,
-      actualAchievement: 93,
-      completionRate: 93,
-      lastMonthScore: 91,
-      trend: 'up',
-      status: 'excellent',
-    },
-    {
-      id: '18',
-      name: '王建国',
-      department: '人事部',
-      position: '人事专员',
-      avatar: '',
-      overallScore: 81,
-      attendance: 89,
-      efficiency: 83,
-      quality: 80,
-      teamwork: 85,
-      customerSatisfaction: 82,
-      monthlyTarget: 100,
-      actualAchievement: 81,
-      completionRate: 81,
-      lastMonthScore: 79,
-      trend: 'up',
-      status: 'average',
-    },
-    {
-      id: '19',
-      name: '张丽娜',
-      department: '客房部',
-      position: '客房服务员',
-      avatar: '',
-      overallScore: 87,
-      attendance: 94,
-      efficiency: 86,
-      quality: 88,
-      teamwork: 89,
-      customerSatisfaction: 90,
-      monthlyTarget: 100,
-      actualAchievement: 87,
-      completionRate: 87,
-      lastMonthScore: 85,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '20',
-      name: '陈志明',
-      department: '餐饮部',
-      position: '服务员',
-      avatar: '',
-      overallScore: 74,
-      attendance: 87,
-      efficiency: 76,
-      quality: 72,
-      teamwork: 78,
-      customerSatisfaction: 75,
-      monthlyTarget: 100,
-      actualAchievement: 74,
-      completionRate: 74,
-      lastMonthScore: 76,
-      trend: 'down',
-      status: 'poor',
-    },
-    {
-      id: '21',
-      name: '李雅婷',
-      department: '前厅部',
-      position: '礼宾员',
-      avatar: '',
-      overallScore: 91,
-      attendance: 96,
-      efficiency: 89,
-      quality: 92,
-      teamwork: 94,
-      customerSatisfaction: 93,
-      monthlyTarget: 100,
-      actualAchievement: 91,
-      completionRate: 91,
-      lastMonthScore: 89,
-      trend: 'up',
-      status: 'excellent',
-    },
-    {
-      id: '22',
-      name: '赵建军',
-      department: '工程部',
-      position: '维修工程师',
-      avatar: '',
-      overallScore: 84,
-      attendance: 92,
-      efficiency: 86,
-      quality: 82,
-      teamwork: 88,
-      customerSatisfaction: 86,
-      monthlyTarget: 100,
-      actualAchievement: 84,
-      completionRate: 84,
-      lastMonthScore: 82,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '23',
-      name: '孙秀英',
-      department: '保安部',
-      position: '保安员',
-      avatar: '',
-      overallScore: 79,
-      attendance: 88,
-      efficiency: 81,
-      quality: 77,
-      teamwork: 83,
-      customerSatisfaction: 80,
-      monthlyTarget: 100,
-      actualAchievement: 79,
-      completionRate: 79,
-      lastMonthScore: 77,
-      trend: 'up',
-      status: 'average',
-    },
-    {
-      id: '24',
-      name: '周伟东',
-      department: '财务部',
-      position: '出纳',
-      avatar: '',
-      overallScore: 89,
-      attendance: 95,
-      efficiency: 88,
-      quality: 90,
-      teamwork: 87,
-      customerSatisfaction: 85,
-      monthlyTarget: 100,
-      actualAchievement: 89,
-      completionRate: 89,
-      lastMonthScore: 87,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '25',
-      name: '吴晓燕',
-      department: '人事部',
-      position: '招聘专员',
-      avatar: '',
-      overallScore: 86,
-      attendance: 93,
-      efficiency: 85,
-      quality: 87,
-      teamwork: 89,
-      customerSatisfaction: 84,
-      monthlyTarget: 100,
-      actualAchievement: 86,
-      completionRate: 86,
-      lastMonthScore: 84,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '26',
-      name: '郑美华',
-      department: '客房部',
-      position: '客房主管',
-      avatar: '',
-      overallScore: 94,
-      attendance: 99,
-      efficiency: 93,
-      quality: 95,
-      teamwork: 96,
-      customerSatisfaction: 97,
-      monthlyTarget: 100,
-      actualAchievement: 94,
-      completionRate: 94,
-      lastMonthScore: 92,
-      trend: 'up',
-      status: 'excellent',
-    },
-    {
-      id: '27',
-      name: '马志强',
-      department: '餐饮部',
-      position: '厨师',
-      avatar: '',
-      overallScore: 82,
-      attendance: 90,
-      efficiency: 84,
-      quality: 86,
-      teamwork: 80,
-      customerSatisfaction: 85,
-      monthlyTarget: 100,
-      actualAchievement: 82,
-      completionRate: 82,
-      lastMonthScore: 80,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '28',
-      name: '黄丽萍',
-      department: '前厅部',
-      position: '前台接待',
-      avatar: '',
-      overallScore: 77,
-      attendance: 89,
-      efficiency: 79,
-      quality: 76,
-      teamwork: 82,
-      customerSatisfaction: 78,
-      monthlyTarget: 100,
-      actualAchievement: 77,
-      completionRate: 77,
-      lastMonthScore: 75,
-      trend: 'up',
-      status: 'average',
-    },
-    {
-      id: '29',
-      name: '林建国',
-      department: '工程部',
-      position: '电气工程师',
-      avatar: '',
-      overallScore: 90,
-      attendance: 95,
-      efficiency: 88,
-      quality: 92,
-      teamwork: 91,
-      customerSatisfaction: 93,
-      monthlyTarget: 100,
-      actualAchievement: 90,
-      completionRate: 90,
-      lastMonthScore: 88,
-      trend: 'up',
-      status: 'excellent',
-    },
-    {
-      id: '30',
-      name: '徐秀英',
-      department: '保安部',
-      position: '保安员',
-      avatar: '',
-      overallScore: 85,
-      attendance: 93,
-      efficiency: 87,
-      quality: 83,
-      teamwork: 89,
-      customerSatisfaction: 86,
-      monthlyTarget: 100,
-      actualAchievement: 85,
-      completionRate: 85,
-      lastMonthScore: 83,
-      trend: 'up',
-      status: 'good',
-    },
-  ];
-
-  const mockDepartments: DepartmentPerformance[] = [
-    {
-      id: '1',
-      name: '客房部',
-      manager: '陈经理',
-      employeeCount: 25,
-      overallScore: 89,
-      attendance: 95,
-      efficiency: 88,
-      quality: 85,
-      customerSatisfaction: 92,
-      monthlyTarget: 100,
-      actualAchievement: 89,
-      completionRate: 89,
-      lastMonthScore: 86,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '2',
-      name: '餐饮部',
-      manager: '刘经理',
-      employeeCount: 30,
-      overallScore: 85,
-      attendance: 92,
-      efficiency: 85,
-      quality: 88,
-      customerSatisfaction: 90,
-      monthlyTarget: 100,
-      actualAchievement: 85,
-      completionRate: 85,
-      lastMonthScore: 87,
-      trend: 'down',
-      status: 'good',
-    },
-    {
-      id: '3',
-      name: '前厅部',
-      manager: '王经理',
-      employeeCount: 15,
-      overallScore: 82,
-      attendance: 90,
-      efficiency: 80,
-      quality: 85,
-      customerSatisfaction: 88,
-      monthlyTarget: 100,
-      actualAchievement: 82,
-      completionRate: 82,
-      lastMonthScore: 80,
-      trend: 'up',
-      status: 'average',
-    },
-    {
-      id: '4',
-      name: '工程部',
-      manager: '张经理',
-      employeeCount: 12,
-      overallScore: 88,
-      attendance: 94,
-      efficiency: 90,
-      quality: 85,
-      customerSatisfaction: 92,
-      monthlyTarget: 100,
-      actualAchievement: 88,
-      completionRate: 88,
-      lastMonthScore: 85,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '5',
-      name: '保安部',
-      manager: '李经理',
-      employeeCount: 18,
-      overallScore: 86,
-      attendance: 93,
-      efficiency: 87,
-      quality: 88,
-      customerSatisfaction: 89,
-      monthlyTarget: 100,
-      actualAchievement: 86,
-      completionRate: 86,
-      lastMonthScore: 84,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '6',
-      name: '财务部',
-      manager: '赵经理',
-      employeeCount: 8,
-      overallScore: 91,
-      attendance: 96,
-      efficiency: 90,
-      quality: 92,
-      customerSatisfaction: 88,
-      monthlyTarget: 100,
-      actualAchievement: 91,
-      completionRate: 91,
-      lastMonthScore: 89,
-      trend: 'up',
-      status: 'excellent',
-    },
-    {
-      id: '7',
-      name: '人事部',
-      manager: '孙经理',
-      employeeCount: 6,
-      overallScore: 84,
-      attendance: 91,
-      efficiency: 85,
-      quality: 86,
-      customerSatisfaction: 85,
-      monthlyTarget: 100,
-      actualAchievement: 84,
-      completionRate: 84,
-      lastMonthScore: 82,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '8',
-      name: '销售部',
-      manager: '钱经理',
-      employeeCount: 10,
-      overallScore: 87,
-      attendance: 94,
-      efficiency: 89,
-      quality: 85,
-      customerSatisfaction: 91,
-      monthlyTarget: 100,
-      actualAchievement: 87,
-      completionRate: 87,
-      lastMonthScore: 85,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '9',
-      name: '采购部',
-      manager: '冯经理',
-      employeeCount: 5,
-      overallScore: 83,
-      attendance: 89,
-      efficiency: 86,
-      quality: 80,
-      customerSatisfaction: 82,
-      monthlyTarget: 100,
-      actualAchievement: 83,
-      completionRate: 83,
-      lastMonthScore: 81,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '10',
-      name: 'IT部',
-      manager: '朱经理',
-      employeeCount: 8,
-      overallScore: 90,
-      attendance: 96,
-      efficiency: 92,
-      quality: 88,
-      customerSatisfaction: 89,
-      monthlyTarget: 100,
-      actualAchievement: 90,
-      completionRate: 90,
-      lastMonthScore: 88,
-      trend: 'up',
-      status: 'excellent',
-    },
-  ];
-
-  const mockKPIIndicators: KPIIndicator[] = [
-    {
-      id: '1',
-      name: '客房入住率',
-      category: 'operational',
-      target: 85,
-      actual: 82,
-      unit: '%',
-      completionRate: 96,
-      lastMonth: 80,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '2',
-      name: '客户满意度',
-      category: 'customer',
-      target: 90,
-      actual: 88,
-      unit: '分',
-      completionRate: 98,
-      lastMonth: 87,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '3',
-      name: '员工满意度',
-      category: 'employee',
-      target: 85,
-      actual: 82,
-      unit: '分',
-      completionRate: 96,
-      lastMonth: 80,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '4',
-      name: '月度收入',
-      category: 'financial',
-      target: 1000000,
-      actual: 950000,
-      unit: '元',
-      completionRate: 95,
-      lastMonth: 920000,
-      trend: 'up',
-      status: 'good',
-    },
-    {
-      id: '5',
-      name: '成本控制率',
-      category: 'financial',
-      target: 75,
-      actual: 78,
-      unit: '%',
-      completionRate: 96,
-      lastMonth: 80,
-      trend: 'up',
-      status: 'excellent',
-    },
-    {
-      id: '6',
-      name: '设备完好率',
-      category: 'operational',
-      target: 95,
-      actual: 92,
-      unit: '%',
-      completionRate: 97,
-      lastMonth: 90,
-      trend: 'up',
-      status: 'good',
-    },
-  ];
-
   useEffect(() => {
     loadData();
   }, []);
 
   const loadData = () => {
     setLoading(true);
-    // 模拟API调用
-    setTimeout(() => {
-      setEmployees(mockEmployees);
-      setDepartments(mockDepartments);
-      setKpiIndicators(mockKPIIndicators);
-      setLoading(false);
-    }, 1000);
+    // 生成数据
+    const employeeData = generateEmployeePerformance(100); // 生成100个员工数据
+    const departmentData = generateDepartmentPerformance(employeeData);
+    const kpiData = generateKPIIndicators();
+
+    setEmployees(employeeData);
+    setDepartments(departmentData);
+    setKpiIndicators(kpiData);
+    setLoading(false);
   };
 
   const getStatusColor = (status: string) => {

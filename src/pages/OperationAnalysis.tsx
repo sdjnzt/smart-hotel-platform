@@ -1,29 +1,64 @@
-import React, { useState } from 'react';
-import { Card, Row, Col, Statistic, Select, DatePicker, Space, Progress, Table, Tag } from 'antd';
-import { BarChartOutlined, LineChartOutlined, TrophyOutlined, EnvironmentOutlined, ThunderboltOutlined, DollarOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Card, Row, Col, Statistic, Select, DatePicker, Space, Progress, Table, Tag, Typography } from 'antd';
+import { BarChartOutlined, LineChartOutlined, TrophyOutlined, EnvironmentOutlined, ThunderboltOutlined, DollarOutlined, SafetyCertificateOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import ReactECharts from 'echarts-for-react';
 import { operationData, hotelRooms, hotelDevices, OperationData } from '../data/mockData';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+const { Title, Text } = Typography;
 
 const OperationAnalysisPage: React.FC = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>('week');
-  const [data] = useState<OperationData[]>(operationData);
+  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs().subtract(7, 'day'),
+    dayjs()
+  ]);
+  const [filteredData, setFilteredData] = useState<OperationData[]>([]);
+
+  // 根据时间范围筛选数据
+  useEffect(() => {
+    const startDate = dateRange[0].format('YYYY-MM-DD');
+    const endDate = dateRange[1].format('YYYY-MM-DD');
+    
+    const filtered = operationData.filter(data => 
+      data.date >= startDate && data.date <= endDate
+    );
+    
+    setFilteredData(filtered);
+  }, [dateRange]);
 
   // 计算统计数据
-  const latestData = data[data.length - 1];
-  const avgOccupancyRate = data.reduce((sum, d) => sum + d.roomOccupancyRate, 0) / data.length;
-  const totalEnergyConsumption = data.reduce((sum, d) => sum + d.energyConsumption, 0);
-  const totalEnergyCost = data.reduce((sum, d) => sum + d.energyCost, 0);
-  const avgDeviceUptime = data.reduce((sum, d) => sum + d.deviceUptime, 0) / data.length;
-  const avgGuestSatisfaction = data.reduce((sum, d) => sum + d.guestSatisfaction, 0) / data.length;
+  const calculateStats = () => {
+    if (filteredData.length === 0) return null;
+
+    const avgOccupancyRate = filteredData.reduce((sum, d) => sum + d.roomOccupancyRate, 0) / filteredData.length;
+    const totalEnergyConsumption = filteredData.reduce((sum, d) => sum + d.energyConsumption, 0);
+    const totalEnergyCost = filteredData.reduce((sum, d) => sum + d.energyCost, 0);
+    const avgDeviceUptime = filteredData.reduce((sum, d) => sum + d.deviceUptime, 0) / filteredData.length;
+    const avgGuestSatisfaction = filteredData.reduce((sum, d) => sum + d.guestSatisfaction, 0) / filteredData.length;
+    const totalCO2 = filteredData.reduce((sum, d) => sum + d.co2Emission, 0);
+    const avgTemperature = filteredData.reduce((sum, d) => sum + d.averageRoomTemperature, 0) / filteredData.length;
+
+    return {
+      avgOccupancyRate,
+      totalEnergyConsumption,
+      totalEnergyCost,
+      avgDeviceUptime,
+      avgGuestSatisfaction,
+      totalCO2,
+      avgTemperature
+    };
+  };
+
+  const stats = calculateStats();
 
   // 入住率趋势图配置
   const occupancyChartOption = {
     title: {
       text: '客房入住率趋势',
-      left: 'left'
+      left: 'center'
     },
     tooltip: {
       trigger: 'axis',
@@ -31,7 +66,10 @@ const OperationAnalysisPage: React.FC = () => {
     },
     xAxis: {
       type: 'category',
-      data: data.map(d => d.date.slice(5))
+      data: filteredData.map(d => d.date.slice(5)),
+      axisLabel: {
+        rotate: 30
+      }
     },
     yAxis: {
       type: 'value',
@@ -42,7 +80,7 @@ const OperationAnalysisPage: React.FC = () => {
       }
     },
     series: [{
-      data: data.map(d => d.roomOccupancyRate),
+      data: filteredData.map(d => d.roomOccupancyRate),
       type: 'line',
       smooth: true,
       areaStyle: {
@@ -61,10 +99,22 @@ const OperationAnalysisPage: React.FC = () => {
   const energyChartOption = {
     title: {
       text: '能耗与成本分析',
-      left: 'left'
+      left: 'center'
     },
     tooltip: {
-      trigger: 'axis'
+      trigger: 'axis',
+      formatter: function(params: any) {
+        const date = params[0].axisValue;
+        let result = `${date}<br/>`;
+        params.forEach((param: any) => {
+          if (param.seriesName === '能耗(kWh)') {
+            result += `${param.seriesName}: ${param.value} kWh<br/>`;
+          } else {
+            result += `${param.seriesName}: ¥${param.value}<br/>`;
+          }
+        });
+        return result;
+      }
     },
     legend: {
       data: ['能耗(kWh)', '成本(元)'],
@@ -72,7 +122,10 @@ const OperationAnalysisPage: React.FC = () => {
     },
     xAxis: {
       type: 'category',
-      data: data.map(d => d.date.slice(5))
+      data: filteredData.map(d => d.date.slice(5)),
+      axisLabel: {
+        rotate: 30
+      }
     },
     yAxis: [
       {
@@ -96,7 +149,7 @@ const OperationAnalysisPage: React.FC = () => {
       {
         name: '能耗(kWh)',
         type: 'bar',
-        data: data.map(d => d.energyConsumption),
+        data: filteredData.map(d => d.energyConsumption),
         itemStyle: {
           color: '#52c41a'
         }
@@ -105,7 +158,7 @@ const OperationAnalysisPage: React.FC = () => {
         name: '成本(元)',
         type: 'line',
         yAxisIndex: 1,
-        data: data.map(d => d.energyCost),
+        data: filteredData.map(d => d.energyCost),
         lineStyle: {
           color: '#fa8c16'
         },
@@ -120,40 +173,58 @@ const OperationAnalysisPage: React.FC = () => {
   const deviceUptimeOption = {
     title: {
       text: '设备运行时间与客户满意度',
-      left: 'left'
+      left: 'center'
     },
     tooltip: {
-      trigger: 'axis'
+      trigger: 'axis',
+      formatter: function(params: any) {
+        const date = params[0].axisValue;
+        let result = `${date}<br/>`;
+        params.forEach((param: any) => {
+          if (param.seriesName === '设备运行时间') {
+            result += `${param.seriesName}: ${param.value}%<br/>`;
+          } else {
+            result += `${param.seriesName}: ${param.value}分<br/>`;
+          }
+        });
+        return result;
+      }
     },
     legend: {
-      data: ['设备运行时间(%)', '客户满意度'],
+      data: ['设备运行时间', '客户满意度'],
       top: 30
     },
     xAxis: {
       type: 'category',
-      data: data.map(d => d.date.slice(5))
+      data: filteredData.map(d => d.date.slice(5)),
+      axisLabel: {
+        rotate: 30
+      }
     },
     yAxis: [
       {
         type: 'value',
-        name: '设备运行时间(%)',
+        name: '运行时间(%)',
         min: 90,
         max: 100,
         position: 'left'
       },
       {
         type: 'value',
-        name: '客户满意度',
-        min: 0,
+        name: '满意度',
+        min: 3,
         max: 5,
-        position: 'right'
+        position: 'right',
+        axisLabel: {
+          formatter: '{value}分'
+        }
       }
     ],
     series: [
       {
-        name: '设备运行时间(%)',
-        type: 'bar',
-        data: data.map(d => d.deviceUptime),
+        name: '设备运行时间',
+        type: 'line',
+        data: filteredData.map(d => d.deviceUptime),
         itemStyle: {
           color: '#1890ff'
         }
@@ -162,7 +233,7 @@ const OperationAnalysisPage: React.FC = () => {
         name: '客户满意度',
         type: 'line',
         yAxisIndex: 1,
-        data: data.map(d => d.guestSatisfaction),
+        data: filteredData.map(d => d.guestSatisfaction),
         lineStyle: {
           color: '#f5222d'
         },
@@ -174,29 +245,50 @@ const OperationAnalysisPage: React.FC = () => {
   };
 
   // 每日用电高峰时段分析
-  const peakHourData = data.map(d => ({
-    date: d.date,
-    hour: d.peakEnergyHour,
-    consumption: d.energyConsumption
-  }));
-
   const peakHourOption = {
     title: {
       text: '用电高峰时段分布',
-      left: 'left'
+      left: 'center'
     },
     tooltip: {
       trigger: 'item',
-      formatter: '{b}点: {c}次'
+      formatter: '{b}: {c}次 ({d}%)'
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+      top: 'middle'
     },
     series: [{
       type: 'pie',
-      radius: '60%',
+      radius: '70%',
+      center: ['60%', '50%'],
       data: [
-        { value: peakHourData.filter(d => d.hour >= 18 && d.hour <= 20).length, name: '18-20点' },
-        { value: peakHourData.filter(d => d.hour >= 19 && d.hour <= 21).length, name: '19-21点' },
-        { value: peakHourData.filter(d => d.hour >= 20 && d.hour <= 22).length, name: '20-22点' },
-        { value: peakHourData.filter(d => d.hour < 18 || d.hour > 22).length, name: '其他时段' }
+        { 
+          value: filteredData.filter(d => d.peakEnergyHour >= 8 && d.peakEnergyHour < 12).length,
+          name: '上午(8-12点)',
+          itemStyle: { color: '#91cc75' }
+        },
+        { 
+          value: filteredData.filter(d => d.peakEnergyHour >= 12 && d.peakEnergyHour < 14).length,
+          name: '中午(12-14点)',
+          itemStyle: { color: '#fac858' }
+        },
+        { 
+          value: filteredData.filter(d => d.peakEnergyHour >= 14 && d.peakEnergyHour < 18).length,
+          name: '下午(14-18点)',
+          itemStyle: { color: '#ee6666' }
+        },
+        { 
+          value: filteredData.filter(d => d.peakEnergyHour >= 18 && d.peakEnergyHour < 22).length,
+          name: '晚上(18-22点)',
+          itemStyle: { color: '#73c0de' }
+        },
+        { 
+          value: filteredData.filter(d => d.peakEnergyHour >= 22 || d.peakEnergyHour < 8).length,
+          name: '夜间(22-8点)',
+          itemStyle: { color: '#3ba272' }
+        }
       ],
       emphasis: {
         itemStyle: {
@@ -267,97 +359,138 @@ const OperationAnalysisPage: React.FC = () => {
     }
   ];
 
+  // 处理时间范围选择
+  const handleTimeRangeChange = (value: string) => {
+    setSelectedTimeRange(value);
+    let start: dayjs.Dayjs;
+    const end = dayjs();
+    
+    switch (value) {
+      case 'day':
+        start = end.subtract(1, 'day');
+        break;
+      case 'week':
+        start = end.subtract(7, 'day');
+        break;
+      case 'month':
+        start = end.subtract(30, 'day');
+        break;
+      case 'year':
+        start = end.subtract(365, 'day');
+        break;
+      default:
+        start = end.subtract(7, 'day');
+    }
+    
+    setDateRange([start, end]);
+  };
+
+  // 处理日期范围选择器变化
+  const handleDateRangeChange = (dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null) => {
+    if (dates && dates[0] && dates[1]) {
+      setDateRange([dates[0], dates[1]]);
+    }
+  };
+
   return (
-    <div style={{ padding: '0 16px' }}>
+    <div style={{ padding: '24px' }}>
       {/* 时间范围选择 */}
       <Card style={{ marginBottom: 16 }}>
         <Row align="middle" justify="space-between">
           <Col>
-            <Space>
-              <span>分析时间范围:</span>
-              <Select
-                value={selectedTimeRange}
-                onChange={setSelectedTimeRange}
-                style={{ width: 120 }}
-              >
-                <Option value="day">今日</Option>
-                <Option value="week">本周</Option>
-                <Option value="month">本月</Option>
-                <Option value="year">今年</Option>
-              </Select>
-              <RangePicker />
+            <Space size="large">
+              <Space>
+                <span>分析时间范围:</span>
+                <Select
+                  value={selectedTimeRange}
+                  onChange={handleTimeRangeChange}
+                  style={{ width: 120 }}
+                >
+                  <Option value="day">今日</Option>
+                  <Option value="week">本周</Option>
+                  <Option value="month">本月</Option>
+                  <Option value="year">今年</Option>
+                </Select>
+              </Space>
+              <RangePicker
+                value={dateRange}
+                onChange={handleDateRangeChange}
+                allowClear={false}
+              />
             </Space>
           </Col>
           <Col>
-            <Tag color="blue">数据更新时间: {latestData.date}</Tag>
+            <Tag color="blue">数据更新时间: {dayjs().format('YYYY-MM-DD HH:mm:ss')}</Tag>
           </Col>
         </Row>
       </Card>
 
       {/* 关键指标统计 */}
-      <Row gutter={16} style={{ marginBottom: 16 }}>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="平均入住率"
-              value={avgOccupancyRate.toFixed(1)}
-              suffix="%"
-              prefix={<TrophyOutlined />}
-              valueStyle={{ color: '#3f8600' }}
-            />
-            <Progress
-              percent={avgOccupancyRate}
-              showInfo={false}
-              strokeColor="#3f8600"
-              style={{ marginTop: 8 }}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="总能耗"
-              value={totalEnergyConsumption.toFixed(0)}
-              suffix="kWh"
-              prefix={<ThunderboltOutlined />}
-              valueStyle={{ color: '#1890ff' }}
-            />
-            <div style={{ marginTop: 8, fontSize: '12px', color: '#666' }}>
-              日均: {(totalEnergyConsumption / data.length).toFixed(1)} kWh
-            </div>
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="总成本"
-              value={totalEnergyCost.toFixed(0)}
-              prefix="¥"
-              valueStyle={{ color: '#fa8c16' }}
-            />
-            <div style={{ marginTop: 8, fontSize: '12px', color: '#666' }}>
-              日均: ¥{(totalEnergyCost / data.length).toFixed(0)}
-            </div>
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="客户满意度"
-              value={avgGuestSatisfaction.toFixed(1)}
-              suffix="/ 5.0"
-              prefix={<TrophyOutlined />}
-              valueStyle={{ color: '#722ed1' }}
-            />
-            <Progress
-              percent={(avgGuestSatisfaction / 5) * 100}
-              showInfo={false}
-              strokeColor="#722ed1"
-              style={{ marginTop: 8 }}
-            />
-          </Card>
-        </Col>
-      </Row>
+      {stats && (
+        <Row gutter={16} style={{ marginBottom: 16 }}>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="平均入住率"
+                value={stats.avgOccupancyRate.toFixed(1)}
+                suffix="%"
+                prefix={<TrophyOutlined />}
+                valueStyle={{ color: '#3f8600' }}
+              />
+              <Progress
+                percent={stats.avgOccupancyRate}
+                showInfo={false}
+                strokeColor="#3f8600"
+                style={{ marginTop: 8 }}
+              />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="总能耗"
+                value={stats.totalEnergyConsumption.toFixed(0)}
+                suffix="kWh"
+                prefix={<ThunderboltOutlined />}
+                valueStyle={{ color: '#1890ff' }}
+              />
+              <div style={{ marginTop: 8, fontSize: '12px', color: '#666' }}>
+                日均: {(stats.totalEnergyConsumption / filteredData.length).toFixed(1)} kWh
+              </div>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="总成本"
+                value={stats.totalEnergyCost.toFixed(0)}
+                prefix="¥"
+                valueStyle={{ color: '#fa8c16' }}
+              />
+              <div style={{ marginTop: 8, fontSize: '12px', color: '#666' }}>
+                日均: ¥{(stats.totalEnergyCost / filteredData.length).toFixed(0)}
+              </div>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="客户满意度"
+                value={stats.avgGuestSatisfaction.toFixed(1)}
+                suffix="/ 5.0"
+                prefix={<TrophyOutlined />}
+                valueStyle={{ color: '#722ed1' }}
+              />
+              <Progress
+                percent={(stats.avgGuestSatisfaction / 5) * 100}
+                showInfo={false}
+                strokeColor="#722ed1"
+                style={{ marginTop: 8 }}
+              />
+            </Card>
+          </Col>
+        </Row>
+      )}
 
       {/* 图表分析 */}
       <Row gutter={16} style={{ marginBottom: 16 }}>
@@ -416,31 +549,37 @@ const OperationAnalysisPage: React.FC = () => {
                   strokeColor="#52c41a"
                 />
               </div>
-              <div>
-                <div>平均运行时间: {avgDeviceUptime.toFixed(1)}%</div>
-                <Progress
-                  percent={avgDeviceUptime}
-                  showInfo={false}
-                  strokeColor="#faad14"
-                />
-              </div>
+              {stats && (
+                <div>
+                  <div>平均运行时间: {stats.avgDeviceUptime.toFixed(1)}%</div>
+                  <Progress
+                    percent={stats.avgDeviceUptime}
+                    showInfo={false}
+                    strokeColor="#faad14"
+                  />
+                </div>
+              )}
             </Space>
           </Card>
 
           <Card title="环保指标">
             <Space direction="vertical" style={{ width: '100%' }}>
-              <Statistic
-                title="碳排放总量"
-                value={data.reduce((sum, d) => sum + d.co2Emission, 0)}
-                suffix="kg CO₂"
-                valueStyle={{ color: '#52c41a' }}
-              />
-              <Statistic
-                title="日均碳排放"
-                value={(data.reduce((sum, d) => sum + d.co2Emission, 0) / data.length).toFixed(1)}
-                suffix="kg CO₂"
-                valueStyle={{ color: '#fa8c16' }}
-              />
+              {stats && (
+                <>
+                  <Statistic
+                    title="碳排放总量"
+                    value={stats.totalCO2}
+                    suffix="kg CO₂"
+                    valueStyle={{ color: '#52c41a' }}
+                  />
+                  <Statistic
+                    title="日均碳排放"
+                    value={(stats.totalCO2 / filteredData.length).toFixed(1)}
+                    suffix="kg CO₂"
+                    valueStyle={{ color: '#fa8c16' }}
+                  />
+                </>
+              )}
               <div style={{ marginTop: 16, padding: 12, backgroundColor: '#f6ffed', borderRadius: 4 }}>
                 <div style={{ color: '#52c41a', fontWeight: 'bold' }}>节能建议</div>
                 <div style={{ fontSize: '12px', marginTop: 4 }}>

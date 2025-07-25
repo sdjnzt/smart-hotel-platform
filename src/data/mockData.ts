@@ -2942,93 +2942,78 @@ export const deviceLinkages: DeviceLinkage[] = [
   }
 ];
 
-// 运营分析数据
-export const operationData: OperationData[] = [
-  {
-    date: '2025-07-08',
-    roomOccupancyRate: 65,
-    energyConsumption: 1250,
-    energyCost: 875,
-    maintenanceCost: 320,
-    deviceUptime: 96.8,
-    guestSatisfaction: 4.2,
-    averageRoomTemperature: 22.5,
-    peakEnergyHour: 19,
-    co2Emission: 625
-  },
-  {
-    date: '2025-07-09',
-    roomOccupancyRate: 72,
-    energyConsumption: 1380,
-    energyCost: 966,
-    maintenanceCost: 280,
-    deviceUptime: 97.2,
-    guestSatisfaction: 4.3,
-    averageRoomTemperature: 22.8,
-    peakEnergyHour: 20,
-    co2Emission: 690
-  },
-  {
-    date: '2025-07-10',
-    roomOccupancyRate: 68,
-    energyConsumption: 1320,
-    energyCost: 924,
-    maintenanceCost: 450,
-    deviceUptime: 95.5,
-    guestSatisfaction: 4.1,
-    averageRoomTemperature: 23.1,
-    peakEnergyHour: 18,
-    co2Emission: 660
-  },
-  {
-    date: '2025-07-11',
-    roomOccupancyRate: 78,
-    energyConsumption: 1420,
-    energyCost: 994,
-    maintenanceCost: 180,
-    deviceUptime: 98.1,
-    guestSatisfaction: 4.5,
-    averageRoomTemperature: 22.3,
-    peakEnergyHour: 19,
-    co2Emission: 710
-  },
-  {
-    date: '2025-07-12',
-    roomOccupancyRate: 82,
-    energyConsumption: 1480,
-    energyCost: 1036,
-    maintenanceCost: 220,
-    deviceUptime: 97.8,
-    guestSatisfaction: 4.4,
-    averageRoomTemperature: 22.7,
-    peakEnergyHour: 20,
-    co2Emission: 740
-  },
-  {
-    date: '2025-07-13',
-    roomOccupancyRate: 85,
-    energyConsumption: 1520,
-    energyCost: 1064,
-    maintenanceCost: 380,
-    deviceUptime: 96.9,
-    guestSatisfaction: 4.3,
-    averageRoomTemperature: 22.9,
-    peakEnergyHour: 19,
-    co2Emission: 760
-  },
-  {
-    date: '2025-07-14',
-    roomOccupancyRate: 88,
-    energyConsumption: 1580,
-    energyCost: 1106,
-    maintenanceCost: 150,
-    deviceUptime: 98.5,
-    guestSatisfaction: 4.6,
-    averageRoomTemperature: 22.4,
-    peakEnergyHour: 20,
-    co2Emission: 790
+// 生成运营分析数据
+function generateOperationData(days: number): OperationData[] {
+  const data: OperationData[] = [];
+  const currentDate = new Date();
+  
+  // 基础参数
+  const baseOccupancy = 75; // 基础入住率
+  const baseEnergy = 1800;  // 基础能耗 kWh
+  const baseEnergyCost = 1.2; // 每kWh电费
+  const baseMaintenance = 500; // 基础维护成本
+  const baseUptime = 98.5;  // 基础设备运行率
+  const baseSatisfaction = 4.5; // 基础满意度
+  const baseTemperature = 23; // 基础室温
+  
+  // 生成每天的数据
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date(currentDate);
+    date.setDate(date.getDate() - i);
+    const dateStr = date.toISOString().split('T')[0];
+    
+    // 考虑周末效应
+    const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+    const weekendFactor = isWeekend ? 1.2 : 1.0;
+    
+    // 考虑季节效应（假设现在是夏季）
+    const seasonalFactor = 1.15; // 夏季能耗较高
+    
+    // 生成当天数据
+    const dayData: OperationData = {
+      date: dateStr,
+      // 入住率：基础值±10%，周末上升20%
+      roomOccupancyRate: Number((baseOccupancy * weekendFactor * (0.9 + Math.random() * 0.2)).toFixed(1)),
+      
+      // 能耗：基础值±15%，考虑季节和周末因素
+      energyConsumption: Math.round(baseEnergy * seasonalFactor * weekendFactor * (0.85 + Math.random() * 0.3)),
+      
+      // 能源成本：根据能耗计算
+      energyCost: 0, // 临时值，后面计算
+      
+      // 维护成本：基础值±30%
+      maintenanceCost: Math.round(baseMaintenance * (0.7 + Math.random() * 0.6)),
+      
+      // 设备运行率：基础值±2%
+      deviceUptime: Number((baseUptime * (0.98 + Math.random() * 0.04)).toFixed(1)),
+      
+      // 客户满意度：基础值±0.5
+      guestSatisfaction: Number((baseSatisfaction * (0.9 + Math.random() * 0.2)).toFixed(1)),
+      
+      // 平均室温：基础值±2℃
+      averageRoomTemperature: Number((baseTemperature + (Math.random() * 4 - 2)).toFixed(1)),
+      
+      // 用电高峰时段：考虑时段分布
+      peakEnergyHour: isWeekend ? 
+        Math.floor(Math.random() * 4) + 14 : // 周末14-17点
+        Math.floor(Math.random() * 3) + 19,  // 工作日19-21点
+      
+      // 碳排放：根据能耗计算（假设每kWh电产生0.5kg CO2）
+      co2Emission: 0 // 临时值，后面计算
+    };
+    
+    // 计算能源成本和碳排放
+    dayData.energyCost = Math.round(dayData.energyConsumption * baseEnergyCost);
+    dayData.co2Emission = Math.round(dayData.energyConsumption * 0.5);
+    
+    data.push(dayData);
   }
-];
+  
+  return data;
+}
+
+// 生成30天的运营数据
+export const operationData: OperationData[] = generateOperationData(30);
 
 // 生成设备调节记录函数
 function generateDeviceAdjustments(count: number): DeviceAdjustment[] {
