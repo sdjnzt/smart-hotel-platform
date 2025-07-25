@@ -23,6 +23,7 @@ import {
   List,
   Avatar,
   Tabs,
+  message
 } from 'antd';
 import {
   SafetyOutlined,
@@ -36,15 +37,29 @@ import {
   CheckCircleOutlined,
   CloseCircleOutlined,
   ExclamationCircleOutlined,
-
   BellOutlined,
   CameraOutlined,
   UserOutlined,
   ClockCircleOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  FullscreenOutlined,
+  EnvironmentOutlined,
+  HistoryOutlined,
+  SearchOutlined,
+  FilterOutlined
 } from '@ant-design/icons';
+import ReactECharts from 'echarts-for-react';
+import { Segmented } from 'antd';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
+const { Search } = Input;
+const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 interface SecurityCamera {
@@ -57,6 +72,7 @@ interface SecurityCamera {
   motionDetection: boolean;
   lastRecording: string;
   storageUsage: number;
+  isFireEscape?: boolean; // 新增属性
 }
 
 
@@ -72,6 +88,28 @@ interface AlarmEvent {
   handledBy?: string;
 }
 
+interface AnalysisData {
+  time: string;
+  value: number;
+}
+
+// 添加区域配置
+const AREAS = {
+  public: ['大堂', '前台区域', '电梯厅', '休息区', '走廊'],
+  restaurant: ['中餐厅', '西餐厅', '咖啡厅', '酒吧', '宴会厅'],
+  meeting: ['多功能厅', '会议室A', '会议室B', '会议室C', '商务中心'],
+  facilities: ['健身房', 'SPA', '游泳池', '儿童乐园', '娱乐室'],
+  rooms: Array.from({ length: 20 }, (_, i) => `${i + 1}层客房区`),
+  service: ['员工餐厅', '员工休息室', '洗衣房', '储藏室', '设备间'],
+  parking: ['地下停车场入口', '地下停车场A区', '地下停车场B区', '地面停车场', '装卸货区'],
+  exterior: ['正门', '侧门', '后门', '花园', '屋顶']
+};
+
+// 添加数值格式化函数
+const formatNumber = (value: number, precision: number = 1) => {
+  return Number(value.toFixed(precision));
+};
+
 const SecuritySystem: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [cameras, setCameras] = useState<SecurityCamera[]>([]);
@@ -80,101 +118,200 @@ const SecuritySystem: React.FC = () => {
   const [settingsModalVisible, setSettingsModalVisible] = useState(false);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('overview');
-
-  // 模拟数据
-  const mockCameras: SecurityCamera[] = [
-    {
-      id: '1',
-      name: '大堂摄像头-01',
-      location: '大堂入口',
-      status: 'online',
-      resolution: '4K',
-      recording: true,
-      motionDetection: true,
-      lastRecording: '2025-07-23 14:30:00',
-      storageUsage: 65,
-    },
-    {
-      id: '2',
-      name: '电梯摄像头-01',
-      location: '1楼电梯',
-      status: 'online',
-      resolution: '1080P',
-      recording: true,
-      motionDetection: true,
-      lastRecording: '2025-07-23 14:29:00',
-      storageUsage: 78,
-    },
-    {
-      id: '3',
-      name: '停车场摄像头-01',
-      location: '地下停车场',
-      status: 'maintenance',
-      resolution: '4K',
-      recording: false,
-      motionDetection: false,
-      lastRecording: '2025-07-23 10:15:00',
-      storageUsage: 45,
-    },
-    {
-      id: '4',
-      name: '客房走廊摄像头-01',
-      location: '3楼走廊',
-      status: 'online',
-      resolution: '1080P',
-      recording: true,
-      motionDetection: true,
-      lastRecording: '2025-07-23 14:28:00',
-      storageUsage: 82,
-    },
-  ];
+  const [activeTab, setActiveTab] = useState('cameras'); // 修改默认标签为cameras
+  const [analysisModalVisible, setAnalysisModalVisible] = useState(false);
+  const [analysisTimeRange, setAnalysisTimeRange] = useState<'day' | 'week' | 'month'>('day');
+  const [analysisType, setAnalysisType] = useState<'alarms' | 'storage'>('alarms');
+  const [pageSize, setPageSize] = useState(10);
+  const [currentCameraPage, setCurrentCameraPage] = useState(1);
+  const [currentAlarmPage, setCurrentAlarmPage] = useState(1);
+  const [videoModalVisible, setVideoModalVisible] = useState(false);
+  const [selectedCamera, setSelectedCamera] = useState<SecurityCamera | null>(null);
+  const [videoError, setVideoError] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [areaFilter, setAreaFilter] = useState<string>('all');
 
 
+  // 生成摄像头数据
+  const generateCameraData = (): SecurityCamera[] => {
+    const cameras: SecurityCamera[] = [];
+    let id = 1;
 
-  const mockAlarmEvents: AlarmEvent[] = [
-    {
-      id: '1',
-      type: 'motion',
-      location: '大堂摄像头-01',
-      severity: 'medium',
-      status: 'acknowledged',
-      timestamp: '2025-07-23 14:30:00',
-      description: '检测到异常移动',
-      handledBy: '保安张三',
-    },
-    {
-      id: '2',
-      type: 'intrusion',
-      location: '停车场摄像头-01',
-      severity: 'high',
-      status: 'active',
-      timestamp: '2025-07-23 14:20:00',
-      description: '检测到可疑人员',
-    },
-    {
-      id: '3',
-      type: 'fire',
-      location: '厨房区域',
-      severity: 'critical',
-      status: 'active',
-      timestamp: '2025-07-23 14:15:00',
-      description: '烟雾报警器触发',
-    },
-  ];
+    // 为每个区域生成摄像头
+    Object.entries(AREAS).forEach(([areaType, locations], areaIndex) => {
+      locations.forEach((location, locationIndex) => {
+        // 每个位置1-3个摄像头
+        const cameraCount = Math.floor(Math.random() * 3) + 1;
+        for (let i = 0; i < cameraCount; i++) {
+          const idStr = id.toString().padStart(3, '0');
+          const battery = Math.floor(30 + Math.random() * 70); // 30-100%
+          const status = Math.random() > 0.95 ? 'maintenance' :
+                        Math.random() > 0.98 ? 'offline' : 'online';
 
+          // 特殊处理第二个摄像头为消防通道
+          const isFireEscape = id === 2;
+          const customName = isFireEscape ? '消防通道监控-1' : `${location}摄像头-${i + 1}`;
+          const customLocation = isFireEscape ? '消防通道' : location;
+
+          cameras.push({
+            id: `cam_${idStr}`,
+            name: customName,
+            location: customLocation,
+            status,
+            resolution: Math.random() > 0.5 ? '4K' : '1080P',
+            recording: status === 'online' && Math.random() > 0.1,
+            motionDetection: status === 'online' && Math.random() > 0.1,
+            lastRecording: dayjs().subtract(Math.random() * 60, 'minute').format('YYYY-MM-DD HH:mm:ss'),
+            storageUsage: Math.floor(40 + Math.random() * 50), // 40-90%
+            isFireEscape // 添加标识
+          });
+          id++;
+        }
+      });
+    });
+
+    return cameras;
+  };
+
+  // 生成报警事件数据
+  const generateAlarmEvents = (cameras: SecurityCamera[]): AlarmEvent[] => {
+    const events: AlarmEvent[] = [];
+    const eventTypes: ('motion' | 'fire' | 'intrusion')[] = ['motion', 'fire', 'intrusion'];
+    const severityLevels: ('low' | 'medium' | 'high' | 'critical')[] = ['low', 'medium', 'high', 'critical'];
+    const operators = ['张三', '李四', '王五', '赵六', '系统'];
+
+    // 生成200个报警事件
+    for (let i = 1; i <= 200; i++) {
+      const id = i.toString().padStart(3, '0');
+      const camera = cameras[Math.floor(Math.random() * cameras.length)];
+      const type = eventTypes[Math.floor(Math.random() * eventTypes.length)];
+      const severity = type === 'fire' ? 'critical' :
+                      type === 'intrusion' ? (Math.random() > 0.5 ? 'high' : 'medium') :
+                      severityLevels[Math.floor(Math.random() * severityLevels.length)];
+      
+      // 生成随机时间（过去24小时内）
+      const timestamp = dayjs().subtract(Math.random() * 24, 'hour');
+      
+      // 根据时间确定状态和处理人
+      let status: 'active' | 'acknowledged' | 'resolved';
+      let handledBy: string | undefined;
+      
+      if (timestamp.isAfter(dayjs().subtract(1, 'hour'))) {
+        // 最近1小时的事件
+        status = 'active';
+        handledBy = undefined;
+      } else if (timestamp.isAfter(dayjs().subtract(4, 'hour'))) {
+        // 1-4小时前的事件
+        status = Math.random() > 0.3 ? 'acknowledged' : 'active';
+        handledBy = status === 'acknowledged' ? operators[Math.floor(Math.random() * operators.length)] : undefined;
+      } else {
+        // 4小时前的事件
+        status = Math.random() > 0.1 ? 'resolved' : 'acknowledged';
+        handledBy = operators[Math.floor(Math.random() * operators.length)];
+      }
+
+      // 生成描述
+      let description = '';
+      switch (type) {
+        case 'motion':
+          description = `在${camera.location}检测到异常移动`;
+          break;
+        case 'fire':
+          description = `${camera.location}烟雾报警器触发`;
+          break;
+        case 'intrusion':
+          description = `${camera.location}检测到可疑人员活动`;
+          break;
+      }
+
+      events.push({
+        id: `event_${id}`,
+        type,
+        location: camera.location,
+        severity,
+        status,
+        timestamp: timestamp.format('YYYY-MM-DD HH:mm:ss'),
+        description,
+        handledBy
+      });
+    }
+
+    // 按时间倒序排序
+    return events.sort((a, b) => dayjs(b.timestamp).valueOf() - dayjs(a.timestamp).valueOf());
+  };
+
+  // 修改初始化数据
   useEffect(() => {
-    loadData();
+    const cameraData = generateCameraData();
+    const eventData = generateAlarmEvents(cameraData);
+    
+    setCameras(cameraData);
+    setAlarmEvents(eventData);
+
+    // 设置定时器，每30秒更新一次数据
+    const timer = setInterval(() => {
+      // 更新摄像头状态
+      const updatedCameras = cameraData.map(camera => {
+        if (camera.status === 'online') {
+          // 更新存储使用量
+          const storageUsage = Math.min(100, camera.storageUsage + (Math.random() - 0.3));
+          // 更新最后录制时间
+          const lastRecording = Math.random() > 0.8 ? dayjs().format('YYYY-MM-DD HH:mm:ss') : camera.lastRecording;
+          return { ...camera, storageUsage, lastRecording };
+        }
+        return camera;
+      });
+
+      // 随机添加新的报警事件
+      const newEvents: AlarmEvent[] = [];
+      if (Math.random() > 0.7) { // 30%概率生成新事件
+        const camera = updatedCameras[Math.floor(Math.random() * updatedCameras.length)];
+        if (camera.status === 'online') {
+          const type = Math.random() > 0.8 ? 'intrusion' as const : 'motion' as const;
+          newEvents.push({
+            id: `event_${Date.now()}`,
+            type,
+            location: camera.location,
+            severity: type === 'intrusion' ? 'high' as const : 'medium' as const,
+            status: 'active' as const,
+            timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+            description: type === 'intrusion' ? 
+                        `${camera.location}检测到可疑人员活动` :
+                        `在${camera.location}检测到异常移动`
+          });
+        }
+      }
+
+      // 更新报警事件状态
+      const updatedEvents = eventData.map(event => {
+        if (event.status === 'active' && Math.random() > 0.7) {
+          return {
+            ...event,
+            status: 'acknowledged' as const,
+            handledBy: ['张三', '李四', '王五', '赵六'][Math.floor(Math.random() * 4)]
+          };
+        }
+        return event;
+      }).concat(newEvents);
+
+      setCameras(updatedCameras);
+      setAlarmEvents(updatedEvents);
+    }, 30000);
+
+    return () => clearInterval(timer);
   }, []);
 
+  // 修改loadData函数，重置分页状态
   const loadData = () => {
     setLoading(true);
-    // 模拟API调用
-    setTimeout(() => {
-      setCameras(mockCameras);
-      setAlarmEvents(mockAlarmEvents);
-      setLoading(false);
-    }, 1000);
+    const cameraData = generateCameraData();
+    const eventData = generateAlarmEvents(cameraData);
+    setCameras(cameraData);
+    setAlarmEvents(eventData);
+    setCurrentCameraPage(1);
+    setCurrentAlarmPage(1);
+    setLoading(false);
   };
 
   const getStatusColor = (status: string) => {
@@ -281,6 +418,13 @@ const SecuritySystem: React.FC = () => {
     }
   };
 
+  // 处理查看视频
+  const handleViewVideo = (camera: SecurityCamera) => {
+    setSelectedCamera(camera);
+    setVideoModalVisible(true);
+  };
+
+  // 修改摄像头列表列配置
   const cameraColumns = [
     {
       title: '摄像头信息',
@@ -344,7 +488,7 @@ const SecuritySystem: React.FC = () => {
       key: 'storageUsage',
       render: (value: number) => (
         <Space direction="vertical" size="small" style={{ width: '100%' }}>
-          <Text strong>{value}%</Text>
+          <Text strong>{formatNumber(value, 1)}%</Text>
           <Progress
             percent={value}
             size="small"
@@ -363,7 +507,7 @@ const SecuritySystem: React.FC = () => {
             type="link"
             size="small"
             icon={<EyeOutlined />}
-            onClick={() => handleViewDetails(record)}
+            onClick={() => handleViewVideo(record)}
           >
             查看
           </Button>
@@ -475,6 +619,446 @@ const SecuritySystem: React.FC = () => {
     },
   };
 
+  // 生成分析数据
+  const generateAnalysisData = (type: string, range: 'day' | 'week' | 'month'): AnalysisData[] => {
+    const data: AnalysisData[] = [];
+    const now = dayjs();
+    let startTime: dayjs.Dayjs;
+    let format: string;
+    let step: number;
+    
+    switch (range) {
+      case 'day':
+        startTime = now.subtract(24, 'hour');
+        format = 'HH:00';
+        step = 1;
+        break;
+      case 'week':
+        startTime = now.subtract(7, 'day');
+        format = 'MM-DD';
+        step = 24;
+        break;
+      case 'month':
+        startTime = now.subtract(30, 'day');
+        format = 'MM-DD';
+        step = 24;
+        break;
+    }
+
+    for (let i = 0; startTime.add(i * step, 'hour').isBefore(now); i++) {
+      const time = startTime.add(i * step, 'hour');
+      const timeStr = time.format(format);
+
+      switch (type) {
+        case 'alarms':
+          // 报警事件数量随时间变化
+          const baseAlarms = 8;
+          const hourEffect = Math.sin((time.hour() - 12) * Math.PI / 12) * 5; // 夜间报警较多
+          const weekendEffect = [0, 6].includes(time.day()) ? 3 : 0; // 周末报警较多
+          data.push({
+            time: timeStr,
+            value: Math.max(0, Math.round(baseAlarms - hourEffect + weekendEffect + Math.random() * 8))
+          });
+          break;
+
+        case 'storage':
+          // 存储使用量趋势
+          const baseStorage = 65;
+          const dayEffect = time.hour() / 24 * 15; // 随时间增长
+          const weekEffect = [0, 6].includes(time.day()) ? 5 : 0; // 周末存储增长较快
+          data.push({
+            time: timeStr,
+            value: Math.min(100, Math.round(baseStorage + dayEffect + weekEffect + Math.random() * 8))
+          });
+          break;
+      }
+    }
+
+    return data;
+  };
+
+  // 获取图表配置
+  const getChartOption = (type: string, data: AnalysisData[]) => {
+    const baseOption = {
+      tooltip: {
+        trigger: 'axis'
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      }
+    };
+
+    switch (type) {
+      case 'alarms':
+        return {
+          ...baseOption,
+          title: {
+            text: '报警事件趋势',
+            left: 'center'
+          },
+          xAxis: {
+            type: 'category',
+            data: data.map(item => item.time),
+            axisLabel: {
+              rotate: 45
+            }
+          },
+          yAxis: {
+            type: 'value',
+            name: '事件数',
+            minInterval: 1
+          },
+          series: [{
+            type: 'bar',
+            data: data.map(item => item.value),
+            itemStyle: {
+              color: '#ff4d4f'
+            }
+          }]
+        };
+
+      case 'storage':
+        return {
+          ...baseOption,
+          title: {
+            text: '存储使用趋势',
+            left: 'center'
+          },
+          xAxis: {
+            type: 'category',
+            data: data.map(item => item.time),
+            axisLabel: {
+              rotate: 45
+            }
+          },
+          yAxis: {
+            type: 'value',
+            name: '使用率(%)',
+            min: 0,
+            max: 100
+          },
+          series: [{
+            type: 'line',
+            data: data.map(item => item.value),
+            smooth: true,
+            lineStyle: {
+              width: 3
+            },
+            itemStyle: {
+              color: '#1890ff'
+            },
+            areaStyle: {
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [{
+                  offset: 0,
+                  color: 'rgba(24,144,255,0.3)'
+                }, {
+                  offset: 1,
+                  color: 'rgba(24,144,255,0.1)'
+                }]
+              }
+            }
+          }]
+        };
+    }
+  };
+
+  // 渲染分析内容
+  const renderAnalysisContent = () => {
+    const data = generateAnalysisData(analysisType, analysisTimeRange);
+    const option = getChartOption(analysisType, data);
+
+    return (
+      <div>
+        <div style={{ marginBottom: 16, textAlign: 'center' }}>
+          <Space>
+            <Segmented
+              value={analysisType}
+              onChange={value => setAnalysisType(value as typeof analysisType)}
+              options={[
+                { label: '报警事件', value: 'alarms' },
+                { label: '存储使用', value: 'storage' }
+              ]}
+            />
+            <Segmented
+              value={analysisTimeRange}
+              onChange={value => setAnalysisTimeRange(value as typeof analysisTimeRange)}
+              options={[
+                { label: '24小时', value: 'day' },
+                { label: '7天', value: 'week' },
+                { label: '30天', value: 'month' }
+              ]}
+            />
+          </Space>
+        </div>
+        <ReactECharts option={option} style={{ height: 400 }} />
+        {analysisType === 'alarms' && (
+          <div style={{ marginTop: 16 }}>
+            <Row gutter={16}>
+              <Col span={8}>
+                <Statistic
+                  title="平均事件数"
+                  value={Math.round(data.reduce((sum, item) => sum + item.value, 0) / data.length)}
+                  precision={0}
+                />
+              </Col>
+              <Col span={8}>
+                <Statistic
+                  title="最高事件数"
+                  value={Math.max(...data.map(item => item.value))}
+                  precision={0}
+                  valueStyle={{ color: '#ff4d4f' }}
+                />
+              </Col>
+              <Col span={8}>
+                <Statistic
+                  title="最低事件数"
+                  value={Math.min(...data.map(item => item.value))}
+                  precision={0}
+                  valueStyle={{ color: '#52c41a' }}
+                />
+              </Col>
+            </Row>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // 修改数据分析按钮点击事件
+  const handleDataAnalysis = () => {
+    setAnalysisModalVisible(true);
+  };
+
+  // 修改表格分页配置
+  const getCameraPaginationConfig = () => ({
+    current: currentCameraPage,
+    total: cameras.length,
+    pageSize,
+    showSizeChanger: true,
+    showQuickJumper: true,
+    showTotal: (total: number, range: [number, number]) =>
+      `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+    onChange: (page: number) => {
+      setCurrentCameraPage(page);
+    },
+    onShowSizeChange: (_: number, size: number) => {
+      setPageSize(size);
+      setCurrentCameraPage(1); // 改变每页数量时重置到第一页
+    },
+    pageSizeOptions: ['10', '20', '50', '100'],
+    size: 'default' as const,
+    position: ['bottomRight'] as ("topLeft" | "topCenter" | "topRight" | "bottomLeft" | "bottomCenter" | "bottomRight")[],
+    showLessItems: false, // 显示所有页码
+    hideOnSinglePage: false, // 总是显示分页
+    responsive: true
+  });
+
+  const getAlarmPaginationConfig = () => ({
+    current: currentAlarmPage,
+    total: alarmEvents.length,
+    pageSize,
+    showSizeChanger: true,
+    showQuickJumper: true,
+    showTotal: (total: number, range: [number, number]) =>
+      `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+    onChange: (page: number) => {
+      setCurrentAlarmPage(page);
+    },
+    onShowSizeChange: (_: number, size: number) => {
+      setPageSize(size);
+      setCurrentAlarmPage(1); // 改变每页数量时重置到第一页
+    },
+    pageSizeOptions: ['10', '20', '50', '100'],
+    size: 'default' as const,
+    position: ['bottomRight'] as ("topLeft" | "topCenter" | "topRight" | "bottomLeft" | "bottomCenter" | "bottomRight")[],
+    showLessItems: false, // 显示所有页码
+    hideOnSinglePage: false, // 总是显示分页
+    responsive: true
+  });
+
+  // 获取所有区域列表
+  const getAreaList = () => {
+    const areas = new Set<string>();
+    cameras.forEach(camera => areas.add(camera.location.split('-')[0]));
+    return Array.from(areas);
+  };
+
+  // 过滤摄像头列表
+  const getFilteredCameras = () => {
+    return cameras.filter(camera => {
+      const matchSearch = searchText ? 
+        camera.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        camera.location.toLowerCase().includes(searchText.toLowerCase()) : true;
+      
+      const matchStatus = statusFilter === 'all' ? true : camera.status === statusFilter;
+      
+      const matchArea = areaFilter === 'all' ? true : 
+        camera.location.startsWith(areaFilter);
+
+      return matchSearch && matchStatus && matchArea;
+    });
+  };
+
+  // 获取当前页数据
+  const getCurrentPageCameras = () => {
+    const filteredData = getFilteredCameras();
+    const startIndex = (currentCameraPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredData.slice(startIndex, endIndex);
+  };
+
+  const getCurrentPageAlarms = () => {
+    const startIndex = (currentAlarmPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return alarmEvents.slice(startIndex, endIndex);
+  };
+
+  // 渲染监控内容
+  const renderMonitorContent = () => {
+    if (videoError) {
+      return (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#fff'
+        }}>
+          <Space direction="vertical" align="center">
+            <ExclamationCircleOutlined style={{ fontSize: 32 }} />
+            <Text style={{ color: '#fff' }}>视频加载失败</Text>
+            <Button 
+              type="primary" 
+              onClick={() => {
+                const video = document.querySelector('video');
+                if (video) {
+                  video.load();
+                  setVideoError(false);
+                }
+              }}
+            >
+              重试
+            </Button>
+          </Space>
+        </div>
+      );
+    }
+
+    return (
+      <>
+        {selectedCamera?.isFireEscape ? (
+          <img
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+            src={process.env.PUBLIC_URL + '/images/monitor/gate.png'}
+            alt="消防通道监控"
+          />
+        ) : (
+          <video
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+            src={process.env.PUBLIC_URL + '/images/monitor/12.mp4'}
+            autoPlay
+            loop
+            muted
+            onError={() => setVideoError(true)}
+            controlsList="nodownload nofullscreen noremoteplayback noplaybackrate"
+            disablePictureInPicture
+            playsInline
+          />
+        )}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.2) 100%)'
+        }} />
+        <div style={{
+          position: 'absolute',
+          top: 16,
+          left: 16,
+          display: 'flex',
+          alignItems: 'center',
+          color: '#fff',
+          textShadow: '0 0 2px rgba(0,0,0,0.5)'
+        }}>
+          <Space>
+            <Badge status="processing" />
+            <Text style={{ color: '#fff', fontSize: 12 }}>实时监控</Text>
+            <Tag style={{ marginLeft: 8 }} color="blue">{selectedCamera?.resolution}</Tag>
+            {selectedCamera?.isFireEscape && (
+              <Tag color="red">消防监控</Tag>
+            )}
+          </Space>
+        </div>
+        <div style={{
+          position: 'absolute',
+          bottom: 16,
+          left: 16,
+          right: 16,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          color: '#fff',
+          textShadow: '0 0 2px rgba(0,0,0,0.5)'
+        }}>
+          <div>
+            <div style={{ marginBottom: 4 }}>
+              <Space>
+                <EnvironmentOutlined />
+                <span>{selectedCamera?.location}</span>
+              </Space>
+            </div>
+            <Space split={<Divider type="vertical" style={{ borderColor: 'rgba(255,255,255,0.3)', margin: '0 8px' }} />}>
+              <span style={{ fontSize: 12 }}>ID: {selectedCamera?.id}</span>
+              <span style={{ fontSize: 12 }}>
+                {selectedCamera?.motionDetection ? '移动检测已开启' : '移动检测已关闭'}
+              </span>
+              <span style={{ fontSize: 12 }}>
+                存储: {selectedCamera?.storageUsage}%
+              </span>
+            </Space>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: 20, fontFamily: 'monospace', marginBottom: 4 }}>
+              {dayjs().format('HH:mm:ss')}
+            </div>
+            <div style={{ fontSize: 12 }}>
+              {dayjs().format('YYYY-MM-DD')}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div style={{ padding: '24px' }}>
       <div style={{ marginBottom: '24px' }}>
@@ -519,92 +1103,125 @@ const SecuritySystem: React.FC = () => {
             />
           </Card>
         </Col>
+        <Col span={6}>
+          <Card>
+            <Statistic
+              title="今日报警"
+              value={alarmEvents.filter(a => dayjs(a.timestamp).isAfter(dayjs().startOf('day'))).length}
+              prefix={<ClockCircleOutlined />}
+              valueStyle={{ color: '#faad14' }}
+            />
+          </Card>
+        </Col>
       </Row>
 
       {/* 操作工具栏 */}
       <Card style={{ marginBottom: '24px' }}>
-        <Space wrap>
-          <Button
-            type="primary"
-            icon={<ReloadOutlined />}
-            onClick={loadData}
-            loading={loading}
-          >
-            刷新状态
-          </Button>
-          <Button
-            icon={<LineChartOutlined />}
-          >
-            数据分析
-          </Button>
-          <Button
-            icon={<ExportOutlined />}
-            onClick={handleExport}
-          >
-            导出数据
-          </Button>
-          {selectedItems.length > 0 && (
-            <Button
-              type="default"
-              onClick={handleBatchOperation}
-            >
-              批量操作 ({selectedItems.length})
-            </Button>
-          )}
-        </Space>
+        <Row gutter={[16, 16]} align="middle">
+          <Col flex="auto">
+            <Space wrap>
+              <Button
+                type="primary"
+                icon={<ReloadOutlined />}
+                onClick={loadData}
+                loading={loading}
+              >
+                刷新状态
+              </Button>
+              <Button
+                icon={<LineChartOutlined />}
+                onClick={handleDataAnalysis}
+              >
+                数据分析
+              </Button>
+              <Button
+                icon={<ExportOutlined />}
+                onClick={handleExport}
+              >
+                导出数据
+              </Button>
+              {selectedItems.length > 0 && (
+                <Button
+                  type="default"
+                  onClick={handleBatchOperation}
+                >
+                  批量操作 ({selectedItems.length})
+                </Button>
+              )}
+            </Space>
+          </Col>
+          <Col>
+            <Space wrap size="middle">
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
+                style={{ width: 120 }}
+                placeholder="状态筛选"
+                suffixIcon={<FilterOutlined />}
+              >
+                <Option value="all">全部状态</Option>
+                <Option value="online">在线</Option>
+                <Option value="offline">离线</Option>
+                <Option value="maintenance">维护中</Option>
+              </Select>
+              <Select
+                value={areaFilter}
+                onChange={setAreaFilter}
+                style={{ width: 120 }}
+                placeholder="区域筛选"
+                suffixIcon={<FilterOutlined />}
+              >
+                <Option value="all">全部区域</Option>
+                {getAreaList().map(area => (
+                  <Option key={area} value={area}>{area}</Option>
+                ))}
+              </Select>
+              <Search
+                placeholder="搜索摄像头名称或位置"
+                allowClear
+                enterButton
+                style={{ width: 250 }}
+                value={searchText}
+                onChange={e => setSearchText(e.target.value)}
+                onSearch={value => setSearchText(value)}
+              />
+            </Space>
+          </Col>
+        </Row>
       </Card>
 
       {/* 主要内容区域 */}
       <Card>
         <Tabs activeKey={activeTab} onChange={setActiveTab}>
-          <TabPane tab="系统概览" key="overview">
-            <Row gutter={16}>
-              <Col span={24}>
-                <Card title="摄像头状态" size="small">
-                  <Table
-                    columns={cameraColumns}
-                    dataSource={cameras}
-                    rowKey="id"
-                    loading={loading}
-                    pagination={false}
-                    size="small"
-                  />
-                </Card>
-              </Col>
-            </Row>
-          </TabPane>
           <TabPane tab="摄像头管理" key="cameras">
             <Table
               columns={cameraColumns}
-              dataSource={cameras}
+              dataSource={getCurrentPageCameras()}
               rowKey="id"
               loading={loading}
-              rowSelection={rowSelection}
-              pagination={{
-                total: cameras.length,
-                pageSize: 10,
-                showSizeChanger: true,
-                showQuickJumper: true,
-                showTotal: (total, range) =>
-                  `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+              rowSelection={{
+                selectedRowKeys: selectedItems,
+                onChange: (selectedRowKeys: React.Key[]) => {
+                  setSelectedItems(selectedRowKeys as string[]);
+                }
               }}
+              pagination={{
+                ...getCameraPaginationConfig(),
+                total: getFilteredCameras().length // 更新总数为过滤后的数量
+              }}
+              scroll={{ x: 'max-content' }}
+              size="middle"
             />
           </TabPane>
-
           <TabPane tab="报警事件" key="alarms">
             <Table
               columns={alarmColumns}
-              dataSource={alarmEvents}
+              dataSource={getCurrentPageAlarms()}
               rowKey="id"
               loading={loading}
-              pagination={{
-                total: alarmEvents.length,
-                pageSize: 10,
-                showSizeChanger: true,
-                showQuickJumper: true,
-                showTotal: (total, range) =>
-                  `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
-              }}
+              pagination={getAlarmPaginationConfig()}
+              scroll={{ x: 'max-content' }}
+              size="middle"
             />
           </TabPane>
         </Tabs>
@@ -689,6 +1306,156 @@ const SecuritySystem: React.FC = () => {
             </Select>
           </Form.Item>
         </Form>
+      </Modal>
+
+      {/* 添加数据分析模态框 */}
+      <Modal
+        title="安防系统数据分析"
+        open={analysisModalVisible}
+        onCancel={() => setAnalysisModalVisible(false)}
+        footer={null}
+        width={800}
+        style={{ top: 100 }}
+      >
+        {renderAnalysisContent()}
+      </Modal>
+
+      {/* 修改视频播放模态框 */}
+      <Modal
+        title={
+          <Space>
+            <VideoCameraOutlined style={{ color: '#1890ff' }} />
+            {selectedCamera?.name}
+            <Tag color="blue">实时监控</Tag>
+            {selectedCamera?.recording && (
+              <Tag icon={<ClockCircleOutlined />} color="green">
+                已录制 {dayjs(selectedCamera.lastRecording).fromNow()}
+              </Tag>
+            )}
+            {selectedCamera?.isFireEscape && (
+              <Tag color="red" icon={<AlertOutlined />}>消防重点区域</Tag>
+            )}
+          </Space>
+        }
+        open={videoModalVisible}
+        onCancel={() => {
+          setVideoModalVisible(false);
+          setVideoError(false);
+        }}
+        footer={
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Space>
+              <Button 
+                icon={<CameraOutlined />}
+                onClick={() => message.success('已截图保存')}
+              >
+                截图
+              </Button>
+              <Button 
+                type="primary"
+                danger={selectedCamera?.recording}
+                icon={selectedCamera?.recording ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
+                onClick={() => {
+                  const newCamera = { ...selectedCamera, recording: !selectedCamera?.recording };
+                  setSelectedCamera(newCamera as SecurityCamera);
+                }}
+              >
+                {selectedCamera?.recording ? '停止录制' : '开始录制'}
+              </Button>
+            </Space>
+            <Button type="primary" icon={<FullscreenOutlined />}>
+              全屏查看
+            </Button>
+          </div>
+        }
+        width={1000}
+        style={{ top: 20 }}
+        destroyOnClose
+      >
+        <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', backgroundColor: '#000' }}>
+          {renderMonitorContent()}
+        </div>
+        <Row gutter={16} style={{ marginTop: 16 }}>
+          <Col span={16}>
+            <Card 
+              size="small" 
+              title={
+                <Space>
+                  <AlertOutlined />
+                  实时状态
+                </Space>
+              }
+              extra={
+                <Tag color={selectedCamera?.status === 'online' ? 'success' : 'error'}>
+                  {getStatusText(selectedCamera?.status || '')}
+                </Tag>
+              }
+            >
+              <Row gutter={[16, 16]}>
+                <Col span={8}>
+                  <Statistic 
+                    title="信号强度" 
+                    value={98} 
+                    suffix="%" 
+                    valueStyle={{ color: '#52c41a' }}
+                  />
+                </Col>
+                <Col span={8}>
+                  <Statistic 
+                    title="码率" 
+                    value={selectedCamera?.resolution === '4K' ? '8.3' : '2.1'} 
+                    suffix="Mbps"
+                  />
+                </Col>
+                <Col span={8}>
+                  <Statistic 
+                    title="延迟" 
+                    value={32} 
+                    suffix="ms"
+                    valueStyle={{ color: '#52c41a' }}
+                  />
+                </Col>
+              </Row>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card 
+              size="small" 
+              title={
+                <Space>
+                  <HistoryOutlined />
+                  录制信息
+                </Space>
+              }
+            >
+              <Space direction="vertical" style={{ width: '100%' }} size="small">
+                <div>
+                  <Text type="secondary">存储使用</Text>
+                  <Progress
+                    percent={selectedCamera?.storageUsage}
+                    size="small"
+                    status={selectedCamera?.storageUsage && selectedCamera.storageUsage > 80 ? 'exception' : 'normal'}
+                    showInfo={false}
+                  />
+                </div>
+                <div>
+                  <Text type="secondary">最后录制</Text>
+                  <div>
+                    <Text>{selectedCamera?.lastRecording}</Text>
+                  </div>
+                </div>
+                <div>
+                  <Text type="secondary">移动检测</Text>
+                  <div>
+                    <Tag color={selectedCamera?.motionDetection ? 'green' : 'red'}>
+                      {selectedCamera?.motionDetection ? '已启用' : '已禁用'}
+                    </Tag>
+                  </div>
+                </div>
+              </Space>
+            </Card>
+          </Col>
+        </Row>
       </Modal>
     </div>
   );

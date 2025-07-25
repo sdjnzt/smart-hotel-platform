@@ -295,12 +295,12 @@ const DeliveryRobot: React.FC = () => {
       if (robot.status === 'error') {
         alerts.push({
           id: `alert_${alerts.length + 1}`,
-          type: 'error',
-          title: '机器人故障',
+        type: 'error',
+        title: '机器人故障',
           message: `${robot.name}发生故障：${robot.errorMessage}`,
           robotId: robot.id,
           timestamp: robot.lastUpdate,
-          read: false
+        read: false
         });
       }
       

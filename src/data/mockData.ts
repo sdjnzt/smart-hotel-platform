@@ -2316,18 +2316,18 @@ function generateHotelDevices(): HotelDevice[] {
       devices.push({
         id: `room${roomNumber}_ac`,
         name: `中央空调-客房${roomNumber}`,
-        type: 'air_conditioner',
-        category: 'hvac',
-        status: 'online',
+    type: 'air_conditioner',
+    category: 'hvac',
+    status: 'online',
         roomNumber: roomNumber,
         floor: floor,
         location: `${floor}楼${roomNumber}房间`,
-        lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-23 14:30:00',
         temperature: Number((20 + Math.random() * 4).toFixed(1)),  // 温度保留1位小数
         humidity: Math.round(40 + Math.random() * 20),  // 湿度取整数
-        power: 1200,
+    power: 1200,
         energyConsumption: Number((5 + Math.random() * 5).toFixed(2)),  // 能耗保留2位小数
-        isOnline: true,
+    isOnline: true,
         signal: Math.round(85 + Math.random() * 15)  // 信号强度取整数
       });
       
@@ -2335,17 +2335,17 @@ function generateHotelDevices(): HotelDevice[] {
       devices.push({
         id: `room${roomNumber}_light`,
         name: `智能照明-客房${roomNumber}`,
-        type: 'lighting',
-        category: 'lighting',
-        status: 'online',
+    type: 'lighting',
+    category: 'lighting',
+    status: 'online',
         roomNumber: roomNumber,
         floor: floor,
         location: `${floor}楼${roomNumber}房间`,
-        lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-23 14:30:00',
         brightness: Math.round(Math.random() * 100),  // 亮度取整数
-        power: 45,
+    power: 45,
         energyConsumption: Number((Math.random() * 3).toFixed(2)),  // 能耗保留2位小数
-        isOnline: true,
+    isOnline: true,
         signal: Math.round(85 + Math.random() * 15)
       });
       
@@ -2355,16 +2355,16 @@ function generateHotelDevices(): HotelDevice[] {
           id: `room${roomNumber}_minibar`,
           name: `智能迷你吧-客房${roomNumber}`,
           type: 'mini_bar',
-          category: 'comfort',
-          status: 'online',
+    category: 'comfort',
+    status: 'online',
           roomNumber: roomNumber,
           floor: floor,
           location: `${floor}楼${roomNumber}房间`,
-          lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-23 14:30:00',
           temperature: Number((4 + Math.random() * 2).toFixed(1)),  // 温度保留1位小数
           power: 80,
           energyConsumption: Number((Math.random() * 2).toFixed(2)),  // 能耗保留2位小数
-          isOnline: true,
+    isOnline: true,
           signal: Math.round(85 + Math.random() * 15)
         });
       }
@@ -2377,14 +2377,14 @@ function generateHotelDevices(): HotelDevice[] {
         id: `cctv_f${floor}_${i}`,
         name: `监控摄像头-${floor}楼-${i}号`,
         type: 'cctv_camera',
-        category: 'security',
-        status: 'online',
+    category: 'security',
+    status: 'online',
         floor: floor,
         location: `${floor}楼走廊`,
-        lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-23 14:30:00',
         power: 25,
         energyConsumption: 0.6,
-        isOnline: true,
+    isOnline: true,
         signal: 90 + Math.random() * 10,
         recordingStatus: true,
         motionDetection: true
@@ -2396,15 +2396,15 @@ function generateHotelDevices(): HotelDevice[] {
       devices.push({
         id: `access_f${floor}_${i}`,
         name: `门禁系统-${floor}楼-${i}号`,
-        type: 'access_control',
-        category: 'security',
-        status: 'online',
+    type: 'access_control',
+    category: 'security',
+    status: 'online',
         floor: floor,
         location: `${floor}楼安全门`,
-        lastUpdate: '2025-07-23 14:30:00',
-        power: 15,
-        energyConsumption: 0.3,
-        isOnline: true,
+    lastUpdate: '2025-07-23 14:30:00',
+    power: 15,
+    energyConsumption: 0.3,
+    isOnline: true,
         signal: 90 + Math.random() * 10
       });
     }
@@ -2415,15 +2415,15 @@ function generateHotelDevices(): HotelDevice[] {
     devices.push({
       id: `elevator_${i.toString().padStart(2, '0')}`,
       name: `客梯-${i.toString().padStart(2, '0')}`,
-      type: 'elevator',
-      category: 'service',
-      status: 'online',
+    type: 'elevator',
+    category: 'service',
+    status: 'online',
       floor: Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1,
       location: '电梯井',
-      lastUpdate: '2025-07-23 14:30:00',
-      power: 500,
+    lastUpdate: '2025-07-23 14:30:00',
+    power: 500,
       energyConsumption: 7 + Math.random() * 3,
-      isOnline: true,
+    isOnline: true,
       signal: 95 + Math.random() * 5,
       currentFloor: Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1,
       targetFloor: Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1,
@@ -2437,15 +2437,15 @@ function generateHotelDevices(): HotelDevice[] {
       id: `robot_${i.toString().padStart(2, '0')}`,
       name: `送餐机器人-${i.toString().padStart(2, '0')}`,
       type: 'delivery_robot',
-      category: 'service',
-      status: 'online',
+    category: 'service',
+    status: 'online',
       floor: Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1,
       location: '正在服务中',
-      lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-23 14:30:00',
       battery: 60 + Math.random() * 40,
       power: 200,
       energyConsumption: 2 + Math.random() * 2,
-      isOnline: true,
+    isOnline: true,
       signal: 90 + Math.random() * 10,
       currentTask: Math.random() > 0.3 ? '送餐中' : '空闲',
       destination: Math.random() > 0.3 ? `${Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1}${Math.floor(Math.random() * HOTEL_CONFIG.ROOMS_PER_FLOOR) + 1}` : '',

@@ -45,6 +45,8 @@ import {
   TrophyOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import ReactECharts from 'echarts-for-react';
+import { Segmented } from 'antd';
 
 const { Title, Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -80,6 +82,12 @@ interface CleaningTask {
   priority: 'low' | 'medium' | 'high';
 }
 
+interface AnalysisData {
+  time: string;
+  value: number;
+  type?: string;
+}
+
 // 添加数值格式化函数
 const formatNumber = (value: number, precision: number = 1) => {
   return Number(value.toFixed(precision));
@@ -105,6 +113,9 @@ const CleaningRobot: React.FC = () => {
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [selectedRobot, setSelectedRobot] = useState<CleaningRobot | null>(null);
   const [activeTab, setActiveTab] = useState('robots');
+  const [analysisModalVisible, setAnalysisModalVisible] = useState(false);
+  const [analysisTimeRange, setAnalysisTimeRange] = useState<'day' | 'week' | 'month'>('day');
+  const [analysisType, setAnalysisType] = useState<'efficiency' | 'workload'>('efficiency');
 
   // 生成机器人数据
   const generateRobotData = (): CleaningRobot[] => {
@@ -226,6 +237,228 @@ const CleaningRobot: React.FC = () => {
 
     // 按时间倒序排序
     return tasks.sort((a, b) => dayjs(b.startTime).valueOf() - dayjs(a.startTime).valueOf());
+  };
+
+  // 生成分析数据
+  const generateAnalysisData = (type: string, range: 'day' | 'week' | 'month'): AnalysisData[] => {
+    const data: AnalysisData[] = [];
+    const now = dayjs();
+    let startTime: dayjs.Dayjs;
+    let format: string;
+    let step: number;
+    
+    switch (range) {
+      case 'day':
+        startTime = now.subtract(24, 'hour');
+        format = 'HH:00';
+        step = 1;
+        break;
+      case 'week':
+        startTime = now.subtract(7, 'day');
+        format = 'MM-DD';
+        step = 24;
+        break;
+      case 'month':
+        startTime = now.subtract(30, 'day');
+        format = 'MM-DD';
+        step = 24;
+        break;
+    }
+
+    for (let i = 0; startTime.add(i * step, 'hour').isBefore(now); i++) {
+      const time = startTime.add(i * step, 'hour');
+      const timeStr = time.format(format);
+
+      switch (type) {
+        case 'efficiency':
+          // 清洁效率随时间变化
+          const baseEfficiency = 85;
+          const hourEffect = Math.sin((time.hour() - 12) * Math.PI / 12) * 5; // 日间效率较高
+          data.push({
+            time: timeStr,
+            value: formatNumber(baseEfficiency + hourEffect + Math.random() * 5)
+          });
+          break;
+
+        case 'workload':
+          // 工作负载分布
+          const baseWorkload = 70;
+          const dayEffect = Math.sin((time.hour() - 12) * Math.PI / 12) * 20; // 日间工作量较大
+          data.push({
+            time: timeStr,
+            value: formatNumber(baseWorkload + dayEffect + Math.random() * 10)
+          });
+          break;
+      }
+    }
+
+    return data;
+  };
+
+  // 获取图表配置
+  const getChartOption = (type: string, data: AnalysisData[]) => {
+    const baseOption = {
+      tooltip: {
+        trigger: 'axis',
+        formatter: '{b}: {c}%'
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      }
+    };
+
+    switch (type) {
+      case 'efficiency':
+        return {
+          ...baseOption,
+          title: {
+            text: '清洁效率趋势',
+            left: 'center'
+          },
+          xAxis: {
+            type: 'category',
+            data: data.map(item => item.time),
+            axisLabel: {
+              rotate: 45
+            }
+          },
+          yAxis: {
+            type: 'value',
+            name: '效率(%)',
+            min: 70,
+            max: 100
+          },
+          series: [{
+            type: 'line',
+            data: data.map(item => item.value),
+            smooth: true,
+            lineStyle: {
+              width: 3
+            },
+            itemStyle: {
+              color: '#1890ff'
+            },
+            areaStyle: {
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [{
+                  offset: 0,
+                  color: 'rgba(24,144,255,0.3)'
+                }, {
+                  offset: 1,
+                  color: 'rgba(24,144,255,0.1)'
+                }]
+              }
+            }
+          }]
+        };
+
+      case 'workload':
+        return {
+          ...baseOption,
+          title: {
+            text: '工作负载分布',
+            left: 'center'
+          },
+          xAxis: {
+            type: 'category',
+            data: data.map(item => item.time),
+            axisLabel: {
+              rotate: 45
+            }
+          },
+          yAxis: {
+            type: 'value',
+            name: '负载(%)',
+            min: 0,
+            max: 100
+          },
+          series: [{
+            type: 'bar',
+            data: data.map(item => item.value),
+            itemStyle: {
+              color: '#52c41a'
+            }
+          }]
+        };
+    }
+  };
+
+  // 渲染分析内容
+  const renderAnalysisContent = () => {
+    const data = generateAnalysisData(analysisType, analysisTimeRange);
+    const option = getChartOption(analysisType, data);
+
+    return (
+      <div>
+        <div style={{ marginBottom: 16, textAlign: 'center' }}>
+          <Space>
+            <Segmented
+              value={analysisType}
+              onChange={value => setAnalysisType(value as typeof analysisType)}
+              options={[
+                { label: '清洁效率', value: 'efficiency' },
+                { label: '工作负载', value: 'workload' }
+              ]}
+            />
+            <Segmented
+              value={analysisTimeRange}
+              onChange={value => setAnalysisTimeRange(value as typeof analysisTimeRange)}
+              options={[
+                { label: '24小时', value: 'day' },
+                { label: '7天', value: 'week' },
+                { label: '30天', value: 'month' }
+              ]}
+            />
+          </Space>
+        </div>
+        <ReactECharts option={option} style={{ height: 400 }} />
+        {analysisType === 'efficiency' && (
+          <div style={{ marginTop: 16 }}>
+            <Row gutter={16}>
+              <Col span={8}>
+                <Statistic
+                  title="平均效率"
+                  value={formatNumber(data.reduce((sum, item) => sum + item.value, 0) / data.length)}
+                  suffix="%"
+                  precision={1}
+                />
+              </Col>
+              <Col span={8}>
+                <Statistic
+                  title="最高效率"
+                  value={formatNumber(Math.max(...data.map(item => item.value)))}
+                  suffix="%"
+                  precision={1}
+                  valueStyle={{ color: '#52c41a' }}
+                />
+              </Col>
+              <Col span={8}>
+                <Statistic
+                  title="最低效率"
+                  value={formatNumber(Math.min(...data.map(item => item.value)))}
+                  suffix="%"
+                  precision={1}
+                  valueStyle={{ color: '#ff4d4f' }}
+                />
+              </Col>
+            </Row>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // 修改数据分析按钮点击事件
+  const handleDataAnalysis = () => {
+    setAnalysisModalVisible(true);
   };
 
   // 初始化数据
@@ -735,6 +968,7 @@ const CleaningRobot: React.FC = () => {
           </Button>
           <Button
             icon={<LineChartOutlined />}
+            onClick={handleDataAnalysis}
           >
             数据分析
           </Button>
@@ -963,6 +1197,18 @@ const CleaningRobot: React.FC = () => {
             <Input.TextArea rows={3} placeholder="请输入任务备注信息" />
           </Form.Item>
         </Form>
+      </Modal>
+
+      {/* 添加数据分析模态框 */}
+      <Modal
+        title="清洁机器人数据分析"
+        open={analysisModalVisible}
+        onCancel={() => setAnalysisModalVisible(false)}
+        footer={null}
+        width={800}
+        style={{ top: 100 }}
+      >
+        {renderAnalysisContent()}
       </Modal>
     </div>
   );
