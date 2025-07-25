@@ -46,6 +46,7 @@ import {
   SafetyOutlined,
   TeamOutlined,
   CalendarOutlined,
+  BarChartOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
@@ -209,6 +210,7 @@ const AccessControl: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('devices');
   const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
+  // Remove analysisModalVisible state
 
   // 生成设备数据
   const generateDevices = (): AccessDevice[] => {
@@ -906,11 +908,7 @@ const AccessControl: React.FC = () => {
               管理酒店门禁设备、用户权限和访问记录
             </Text>
           </Col>
-          <Col>
-            <Text style={{ fontSize: 24, fontFamily: 'monospace' }}>
-              {currentTime}
-            </Text>
-          </Col>
+          {/* Remove data analysis button */}
         </Row>
       </div>
 
@@ -981,11 +979,7 @@ const AccessControl: React.FC = () => {
           >
             添加用户
           </Button>
-          <Button
-            icon={<LineChartOutlined />}
-          >
-            数据分析
-          </Button>
+          {/* Remove data analysis button */}
           <Button
             icon={<ExportOutlined />}
             onClick={handleExport}
