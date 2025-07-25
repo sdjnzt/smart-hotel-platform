@@ -2279,1603 +2279,235 @@ export interface DeviceAdjustment {
   energyImpact?: number;
 }
 
-// 酒店设备数据
-export const hotelDevices: HotelDevice[] = [
-  // 101房间设备
-  {
-    id: 'room101_ac',
-    name: '中央空调-客房101',
-    type: 'air_conditioner',
-    category: 'hvac',
-    status: 'online',
-    roomNumber: '101',
-    floor: 1,
-    location: '标准客房101',
-    lastUpdate: '2025-07-23 14:30:00',
-    temperature: 22,
-    humidity: 45,
-    power: 1200,
-    energyConsumption: 8.5,
-    isOnline: true,
-    signal: 95
+// 酒店规模配置
+const HOTEL_CONFIG = {
+  FLOORS: 20,           // 20层
+  ROOMS_PER_FLOOR: 15,  // 每层15间
+  ROOM_TYPES: {
+    STANDARD: { floors: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], roomsPerFloor: 12 },    // 标准间
+    DELUXE: { floors: [11, 12, 13, 14, 15], roomsPerFloor: 10 },                 // 豪华间
+    SUITE: { floors: [16, 17, 18], roomsPerFloor: 8 },                           // 套房
+    PRESIDENTIAL: { floors: [19, 20], roomsPerFloor: 4 }                         // 总统套房
   },
-  {
-    id: 'room101_light',
-    name: '智能照明系统-客房101',
-    type: 'lighting',
-    category: 'lighting',
-    status: 'online',
-    roomNumber: '101',
-    floor: 1,
-    location: '标准客房101',
-    lastUpdate: '2025-07-23 14:30:00',
-    brightness: 80,
-    power: 45,
-    energyConsumption: 2.1,
-    isOnline: true,
-    signal: 98
-  },
-  {
-    id: 'room101_tv',
-    name: '智能电视-客房101',
-    type: 'tv',
-    category: 'entertainment',
-    status: 'online',
-    roomNumber: '101',
-    floor: 1,
-    location: '标准客房101',
-    lastUpdate: '2025-07-23 14:29:30',
-    power: 150,
-    energyConsumption: 3.6,
-    isOnline: true,
-    signal: 92
-  },
-  {
-    id: 'room101_curtain',
-    name: '电动窗帘-客房101',
-    type: 'curtain',
-    category: 'comfort',
-    status: 'online',
-    roomNumber: '101',
-    floor: 1,
-    location: '标准客房101',
-    lastUpdate: '2025-07-23 14:28:45',
-    power: 30,
-    energyConsumption: 0.8,
-    isOnline: true,
-    signal: 89
-  },
-  {
-    id: 'room101_lock',
-    name: '智能门锁-客房101',
-    type: 'door_lock',
-    category: 'security',
-    status: 'online',
-    roomNumber: '101',
-    floor: 1,
-    location: '标准客房101门口',
-    lastUpdate: '2025-07-23 14:30:15',
-    battery: 78,
-    power: 5,
-    energyConsumption: 0.1,
-    isOnline: true,
-    signal: 94
-  },
+  DELIVERY_ROBOTS: 10,  // 10台送餐机器人
+  ELEVATORS: 6,         // 6部电梯
+  CCTV_PER_FLOOR: 8,    // 每层8个监控
+  ACCESS_CONTROLS: 4    // 每层4个门禁
+};
+
+// 更新设备数据生成函数
+function generateHotelDevices(): HotelDevice[] {
+  let devices: HotelDevice[] = [];
   
-  // 102房间设备
-  {
-    id: 'room102_ac',
-    name: '中央空调-客房102',
-    type: 'air_conditioner',
-    category: 'hvac',
-    status: 'warning',
-    roomNumber: '102',
-    floor: 1,
-    location: '标准客房102',
-    lastUpdate: '2025-07-23 14:25:00',
-    temperature: 25,
-    humidity: 55,
-    power: 1300,
-    energyConsumption: 9.2,
-    isOnline: true,
-    signal: 87,
-    errorCode: 'TEMP_HIGH',
-    errorMessage: '温度传感器读数异常'
-  },
-  {
-    id: 'room102_sensor',
-    name: '环境传感器-客房102',
-    type: 'sensor',
-    category: 'hvac',
-    status: 'error',
-    roomNumber: '102',
-    floor: 1,
-    location: '标准客房102',
-    lastUpdate: '2025-07-23 14:20:00',
-    temperature: 28,
-    humidity: 65,
-    power: 2,
-    energyConsumption: 0.05,
-    isOnline: false,
-    signal: 0,
-    errorCode: 'SENSOR_OFFLINE',
-    errorMessage: '传感器连接断开'
-  },
-  
-  // 201房间设备（豪华房）
-  {
-    id: 'room201_ac',
-    name: '中央空调-豪华客房201',
-    type: 'air_conditioner',
-    category: 'hvac',
-    status: 'online',
-    roomNumber: '201',
-    floor: 2,
-    location: '豪华客房201',
-    lastUpdate: '2025-07-23 14:30:00',
-    temperature: 21,
-    humidity: 42,
-    power: 1500,
-    energyConsumption: 10.8,
-    isOnline: true,
-    signal: 96
-  },
-  {
-    id: 'room201_minibar',
-    name: '智能迷你吧-客房201',
-    type: 'mini_bar',
-    category: 'comfort',
-    status: 'online',
-    roomNumber: '201',
-    floor: 2,
-    location: '豪华客房201',
-    lastUpdate: '2025-07-23 14:29:00',
-    temperature: 4,
-    power: 80,
-    energyConsumption: 1.9,
-    isOnline: true,
-    signal: 93
-  },
-  {
-    id: 'room201_safe',
-    name: '电子保险箱-客房201',
-    type: 'safe_box',
-    category: 'security',
-    status: 'online',
-    roomNumber: '201',
-    floor: 2,
-    location: '豪华客房201',
-    lastUpdate: '2025-07-23 14:30:10',
-    battery: 92,
-    power: 3,
-    energyConsumption: 0.07,
-    isOnline: true,
-    signal: 98
-  },
-
-  // 103房间设备
-  {
-    id: 'room103_ac',
-    name: '中央空调-客房103',
-    type: 'air_conditioner',
-    category: 'hvac',
-    status: 'online',
-    roomNumber: '103',
-    floor: 1,
-    location: '标准客房103',
-    lastUpdate: '2025-07-23 14:30:00',
-    temperature: 23,
-    humidity: 48,
-    power: 1200,
-    energyConsumption: 8.2,
-    isOnline: true,
-    signal: 96
-  },
-  {
-    id: 'room103_light',
-    name: '智能照明系统-客房103',
-    type: 'lighting',
-    category: 'lighting',
-    status: 'online',
-    roomNumber: '103',
-    floor: 1,
-    location: '标准客房103',
-    lastUpdate: '2025-07-23 14:30:00',
-    brightness: 60,
-    power: 45,
-    energyConsumption: 1.8,
-    isOnline: true,
-    signal: 97
-  },
-  {
-    id: 'room103_tv',
-    name: '智能电视-客房103',
-    type: 'tv',
-    category: 'entertainment',
-    status: 'online',
-    roomNumber: '103',
-    floor: 1,
-    location: '标准客房103',
-    lastUpdate: '2025-07-23 14:29:30',
-    power: 150,
-    energyConsumption: 3.5,
-    isOnline: true,
-    signal: 93
-  },
-  {
-    id: 'room103_curtain',
-    name: '电动窗帘-客房103',
-    type: 'curtain',
-    category: 'comfort',
-    status: 'online',
-    roomNumber: '103',
-    floor: 1,
-    location: '标准客房103',
-    lastUpdate: '2025-07-23 14:28:45',
-    power: 30,
-    energyConsumption: 0.8,
-    isOnline: true,
-    signal: 90
-  },
-  {
-    id: 'room103_lock',
-    name: '智能门锁-客房103',
-    type: 'door_lock',
-    category: 'security',
-    status: 'online',
-    roomNumber: '103',
-    floor: 1,
-    location: '标准客房103门口',
-    lastUpdate: '2025-07-23 14:30:15',
-    battery: 85,
-    power: 5,
-    energyConsumption: 0.1,
-    isOnline: true,
-    signal: 95
-  },
-
-  // 104房间设备
-  {
-    id: 'room104_ac',
-    name: '中央空调-客房104',
-    type: 'air_conditioner',
-    category: 'hvac',
-    status: 'online',
-    roomNumber: '104',
-    floor: 1,
-    location: '标准客房104',
-    lastUpdate: '2025-07-23 14:30:00',
-    temperature: 20,
-    humidity: 42,
-    power: 1200,
-    energyConsumption: 4.8,
-    isOnline: true,
-    signal: 94
-  },
-  {
-    id: 'room104_light',
-    name: '智能照明系统-客房104',
-    type: 'lighting',
-    category: 'lighting',
-    status: 'online',
-    roomNumber: '104',
-    floor: 1,
-    location: '标准客房104',
-    lastUpdate: '2025-07-23 14:30:00',
-    brightness: 0,
-    power: 45,
-    energyConsumption: 0,
-    isOnline: true,
-    signal: 96
-  },
-  {
-    id: 'room104_tv',
-    name: '智能电视-客房104',
-    type: 'tv',
-    category: 'entertainment',
-    status: 'online',
-    roomNumber: '104',
-    floor: 1,
-    location: '标准客房104',
-    lastUpdate: '2025-07-23 14:29:30',
-    power: 150,
-    energyConsumption: 0,
-    isOnline: true,
-    signal: 92
-  },
-  {
-    id: 'room104_curtain',
-    name: '电动窗帘-客房104',
-    type: 'curtain',
-    category: 'comfort',
-    status: 'online',
-    roomNumber: '104',
-    floor: 1,
-    location: '标准客房104',
-    lastUpdate: '2025-07-23 14:28:45',
-    power: 30,
-    energyConsumption: 0,
-    isOnline: true,
-    signal: 89
-  },
-  {
-    id: 'room104_lock',
-    name: '智能门锁-客房104',
-    type: 'door_lock',
-    category: 'security',
-    status: 'online',
-    roomNumber: '104',
-    floor: 1,
-    location: '标准客房104门口',
-    lastUpdate: '2025-07-23 14:30:15',
-    battery: 88,
-    power: 5,
-    energyConsumption: 0.1,
-    isOnline: true,
-    signal: 94
-  },
-
-  // 105房间设备
-  {
-    id: 'room105_ac',
-    name: '中央空调-客房105',
-    type: 'air_conditioner',
-    category: 'hvac',
-    status: 'online',
-    roomNumber: '105',
-    floor: 1,
-    location: '标准客房105',
-    lastUpdate: '2025-07-23 14:30:00',
-    temperature: 24,
-    humidity: 50,
-    power: 1200,
-    energyConsumption: 9.1,
-    isOnline: true,
-    signal: 93
-  },
-  {
-    id: 'room105_light',
-    name: '智能照明系统-客房105',
-    type: 'lighting',
-    category: 'lighting',
-    status: 'online',
-    roomNumber: '105',
-    floor: 1,
-    location: '标准客房105',
-    lastUpdate: '2025-07-23 14:30:00',
-    brightness: 90,
-    power: 45,
-    energyConsumption: 2.5,
-    isOnline: true,
-    signal: 95
-  },
-  {
-    id: 'room105_tv',
-    name: '智能电视-客房105',
-    type: 'tv',
-    category: 'entertainment',
-    status: 'online',
-    roomNumber: '105',
-    floor: 1,
-    location: '标准客房105',
-    lastUpdate: '2025-07-23 14:29:30',
-    power: 150,
-    energyConsumption: 4.6,
-    isOnline: true,
-    signal: 91
-  },
-  {
-    id: 'room105_curtain',
-    name: '电动窗帘-客房105',
-    type: 'curtain',
-    category: 'comfort',
-    status: 'online',
-    roomNumber: '105',
-    floor: 1,
-    location: '标准客房105',
-    lastUpdate: '2025-07-23 14:28:45',
-    power: 30,
-    energyConsumption: 0.8,
-    isOnline: true,
-    signal: 88
-  },
-  {
-    id: 'room105_lock',
-    name: '智能门锁-客房105',
-    type: 'door_lock',
-    category: 'security',
-    status: 'online',
-    roomNumber: '105',
-    floor: 1,
-    location: '标准客房105门口',
-    lastUpdate: '2025-07-23 14:30:15',
-    battery: 82,
-    power: 5,
-    energyConsumption: 0.1,
-    isOnline: true,
-    signal: 93
-  },
-
-  // 106房间设备
-  {
-    id: 'room106_ac',
-    name: '中央空调-客房106',
-    type: 'air_conditioner',
-    category: 'hvac',
-    status: 'online',
-    roomNumber: '106',
-    floor: 1,
-    location: '标准客房106',
-    lastUpdate: '2025-07-23 14:30:00',
-    temperature: 20,
-    humidity: 40,
-    power: 1200,
-    energyConsumption: 4.5,
-    isOnline: true,
-    signal: 95
-  },
-  {
-    id: 'room106_light',
-    name: '智能照明系统-客房106',
-    type: 'lighting',
-    category: 'lighting',
-    status: 'online',
-    roomNumber: '106',
-    floor: 1,
-    location: '标准客房106',
-    lastUpdate: '2025-07-23 14:30:00',
-    brightness: 0,
-    power: 45,
-    energyConsumption: 0,
-    isOnline: true,
-    signal: 97
-  },
-  {
-    id: 'room106_tv',
-    name: '智能电视-客房106',
-    type: 'tv',
-    category: 'entertainment',
-    status: 'online',
-    roomNumber: '106',
-    floor: 1,
-    location: '标准客房106',
-    lastUpdate: '2025-07-23 14:29:30',
-    power: 150,
-    energyConsumption: 0,
-    isOnline: true,
-    signal: 93
-  },
-  {
-    id: 'room106_curtain',
-    name: '电动窗帘-客房106',
-    type: 'curtain',
-    category: 'comfort',
-    status: 'online',
-    roomNumber: '106',
-    floor: 1,
-    location: '标准客房106',
-    lastUpdate: '2025-07-23 14:28:45',
-    power: 30,
-    energyConsumption: 0,
-    isOnline: true,
-    signal: 90
-  },
-  {
-    id: 'room106_lock',
-    name: '智能门锁-客房106',
-    type: 'door_lock',
-    category: 'security',
-    status: 'online',
-    roomNumber: '106',
-    floor: 1,
-    location: '标准客房106门口',
-    lastUpdate: '2025-07-23 14:30:15',
-    battery: 90,
-    power: 5,
-    energyConsumption: 0.1,
-    isOnline: true,
-    signal: 95
-  },
-
-  // 107房间设备
-  {
-    id: 'room107_ac',
-    name: '中央空调-客房107',
-    type: 'air_conditioner',
-    category: 'hvac',
-    status: 'online',
-    roomNumber: '107',
-    floor: 1,
-    location: '标准客房107',
-    lastUpdate: '2025-07-23 14:30:00',
-    temperature: 21,
-    humidity: 45,
-    power: 1200,
-    energyConsumption: 8.9,
-    isOnline: true,
-    signal: 94
-  },
-  {
-    id: 'room107_light',
-    name: '智能照明系统-客房107',
-    type: 'lighting',
-    category: 'lighting',
-    status: 'online',
-    roomNumber: '107',
-    floor: 1,
-    location: '标准客房107',
-    lastUpdate: '2025-07-23 14:30:00',
-    brightness: 70,
-    power: 45,
-    energyConsumption: 2.0,
-    isOnline: true,
-    signal: 96
-  },
-  {
-    id: 'room107_tv',
-    name: '智能电视-客房107',
-    type: 'tv',
-    category: 'entertainment',
-    status: 'online',
-    roomNumber: '107',
-    floor: 1,
-    location: '标准客房107',
-    lastUpdate: '2025-07-23 14:29:30',
-    power: 150,
-    energyConsumption: 3.9,
-    isOnline: true,
-    signal: 92
-  },
-  {
-    id: 'room107_curtain',
-    name: '电动窗帘-客房107',
-    type: 'curtain',
-    category: 'comfort',
-    status: 'online',
-    roomNumber: '107',
-    floor: 1,
-    location: '标准客房107',
-    lastUpdate: '2025-07-23 14:28:45',
-    power: 30,
-    energyConsumption: 0.8,
-    isOnline: true,
-    signal: 89
-  },
-  {
-    id: 'room107_lock',
-    name: '智能门锁-客房107',
-    type: 'door_lock',
-    category: 'security',
-    status: 'online',
-    roomNumber: '107',
-    floor: 1,
-    location: '标准客房107门口',
-    lastUpdate: '2025-07-23 14:30:15',
-    battery: 87,
-    power: 5,
-    energyConsumption: 0.1,
-    isOnline: true,
-    signal: 94
-  },
-
-  // 108房间设备
-  {
-    id: 'room108_ac',
-    name: '中央空调-客房108',
-    type: 'air_conditioner',
-    category: 'hvac',
-    status: 'online',
-    roomNumber: '108',
-    floor: 1,
-    location: '标准客房108',
-    lastUpdate: '2025-07-23 14:30:00',
-    temperature: 26,
-    humidity: 58,
-    power: 1200,
-    energyConsumption: 7.8,
-    isOnline: true,
-    signal: 85
-  },
-  {
-    id: 'room108_light',
-    name: '智能照明系统-客房108',
-    type: 'lighting',
-    category: 'lighting',
-    status: 'online',
-    roomNumber: '108',
-    floor: 1,
-    location: '标准客房108',
-    lastUpdate: '2025-07-23 14:30:00',
-    brightness: 0,
-    power: 45,
-    energyConsumption: 0,
-    isOnline: true,
-    signal: 87
-  },
-  {
-    id: 'room108_tv',
-    name: '智能电视-客房108',
-    type: 'tv',
-    category: 'entertainment',
-    status: 'online',
-    roomNumber: '108',
-    floor: 1,
-    location: '标准客房108',
-    lastUpdate: '2025-07-23 14:29:30',
-    power: 150,
-    energyConsumption: 0,
-    isOnline: true,
-    signal: 83
-  },
-  {
-    id: 'room108_curtain',
-    name: '电动窗帘-客房108',
-    type: 'curtain',
-    category: 'comfort',
-    status: 'online',
-    roomNumber: '108',
-    floor: 1,
-    location: '标准客房108',
-    lastUpdate: '2025-07-23 14:28:45',
-    power: 30,
-    energyConsumption: 0,
-    isOnline: true,
-    signal: 80
-  },
-  {
-    id: 'room108_lock',
-    name: '智能门锁-客房108',
-    type: 'door_lock',
-    category: 'security',
-    status: 'online',
-    roomNumber: '108',
-    floor: 1,
-    location: '标准客房108门口',
-    lastUpdate: '2025-07-23 14:30:15',
-    battery: 75,
-    power: 5,
-    energyConsumption: 0.1,
-    isOnline: true,
-    signal: 82
-  },
-
-  // 公共区域智能设备
-  {
-    id: 'robot_001',
-    name: '送餐机器人-01',
-    type: 'delivery_robot',
-    category: 'service',
-    status: 'online',
-    roomNumber: 'lobby',
-    floor: 1,
-    location: '酒店大堂',
-    lastUpdate: '2025-07-23 14:30:00',
-    battery: 85,
-    power: 200,
-    energyConsumption: 2.5,
-    isOnline: true,
-    signal: 95,
-    currentTask: '空闲',
-    destination: '',
-    estimatedArrival: ''
-  },
-  {
-    id: 'robot_002',
-    name: '送餐机器人-02',
-    type: 'delivery_robot',
-    category: 'service',
-    status: 'online',
-    roomNumber: 'kitchen',
-    floor: 1,
-    location: '厨房',
-    lastUpdate: '2025-07-23 14:25:00',
-    battery: 72,
-    power: 200,
-    energyConsumption: 3.2,
-    isOnline: true,
-    signal: 88,
-    currentTask: '送餐中',
-    destination: '201',
-    estimatedArrival: '2025-07-23 14:35:00'
-  },
-  {
-    id: 'access_main',
-    name: '主门禁系统',
-    type: 'access_control',
-    category: 'security',
-    status: 'online',
-    roomNumber: 'main_entrance',
-    floor: 1,
-    location: '酒店主入口',
-    lastUpdate: '2025-07-23 14:30:00',
-    battery: 95,
-    power: 15,
-    energyConsumption: 0.3,
-    isOnline: true,
-    signal: 98,
-    accessLevel: 'guest',
-    lastAccess: '2025-07-23 14:28:00'
-  },
-  {
-    id: 'access_parking',
-    name: '停车场门禁',
-    type: 'access_control',
-    category: 'security',
-    status: 'online',
-    roomNumber: 'parking',
-    floor: -1,
-    location: '地下停车场入口',
-    lastUpdate: '2025-07-23 14:29:00',
-    battery: 92,
-    power: 15,
-    energyConsumption: 0.2,
-    isOnline: true,
-    signal: 96,
-    accessLevel: 'guest',
-    lastAccess: '2025-07-23 14:25:00'
-  },
-  {
-    id: 'elevator_01',
-    name: '客梯-01',
-    type: 'elevator',
-    category: 'service',
-    status: 'online',
-    roomNumber: 'elevator_01',
-    floor: 2,
-    location: '酒店大堂',
-    lastUpdate: '2025-07-23 14:30:00',
-    power: 500,
-    energyConsumption: 8.5,
-    isOnline: true,
-    signal: 99,
-    currentFloor: 2,
-    targetFloor: 4,
-    direction: 'up'
-  },
-  {
-    id: 'elevator_02',
-    name: '客梯-02',
-    type: 'elevator',
-    category: 'service',
-    status: 'online',
-    roomNumber: 'elevator_02',
-    floor: 1,
-    location: '酒店大堂',
-    lastUpdate: '2025-07-23 14:29:00',
-    power: 500,
-    energyConsumption: 7.8,
-    isOnline: true,
-    signal: 97,
-    currentFloor: 1,
-    targetFloor: 1,
-    direction: 'idle'
-  },
-  {
-    id: 'fire_alarm_01',
-    name: '火灾报警器-大堂',
-    type: 'fire_alarm',
-    category: 'safety',
-    status: 'online',
-    roomNumber: 'lobby',
-    floor: 1,
-    location: '酒店大堂',
-    lastUpdate: '2025-07-23 14:30:00',
-    battery: 98,
-    power: 5,
-    energyConsumption: 0.1,
-    isOnline: true,
-    signal: 99
-  },
-  {
-    id: 'fire_alarm_02',
-    name: '火灾报警器-客房区',
-    type: 'fire_alarm',
-    category: 'safety',
-    status: 'online',
-    roomNumber: 'guest_area',
-    floor: 2,
-    location: '2楼客房区',
-    lastUpdate: '2025-07-23 14:29:00',
-    battery: 96,
-    power: 5,
-    energyConsumption: 0.1,
-    isOnline: true,
-    signal: 98
-  },
-  {
-    id: 'cctv_lobby',
-    name: '监控摄像头-大堂',
-    type: 'cctv_camera',
-    category: 'security',
-    status: 'online',
-    roomNumber: 'lobby',
-    floor: 1,
-    location: '酒店大堂',
-    lastUpdate: '2025-07-23 14:30:00',
-    power: 25,
-    energyConsumption: 0.6,
-    isOnline: true,
-    signal: 95,
-    recordingStatus: true,
-    motionDetection: true
-  },
-  {
-    id: 'cctv_parking',
-    name: '监控摄像头-停车场',
-    type: 'cctv_camera',
-    category: 'security',
-    status: 'online',
-    roomNumber: 'parking',
-    floor: -1,
-    location: '地下停车场',
-    lastUpdate: '2025-07-23 14:29:00',
-    power: 25,
-    energyConsumption: 0.6,
-    isOnline: true,
-    signal: 93,
-    recordingStatus: true,
-    motionDetection: true
-  },
-  {
-    id: 'cctv_elevator',
-    name: '监控摄像头-电梯',
-    type: 'cctv_camera',
-    category: 'security',
-    status: 'online',
-    roomNumber: 'elevator_01',
-    floor: 1,
-    location: '客梯内部',
-    lastUpdate: '2025-07-23 14:28:00',
-    power: 25,
-    energyConsumption: 0.6,
-    isOnline: true,
-    signal: 94,
-    recordingStatus: true,
-    motionDetection: false
+  // 生成客房设备
+  for (let floor = 1; floor <= HOTEL_CONFIG.FLOORS; floor++) {
+    let roomsOnFloor = HOTEL_CONFIG.ROOMS_PER_FLOOR;
+    let roomType: 'standard' | 'deluxe' | 'suite' | 'presidential' = 'standard';
+    
+    // 确定房间类型
+    if (floor >= 19) roomType = 'presidential';
+    else if (floor >= 16) roomType = 'suite';
+    else if (floor >= 11) roomType = 'deluxe';
+    
+    for (let room = 1; room <= roomsOnFloor; room++) {
+      let roomNumber = `${floor}${room.toString().padStart(2, '0')}`;
+      
+      // 基础设备
+      devices.push({
+        id: `room${roomNumber}_ac`,
+        name: `中央空调-客房${roomNumber}`,
+        type: 'air_conditioner',
+        category: 'hvac',
+        status: 'online',
+        roomNumber: roomNumber,
+        floor: floor,
+        location: `${floor}楼${roomNumber}房间`,
+        lastUpdate: '2025-07-23 14:30:00',
+        temperature: Number((20 + Math.random() * 4).toFixed(1)),  // 温度保留1位小数
+        humidity: Math.round(40 + Math.random() * 20),  // 湿度取整数
+        power: 1200,
+        energyConsumption: Number((5 + Math.random() * 5).toFixed(2)),  // 能耗保留2位小数
+        isOnline: true,
+        signal: Math.round(85 + Math.random() * 15)  // 信号强度取整数
+      });
+      
+      // 其他房间设备...
+      devices.push({
+        id: `room${roomNumber}_light`,
+        name: `智能照明-客房${roomNumber}`,
+        type: 'lighting',
+        category: 'lighting',
+        status: 'online',
+        roomNumber: roomNumber,
+        floor: floor,
+        location: `${floor}楼${roomNumber}房间`,
+        lastUpdate: '2025-07-23 14:30:00',
+        brightness: Math.round(Math.random() * 100),  // 亮度取整数
+        power: 45,
+        energyConsumption: Number((Math.random() * 3).toFixed(2)),  // 能耗保留2位小数
+        isOnline: true,
+        signal: Math.round(85 + Math.random() * 15)
+      });
+      
+      // 根据房间类型添加额外设备
+      if (roomType !== 'standard') {
+        devices.push({
+          id: `room${roomNumber}_minibar`,
+          name: `智能迷你吧-客房${roomNumber}`,
+          type: 'mini_bar',
+          category: 'comfort',
+          status: 'online',
+          roomNumber: roomNumber,
+          floor: floor,
+          location: `${floor}楼${roomNumber}房间`,
+          lastUpdate: '2025-07-23 14:30:00',
+          temperature: Number((4 + Math.random() * 2).toFixed(1)),  // 温度保留1位小数
+          power: 80,
+          energyConsumption: Number((Math.random() * 2).toFixed(2)),  // 能耗保留2位小数
+          isOnline: true,
+          signal: Math.round(85 + Math.random() * 15)
+        });
+      }
+    }
+    
+    // 每层公共区域设备
+    // 监控摄像头
+    for (let i = 1; i <= HOTEL_CONFIG.CCTV_PER_FLOOR; i++) {
+      devices.push({
+        id: `cctv_f${floor}_${i}`,
+        name: `监控摄像头-${floor}楼-${i}号`,
+        type: 'cctv_camera',
+        category: 'security',
+        status: 'online',
+        floor: floor,
+        location: `${floor}楼走廊`,
+        lastUpdate: '2025-07-23 14:30:00',
+        power: 25,
+        energyConsumption: 0.6,
+        isOnline: true,
+        signal: 90 + Math.random() * 10,
+        recordingStatus: true,
+        motionDetection: true
+      });
+    }
+    
+    // 门禁系统
+    for (let i = 1; i <= HOTEL_CONFIG.ACCESS_CONTROLS; i++) {
+      devices.push({
+        id: `access_f${floor}_${i}`,
+        name: `门禁系统-${floor}楼-${i}号`,
+        type: 'access_control',
+        category: 'security',
+        status: 'online',
+        floor: floor,
+        location: `${floor}楼安全门`,
+        lastUpdate: '2025-07-23 14:30:00',
+        power: 15,
+        energyConsumption: 0.3,
+        isOnline: true,
+        signal: 90 + Math.random() * 10
+      });
+    }
   }
-];
+  
+  // 电梯
+  for (let i = 1; i <= HOTEL_CONFIG.ELEVATORS; i++) {
+    devices.push({
+      id: `elevator_${i.toString().padStart(2, '0')}`,
+      name: `客梯-${i.toString().padStart(2, '0')}`,
+      type: 'elevator',
+      category: 'service',
+      status: 'online',
+      floor: Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1,
+      location: '电梯井',
+      lastUpdate: '2025-07-23 14:30:00',
+      power: 500,
+      energyConsumption: 7 + Math.random() * 3,
+      isOnline: true,
+      signal: 95 + Math.random() * 5,
+      currentFloor: Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1,
+      targetFloor: Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1,
+      direction: Math.random() > 0.5 ? 'up' : 'down'
+    });
+  }
+  
+  // 送餐机器人
+  for (let i = 1; i <= HOTEL_CONFIG.DELIVERY_ROBOTS; i++) {
+    devices.push({
+      id: `robot_${i.toString().padStart(2, '0')}`,
+      name: `送餐机器人-${i.toString().padStart(2, '0')}`,
+      type: 'delivery_robot',
+      category: 'service',
+      status: 'online',
+      floor: Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1,
+      location: '正在服务中',
+      lastUpdate: '2025-07-23 14:30:00',
+      battery: 60 + Math.random() * 40,
+      power: 200,
+      energyConsumption: 2 + Math.random() * 2,
+      isOnline: true,
+      signal: 90 + Math.random() * 10,
+      currentTask: Math.random() > 0.3 ? '送餐中' : '空闲',
+      destination: Math.random() > 0.3 ? `${Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1}${Math.floor(Math.random() * HOTEL_CONFIG.ROOMS_PER_FLOOR) + 1}` : '',
+      estimatedArrival: '2025-07-23 14:35:00'
+    });
+  }
+  
+  return devices;
+}
 
-// 客房信息
-export const hotelRooms: HotelRoom[] = [
-  // 1楼 - 标准间
-  {
-    id: 'room_101',
-    roomNumber: '101',
-    floor: 1,
-    type: 'standard',
-    status: 'occupied',
-    guestName: '张先生',
-    checkInTime: '2025-07-14 15:00:00',
-    checkOutTime: '2025-07-16 12:00:00',
-    deviceCount: 5,
-    onlineDeviceCount: 5,
-    temperature: 22,
-    humidity: 45,
-    lightLevel: 80,
-    energyConsumption: 15.1,
-    lastCleanTime: '2025-07-14 14:30:00'
-  },
-  {
-    id: 'room_102',
-    roomNumber: '102',
-    floor: 1,
-    type: 'standard',
-    status: 'vacant_dirty',
-    checkOutTime: '2025-07-23 11:30:00',
-    deviceCount: 6,
-    onlineDeviceCount: 4,
-    temperature: 25,
-    humidity: 55,
-    lightLevel: 0,
-    energyConsumption: 12.8,
-    lastCleanTime: '2025-07-13 16:00:00'
-  },
-  {
-    id: 'room_103',
-    roomNumber: '103',
-    floor: 1,
-    type: 'standard',
-    status: 'occupied',
-    guestName: '王女士',
-    checkInTime: '2025-07-23 14:00:00',
-    checkOutTime: '2025-07-18 12:00:00',
-    deviceCount: 5,
-    onlineDeviceCount: 5,
-    temperature: 23,
-    humidity: 48,
-    lightLevel: 60,
-    energyConsumption: 13.5,
-    lastCleanTime: '2025-07-23 13:30:00'
-  },
-  {
-    id: 'room_104',
-    roomNumber: '104',
-    floor: 1,
-    type: 'standard',
-    status: 'vacant_clean',
-    deviceCount: 5,
-    onlineDeviceCount: 5,
-    temperature: 20,
-    humidity: 42,
-    lightLevel: 0,
-    energyConsumption: 4.8,
-    lastCleanTime: '2025-07-23 11:00:00'
-  },
-  {
-    id: 'room_105',
-    roomNumber: '105',
-    floor: 1,
-    type: 'standard',
-    status: 'occupied',
-    guestName: '刘先生',
-    checkInTime: '2025-07-14 18:00:00',
-    checkOutTime: '2025-07-16 12:00:00',
-    deviceCount: 5,
-    onlineDeviceCount: 4,
-    temperature: 24,
-    humidity: 50,
-    lightLevel: 90,
-    energyConsumption: 16.2,
-    lastCleanTime: '2025-07-14 17:30:00'
-  },
-  {
-    id: 'room_106',
-    roomNumber: '106',
-    floor: 1,
-    type: 'standard',
-    status: 'vacant_clean',
-    deviceCount: 5,
-    onlineDeviceCount: 5,
-    temperature: 20,
-    humidity: 40,
-    lightLevel: 0,
-    energyConsumption: 4.5,
-    lastCleanTime: '2025-07-23 09:30:00'
-  },
-  {
-    id: 'room_107',
-    roomNumber: '107',
-    floor: 1,
-    type: 'standard',
-    status: 'occupied',
-    guestName: '陈女士',
-    checkInTime: '2025-07-23 12:00:00',
-    checkOutTime: '2025-07-17 12:00:00',
-    deviceCount: 5,
-    onlineDeviceCount: 5,
-    temperature: 21,
-    humidity: 45,
-    lightLevel: 70,
-    energyConsumption: 14.8,
-    lastCleanTime: '2025-07-23 11:30:00'
-  },
-  {
-    id: 'room_108',
-    roomNumber: '108',
-    floor: 1,
-    type: 'standard',
-    status: 'vacant_dirty',
-    checkOutTime: '2025-07-23 10:00:00',
-    deviceCount: 5,
-    onlineDeviceCount: 3,
-    temperature: 26,
-    humidity: 58,
-    lightLevel: 0,
-    energyConsumption: 11.2,
-    lastCleanTime: '2025-07-14 16:00:00'
-  },
+// 更新房间数据生成函数
+function generateHotelRooms(): HotelRoom[] {
+  let rooms: HotelRoom[] = [];
+  
+  for (let floor = 1; floor <= HOTEL_CONFIG.FLOORS; floor++) {
+    let roomsOnFloor = HOTEL_CONFIG.ROOMS_PER_FLOOR;
+    let roomType: 'standard' | 'deluxe' | 'suite' | 'presidential' = 'standard';
+    let deviceCount = 5;
+    
+    // 确定房间类型和设备数量
+    if (floor >= 19) {
+      roomType = 'presidential';
+      deviceCount = 15;
+    } else if (floor >= 16) {
+      roomType = 'suite';
+      deviceCount = 12;
+    } else if (floor >= 11) {
+      roomType = 'deluxe';
+      deviceCount = 8;
+    }
+    
+    for (let room = 1; room <= roomsOnFloor; room++) {
+      let roomNumber = `${floor}${room.toString().padStart(2, '0')}`;
+      let isOccupied = Math.random() > 0.4;
+      
+      rooms.push({
+        id: `room_${roomNumber}`,
+        roomNumber: roomNumber,
+        floor: floor,
+        type: roomType,
+        status: isOccupied ? 'occupied' : (Math.random() > 0.5 ? 'vacant_clean' : 'vacant_dirty'),
+        guestName: isOccupied ? `客人${Math.floor(Math.random() * 1000)}` : undefined,
+        checkInTime: isOccupied ? '2025-07-23 14:00:00' : undefined,
+        checkOutTime: isOccupied ? '2025-07-25 12:00:00' : undefined,
+        deviceCount: deviceCount,
+        onlineDeviceCount: deviceCount - Math.floor(Math.random() * 2),
+        temperature: Number((20 + Math.random() * 6).toFixed(1)),  // 温度保留1位小数
+        humidity: Math.round(40 + Math.random() * 20),  // 湿度取整数
+        lightLevel: isOccupied ? Math.round(Math.random() * 100) : 0,  // 亮度取整数
+        energyConsumption: Number((isOccupied ? 10 + Math.random() * 10 : 2 + Math.random() * 3).toFixed(2)),  // 能耗保留2位小数
+        lastCleanTime: '2025-07-23 09:30:00',
+        maintenanceScheduled: Math.random() > 0.95
+      });
+    }
+  }
+  
+  return rooms;
+}
 
-  // 2楼 - 豪华间
-  {
-    id: 'room_201',
-    roomNumber: '201',
-    floor: 2,
-    type: 'deluxe',
-    status: 'occupied',
-    guestName: '李女士',
-    checkInTime: '2025-07-23 16:00:00',
-    checkOutTime: '2025-07-17 12:00:00',
-    deviceCount: 8,
-    onlineDeviceCount: 8,
-    temperature: 21,
-    humidity: 42,
-    lightLevel: 75,
-    energyConsumption: 18.7,
-    lastCleanTime: '2025-07-23 15:30:00'
-  },
-  {
-    id: 'room_202',
-    roomNumber: '202',
-    floor: 2,
-    type: 'deluxe',
-    status: 'vacant_clean',
-    deviceCount: 8,
-    onlineDeviceCount: 7,
-    temperature: 20,
-    humidity: 40,
-    lightLevel: 0,
-    energyConsumption: 5.2,
-    lastCleanTime: '2025-07-23 10:30:00'
-  },
-  {
-    id: 'room_203',
-    roomNumber: '203',
-    floor: 2,
-    type: 'deluxe',
-    status: 'occupied',
-    guestName: '赵先生',
-    checkInTime: '2025-07-14 20:00:00',
-    checkOutTime: '2025-07-19 12:00:00',
-    deviceCount: 8,
-    onlineDeviceCount: 8,
-    temperature: 22,
-    humidity: 44,
-    lightLevel: 85,
-    energyConsumption: 20.1,
-    lastCleanTime: '2025-07-14 19:30:00'
-  },
-  {
-    id: 'room_204',
-    roomNumber: '204',
-    floor: 2,
-    type: 'deluxe',
-    status: 'vacant_clean',
-    deviceCount: 8,
-    onlineDeviceCount: 8,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 5.8,
-    lastCleanTime: '2025-07-23 08:30:00'
-  },
-  {
-    id: 'room_205',
-    roomNumber: '205',
-    floor: 2,
-    type: 'deluxe',
-    status: 'occupied',
-    guestName: '孙女士',
-    checkInTime: '2025-07-23 13:00:00',
-    checkOutTime: '2025-07-18 12:00:00',
-    deviceCount: 8,
-    onlineDeviceCount: 7,
-    temperature: 23,
-    humidity: 46,
-    lightLevel: 80,
-    energyConsumption: 19.3,
-    lastCleanTime: '2025-07-23 12:30:00'
-  },
-  {
-    id: 'room_206',
-    roomNumber: '206',
-    floor: 2,
-    type: 'deluxe',
-    status: 'vacant_clean',
-    deviceCount: 8,
-    onlineDeviceCount: 8,
-    temperature: 20,
-    humidity: 39,
-    lightLevel: 0,
-    energyConsumption: 5.5,
-    lastCleanTime: '2025-07-23 07:30:00'
-  },
-
-  // 3楼 - 套房
-  {
-    id: 'room_301',
-    roomNumber: '301',
-    floor: 3,
-    type: 'suite',
-    status: 'out_of_order',
-    deviceCount: 12,
-    onlineDeviceCount: 8,
-    temperature: 18,
-    humidity: 38,
-    lightLevel: 0,
-    energyConsumption: 8.5,
-    lastCleanTime: '2025-07-14 09:00:00',
-    maintenanceScheduled: true
-  },
-  {
-    id: 'room_302',
-    roomNumber: '302',
-    floor: 3,
-    type: 'suite',
-    status: 'occupied',
-    guestName: '周先生',
-    checkInTime: '2025-07-14 16:00:00',
-    checkOutTime: '2025-07-20 12:00:00',
-    deviceCount: 12,
-    onlineDeviceCount: 12,
-    temperature: 21,
-    humidity: 43,
-    lightLevel: 90,
-    energyConsumption: 25.6,
-    lastCleanTime: '2025-07-14 15:30:00'
-  },
-  {
-    id: 'room_303',
-    roomNumber: '303',
-    floor: 3,
-    type: 'suite',
-    status: 'vacant_clean',
-    deviceCount: 12,
-    onlineDeviceCount: 11,
-    temperature: 20,
-    humidity: 40,
-    lightLevel: 0,
-    energyConsumption: 7.2,
-    lastCleanTime: '2025-07-23 06:30:00'
-  },
-  {
-    id: 'room_304',
-    roomNumber: '304',
-    floor: 3,
-    type: 'suite',
-    status: 'occupied',
-    guestName: '吴女士',
-    checkInTime: '2025-07-23 17:00:00',
-    checkOutTime: '2025-07-21 12:00:00',
-    deviceCount: 12,
-    onlineDeviceCount: 12,
-    temperature: 22,
-    humidity: 45,
-    lightLevel: 95,
-    energyConsumption: 28.3,
-    lastCleanTime: '2025-07-23 16:30:00'
-  },
-
-  // 4楼 - 总统套房
-  {
-    id: 'room_401',
-    roomNumber: '401',
-    floor: 4,
-    type: 'presidential',
-    status: 'occupied',
-    guestName: '郑先生',
-    checkInTime: '2025-07-14 19:00:00',
-    checkOutTime: '2025-07-22 12:00:00',
-    deviceCount: 15,
-    onlineDeviceCount: 15,
-    temperature: 21,
-    humidity: 44,
-    lightLevel: 100,
-    energyConsumption: 35.8,
-    lastCleanTime: '2025-07-14 18:30:00'
-  },
-  {
-    id: 'room_402',
-    roomNumber: '402',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },{
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },{
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-  {
-    id: 'room_403',
-    roomNumber: '403',
-    floor: 4,
-    type: 'presidential',
-    status: 'vacant_clean',
-    deviceCount: 15,
-    onlineDeviceCount: 14,
-    temperature: 20,
-    humidity: 41,
-    lightLevel: 0,
-    energyConsumption: 9.5,
-    lastCleanTime: '2025-07-23 05:30:00'
-  },
-];
+// 更新数据
+export const hotelDevices = generateHotelDevices();
+export const hotelRooms = generateHotelRooms();
 
 // 故障预警数据
 export const faultWarnings: FaultWarning[] = [
@@ -4398,48 +3030,186 @@ export const operationData: OperationData[] = [
   }
 ];
 
-// 设备调节记录
-export const deviceAdjustments: DeviceAdjustment[] = [
-  {
-    id: 'adj_001',
-    deviceId: 'room101_ac',
-    deviceName: '中央空调-客房101',
-    roomNumber: '101',
-    adjustmentType: 'temperature',
-    oldValue: 24,
-    newValue: 22,
-    adjustedBy: 'guest',
-    timestamp: '2025-07-23 14:15:00',
-    reason: '客人调节房间温度',
-    energyImpact: 2.3
-  },
-  {
-    id: 'adj_002',
-    deviceId: 'room201_light',
-    deviceName: '智能照明-客房201',
-    roomNumber: '201',
-    adjustmentType: 'brightness',
-    oldValue: 100,
-    newValue: 75,
-    adjustedBy: 'auto_system',
-    timestamp: '2025-07-23 13:30:00',
-    reason: '根据环境光线自动调节',
-    energyImpact: -0.8
-  },
-  {
-    id: 'adj_003',
-    deviceId: 'room102_ac',
-    deviceName: '中央空调-客房102',
-    roomNumber: '102',
-    adjustmentType: 'power',
-    oldValue: 'on',
-    newValue: 'off',
-    adjustedBy: 'staff',
-    timestamp: '2025-07-23 12:00:00',
-    reason: '客人退房后关闭设备',
-    energyImpact: -12.5
+// 生成设备调节记录函数
+function generateDeviceAdjustments(count: number): DeviceAdjustment[] {
+  const adjustments: DeviceAdjustment[] = [];
+  
+  // 计算最近30天的起止时间
+  const endTime = new Date();
+  const startTime = new Date(endTime.getTime() - 30 * 24 * 60 * 60 * 1000);
+  
+  // 计算每天大约需要生成的记录数
+  const recordsPerDay = Math.floor(count / 30);
+  const minutesPerRecord = Math.floor(24 * 60 / recordsPerDay); // 每条记录间隔的分钟数
+  
+  // 调节原因库扩充
+  const temperatureReasons = [
+    '客人感觉偏冷',
+    '客人感觉偏热',
+    '响应客人要求',
+    '根据室外温度自动调节',
+    '能源优化调节',
+    '定时温控计划执行',
+    '客人入住前预调节',
+    '夜间温度自动调节',
+    '节能模式温度调整',
+    '季节性温度优化',
+    '会议室温度预设',
+    '餐饮区域温度调节',
+    '健身区温度调节',
+    '大堂温度调节',
+    '早餐时段温度调节'
+  ];
+  
+  const brightnessReasons = [
+    '根据日光强度自动调节',
+    '客人需要更亮的照明',
+    '客人需要柔和灯光',
+    '夜间自动调光',
+    '节能模式启动',
+    '场景模式切换',
+    '客人阅读模式',
+    '清洁模式照明',
+    '会议模式照明',
+    '休息模式照明',
+    '化妆模式照明',
+    '工作模式照明',
+    '娱乐模式照明',
+    '用餐模式照明',
+    '迎宾模式照明'
+  ];
+
+  // 按时段设置调节频率权重（更细致的时间划分）
+  const getTimeWeight = (hour: number): number => {
+    if (hour >= 23 || hour < 5) return 0.3;  // 深夜频率最低
+    if (hour >= 5 && hour < 7) return 0.8;   // 清晨逐渐增加
+    if (hour >= 7 && hour < 9) return 2.5;   // 早餐高峰
+    if (hour >= 9 && hour < 11) return 2.0;  // 上午高峰
+    if (hour >= 11 && hour < 14) return 1.8; // 午餐时段
+    if (hour >= 14 && hour < 17) return 1.5; // 下午时段
+    if (hour >= 17 && hour < 19) return 2.2; // 晚餐高峰
+    if (hour >= 19 && hour < 21) return 1.8; // 晚间活动
+    if (hour >= 21 && hour < 23) return 1.2; // 夜间逐渐降低
+    return 1.0;
+  };
+
+  // 按房型设置调节频率权重（更细致的权重划分）
+  const getRoomWeight = (floor: number): number => {
+    if (floor >= 19) return 4.0;      // 总统套房调节频率最高
+    if (floor >= 16) return 3.0;      // 豪华套房调节频率较高
+    if (floor >= 13) return 2.0;      // 高层豪华间
+    if (floor >= 11) return 1.5;      // 中层豪华间
+    if (floor >= 6) return 1.2;       // 中层标准间
+    return 1.0;                       // 低层标准间
+  };
+
+  // 生成房间号列表（1-20层，每层15间）
+  const roomNumbers: string[] = [];
+  for (let floor = 1; floor <= 20; floor++) {
+    for (let room = 1; room <= 15; room++) {
+      roomNumbers.push(`${floor}${room.toString().padStart(2, '0')}`);
+    }
   }
-];
+
+  let currentTime = new Date(endTime.getTime());
+  let recordCount = 0;
+
+  while (currentTime > startTime && recordCount < count) {
+    const hour = currentTime.getHours();
+    const timeWeight = getTimeWeight(hour);
+    
+    // 根据时间权重决定是否生成记录
+    if (Math.random() < timeWeight) {
+      // 每个时间点生成1-5条记录
+      const recordsThisTime = Math.floor(Math.random() * 5) + 1;
+      
+      for (let i = 0; i < recordsThisTime && recordCount < count; i++) {
+        // 选择房间时考虑房型权重
+        let roomNumber;
+        const roomTypeRand = Math.random();
+        if (roomTypeRand < 0.4) {  // 40%概率选择高级房型
+          const floor = 16 + Math.floor(Math.random() * 5);  // 16-20层
+          const room = Math.floor(Math.random() * 15) + 1;
+          roomNumber = `${floor}${room.toString().padStart(2, '0')}`;
+        } else {
+          roomNumber = roomNumbers[Math.floor(Math.random() * roomNumbers.length)];
+        }
+        const floor = parseInt(roomNumber.substring(0, 2));
+        
+        // 根据时间和房型调整调节类型的概率
+        const isTemperature = hour >= 22 || hour <= 6 ? 
+          Math.random() < 0.85 :  // 夜间主要调节温度
+          Math.random() < 0.65;   // 白天温度和亮度都调节
+        
+        // 根据时间段调整调节者的概率
+        let adjustedBy: 'guest' | 'staff' | 'auto_system';
+        if (hour >= 22 || hour < 6) {
+          adjustedBy = Math.random() < 0.75 ? 'auto_system' : (Math.random() < 0.9 ? 'guest' : 'staff');
+        } else if (hour >= 9 && hour <= 17) {
+          adjustedBy = Math.random() < 0.45 ? 'staff' : (Math.random() < 0.75 ? 'auto_system' : 'guest');
+        } else {
+          adjustedBy = Math.random() < 0.55 ? 'guest' : (Math.random() < 0.85 ? 'auto_system' : 'staff');
+        }
+        
+        // 根据房间类型确定设备名称前缀
+        let devicePrefix = '标准间';
+        if (floor >= 19) devicePrefix = '总统套房';
+        else if (floor >= 16) devicePrefix = '豪华套房';
+        else if (floor >= 11) devicePrefix = '豪华间';
+        
+        // 生成调节记录
+        const adjustment: DeviceAdjustment = {
+          id: `adj_${recordCount.toString().padStart(5, '0')}`,
+          deviceId: `room${roomNumber}_${isTemperature ? 'ac' : 'light'}`,
+          deviceName: `${devicePrefix}${roomNumber}-${isTemperature ? '中央空调' : '智能照明'}`,
+          roomNumber: roomNumber,
+          adjustmentType: isTemperature ? 'temperature' : 'brightness',
+          oldValue: isTemperature ? 
+            Number((21 + Math.random() * 5).toFixed(1)) :
+            Math.round(30 + Math.random() * 70),
+          newValue: 0,
+          adjustedBy: adjustedBy,
+          timestamp: currentTime.toISOString().replace('T', ' ').substring(0, 19),
+          reason: isTemperature ? 
+            temperatureReasons[Math.floor(Math.random() * temperatureReasons.length)] :
+            brightnessReasons[Math.floor(Math.random() * brightnessReasons.length)],
+          energyImpact: 0
+        };
+        
+        // 根据oldValue计算合理的newValue和energyImpact
+        if (isTemperature) {
+          // 温度调节范围：±3度
+          const change = (Math.random() * 3) * (Math.random() > 0.5 ? 1 : -1);
+          adjustment.newValue = Number((Number(adjustment.oldValue) + change).toFixed(1));
+          // 能耗影响：每度温度变化影响0.8kWh
+          adjustment.energyImpact = Number((change * 0.8).toFixed(2));
+        } else {
+          // 亮度调节范围：±30%
+          const change = Math.round((Math.random() * 30) * (Math.random() > 0.5 ? 1 : -1));
+          adjustment.newValue = Math.max(0, Math.min(100, Number(adjustment.oldValue) + change));
+          // 能耗影响：每10%亮度变化影响0.2kWh
+          adjustment.energyImpact = Number((change * 0.02).toFixed(2));
+        }
+        
+        adjustments.push(adjustment);
+        recordCount++;
+      }
+    }
+    
+    // 向前移动时间
+    currentTime = new Date(currentTime.getTime() - minutesPerRecord * 60 * 1000);
+  }
+  
+  // 按时间倒序排列（最新的在前面）
+  return adjustments.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+}
+
+// 生成20000条设备调节记录（约30天的数据）
+export const deviceAdjustments = generateDeviceAdjustments(20000);
+
+// 添加日志输出
+console.log('Generated device adjustments:', deviceAdjustments.length, 'records');
+console.log('Sample records:', deviceAdjustments.slice(0, 3));
 
 // 导出所有数据的汇总对象
 export const hotelMockData = {

@@ -79,6 +79,7 @@ import {
 } from '@ant-design/icons';
 import { hotelDevices } from '../data/mockData';
 import { Line, Column, Pie } from '@ant-design/plots';
+import dayjs from 'dayjs';
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
@@ -123,6 +124,11 @@ interface RobotStatus {
   errorMessage?: string;
 }
 
+// 添加数值格式化函数
+const formatNumber = (value: number, precision: number = 1) => {
+  return Number(value.toFixed(precision));
+};
+
 const DeliveryRobot: React.FC = () => {
   const [robots, setRobots] = useState<RobotStatus[]>([]);
   const [tasks, setTasks] = useState<RobotTask[]>([]);
@@ -145,161 +151,206 @@ const DeliveryRobot: React.FC = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  // 模拟机器人数据
-  const loadRobotData = () => {
-    const robotData: RobotStatus[] = [
-      {
-        id: 'robot_001',
-        name: '送餐机器人-01',
-        status: 'online',
-        battery: 85,
-        signal: 95,
-        currentLocation: '厨房',
-        currentTask: '配送房间201的午餐',
-        speed: 2.5,
-        temperature: 25,
-        lastUpdate: '2025-07-23 14:30:00',
-        totalDeliveries: 156,
-        totalDistance: 45.2,
-        uptime: 120
-      },
-      {
-        id: 'robot_002',
-        name: '送餐机器人-02',
-        status: 'charging',
-        battery: 35,
-        signal: 88,
-        currentLocation: '充电站A',
-        speed: 0,
-        temperature: 24,
-        lastUpdate: '2025-07-23 14:25:00',
-        totalDeliveries: 142,
-        totalDistance: 38.7,
-        uptime: 98
-      },
-      {
-        id: 'robot_003',
-        name: '送餐机器人-03',
-        status: 'online',
-        battery: 92,
-        signal: 97,
-        currentLocation: '大堂',
-        currentTask: '配送房间105的下午茶',
-        speed: 2.8,
-        temperature: 26,
-        lastUpdate: '2025-07-23 14:32:00',
-        totalDeliveries: 203,
-        totalDistance: 67.3,
-        uptime: 156
-      },
-      {
-        id: 'robot_004',
-        name: '送餐机器人-04',
-        status: 'maintenance',
-        battery: 78,
-        signal: 0,
-        currentLocation: '维修间',
-        speed: 0,
-        temperature: 22,
-        lastUpdate: '2025-07-23 14:20:00',
-        totalDeliveries: 89,
-        totalDistance: 23.1,
-        uptime: 67,
-        errorCode: 'MOTOR_FAULT',
-        errorMessage: '左轮电机异常'
+  // 生成机器人数据
+  const generateRobotData = (): RobotStatus[] => {
+    const robots: RobotStatus[] = [];
+    
+    // 配送机器人 (20台)
+    for (let i = 1; i <= 20; i++) {
+      const id = i.toString().padStart(3, '0');
+      const battery = Math.floor(30 + Math.random() * 70); // 30-100%
+      const status = battery < 20 ? 'charging' :
+                    Math.random() > 0.95 ? 'maintenance' :
+                    Math.random() > 0.98 ? 'error' : 'online';
+      
+      robots.push({
+        id: `robot_${id}`,
+        name: `送餐机器人-${id}`,
+        status,
+        battery,
+        signal: Math.floor(85 + Math.random() * 15), // 85-100%
+        currentLocation: status === 'charging' ? '充电站' :
+                       status === 'maintenance' ? '维修间' :
+                       ['厨房', '餐厅', '大堂', '电梯间', '走廊'][Math.floor(Math.random() * 5)],
+        currentTask: status === 'online' && Math.random() > 0.3 ? 
+                    `配送房间${Math.floor(Math.random() * 20 + 1)}${Math.floor(Math.random() * 20 + 1)}${Math.floor(Math.random() * 10)}的${['早餐', '午餐', '晚餐', '夜宵', '下午茶'][Math.floor(Math.random() * 5)]}` : 
+                    undefined,
+        speed: status === 'online' ? formatNumber(1 + Math.random() * 2) : 0, // 1-3 km/h
+        temperature: formatNumber(20 + Math.random() * 10), // 20-30°C
+        lastUpdate: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        totalDeliveries: Math.floor(100 + Math.random() * 200), // 100-300次
+        totalDistance: formatNumber(20 + Math.random() * 50), // 20-70km
+        uptime: Math.floor(50 + Math.random() * 100), // 50-150小时
+        errorCode: status === 'error' ? ['MOTOR_ERROR', 'SENSOR_ERROR', 'NAVIGATION_ERROR', 'COMMUNICATION_ERROR'][Math.floor(Math.random() * 4)] : undefined,
+        errorMessage: status === 'error' ? ['左轮电机异常', '障碍物传感器异常', '导航系统异常', '通信模块异常'][Math.floor(Math.random() * 4)] : undefined
+      });
+    }
+
+    return robots;
+  };
+
+  // 生成任务数据
+  const generateTaskData = (robots: RobotStatus[]): RobotTask[] => {
+    const tasks: RobotTask[] = [];
+    const taskTypes: ('delivery' | 'pickup' | 'maintenance' | 'patrol')[] = ['delivery', 'pickup', 'maintenance', 'patrol'];
+    const priorities: ('low' | 'medium' | 'high' | 'urgent')[] = ['low', 'medium', 'high', 'urgent'];
+    const locations = ['厨房', '中餐厅', '西餐厅', '大堂', '商务中心', '健身房', 'SPA', '员工餐厅'];
+    const menuItems = {
+      breakfast: ['早餐套餐A', '早餐套餐B', '牛奶', '咖啡', '面包', '水果'],
+      lunch: ['商务套餐', '中式炒菜', '西式牛排', '海鲜套餐', '素食套餐'],
+      dinner: ['烤鸭套餐', '粤式点心', '日式料理', '意大利面', '印度咖喱'],
+      drinks: ['咖啡', '茶', '果汁', '气泡水', '红酒'],
+      snacks: ['水果拼盘', '点心拼盘', '三明治', '沙拉', '小食拼盘']
+    };
+
+    // 生成100个任务
+    for (let i = 1; i <= 100; i++) {
+      const id = i.toString().padStart(3, '0');
+      const taskType = taskTypes[Math.floor(Math.random() * taskTypes.length)];
+      const priority = priorities[Math.floor(Math.random() * priorities.length)];
+      const robot = robots[Math.floor(Math.random() * robots.length)];
+      const startLocation = locations[Math.floor(Math.random() * locations.length)];
+      
+      // 生成随机时间（过去24小时内）
+      const randomTime = dayjs().subtract(Math.random() * 24, 'hour');
+      const createdAt = randomTime.format('YYYY-MM-DD HH:mm:ss');
+      const startedAt = Math.random() > 0.3 ? randomTime.add(Math.random() * 5, 'minute').format('YYYY-MM-DD HH:mm:ss') : undefined;
+      const completedAt = startedAt && Math.random() > 0.5 ? dayjs(startedAt).add(Math.random() * 15, 'minute').format('YYYY-MM-DD HH:mm:ss') : undefined;
+
+      // 生成房间号（1-20层，每层20间）
+      const floor = Math.floor(Math.random() * 20 + 1);
+      const room = Math.floor(Math.random() * 20 + 1);
+      const roomNumber = `${floor}${room.toString().padStart(2, '0')}`;
+
+      // 根据任务类型生成不同的任务内容
+      let taskItems: string[] = [];
+      let destination = '';
+      let status: 'pending' | 'in_progress' | 'completed' | 'failed' | 'cancelled';
+
+      switch (taskType) {
+        case 'delivery':
+          const mealType = Math.random() > 0.5 ? 'lunch' : 'dinner';
+          taskItems = Array(Math.floor(Math.random() * 3 + 1))
+            .fill(0)
+            .map(() => menuItems[mealType as keyof typeof menuItems][Math.floor(Math.random() * menuItems[mealType as keyof typeof menuItems].length)]);
+          destination = `房间${roomNumber}`;
+          break;
+        case 'pickup':
+          taskItems = ['餐具回收', '垃圾回收'];
+          destination = '后厨回收站';
+          break;
+        case 'maintenance':
+          taskItems = ['例行检查', '软件更新', '传感器校准', '电池检测'][Math.floor(Math.random() * 4)].split(',');
+          destination = '维修间';
+          break;
+        case 'patrol':
+          taskItems = ['安全巡检', '设备巡检', '环境监测'][Math.floor(Math.random() * 3)].split(',');
+          destination = `${floor}层走廊`;
+          break;
       }
+
+      // 根据时间确定任务状态
+      if (!startedAt) {
+        status = 'pending';
+      } else if (!completedAt) {
+        status = 'in_progress';
+      } else {
+        status = Math.random() > 0.9 ? 'failed' : 
+                Math.random() > 0.95 ? 'cancelled' : 
+                'completed';
+      }
+
+      tasks.push({
+        id: `task_${id}`,
+        robotId: robot.id,
+        robotName: robot.name,
+        taskType,
+        status,
+        priority,
+        startLocation,
+        destination,
+        guestName: taskType === 'delivery' ? ['张先生', '王女士', 'Mr. Smith', 'Ms. Johnson', '李先生'][Math.floor(Math.random() * 5)] : undefined,
+        roomNumber: taskType === 'delivery' ? roomNumber : undefined,
+        items: taskItems,
+        estimatedTime: Math.floor(5 + Math.random() * 20), // 5-25分钟
+        actualTime: completedAt ? Math.floor(3 + Math.random() * 30) : undefined,
+        createdAt,
+        startedAt,
+        completedAt,
+        operator: ['前台小王', '客房部李经理', '工程部张师傅', '餐饮部周经理', '系统管理员'][Math.floor(Math.random() * 5)],
+        notes: Math.random() > 0.7 ? ['请尽快送达', '客人等待中', '需要特殊处理', '优先配送', '例行任务'][Math.floor(Math.random() * 5)] : undefined
+      });
+    }
+
+    // 按时间倒序排序
+    return tasks.sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf());
+  };
+
+  // 生成告警数据
+  const generateAlertData = (robots: RobotStatus[]): any[] => {
+    const alerts: any[] = [];
+    const alertTypes = ['error', 'warning', 'info'];
+    
+    robots.forEach(robot => {
+      if (robot.status === 'error') {
+        alerts.push({
+          id: `alert_${alerts.length + 1}`,
+          type: 'error',
+          title: '机器人故障',
+          message: `${robot.name}发生故障：${robot.errorMessage}`,
+          robotId: robot.id,
+          timestamp: robot.lastUpdate,
+          read: false
+        });
+      }
+      
+      if (robot.battery < 20) {
+        alerts.push({
+          id: `alert_${alerts.length + 1}`,
+          type: 'warning',
+          title: '电量低警告',
+          message: `${robot.name}电量低于20%，建议及时充电`,
+          robotId: robot.id,
+          timestamp: robot.lastUpdate,
+          read: Math.random() > 0.5
+        });
+      }
+
+      if (robot.temperature > 28) {
+        alerts.push({
+          id: `alert_${alerts.length + 1}`,
+          type: 'warning',
+          title: '温度异常',
+          message: `${robot.name}运行温度过高：${robot.temperature}°C`,
+          robotId: robot.id,
+          timestamp: robot.lastUpdate,
+          read: Math.random() > 0.5
+        });
+      }
+    });
+
+    // 添加一些随机的系统通知
+    const systemNotifications = [
+      '系统例行维护通知',
+      '软件版本更新提醒',
+      '任务高峰期提醒',
+      '设备保养提醒',
+      '系统性能报告'
     ];
 
-    const taskData: RobotTask[] = [
-      {
-        id: 'task_001',
-        robotId: 'robot_001',
-        robotName: '送餐机器人-01',
-        taskType: 'delivery',
-        status: 'in_progress',
-        priority: 'high',
-        startLocation: '厨房',
-        destination: '房间201',
-        guestName: '张先生',
-        roomNumber: '201',
-        items: ['宫保鸡丁', '米饭', '汤'],
-        estimatedTime: 8,
-        actualTime: 6,
-        createdAt: '2025-07-23 14:25:00',
-        startedAt: '2025-07-23 14:26:00',
-        operator: '李厨师',
-        notes: '客人要求15分钟内送达'
-      },
-      {
-        id: 'task_002',
-        robotId: 'robot_003',
-        robotName: '送餐机器人-03',
-        taskType: 'delivery',
-        status: 'in_progress',
-        priority: 'medium',
-        startLocation: '大堂',
-        destination: '房间105',
-        guestName: '王女士',
-        roomNumber: '105',
-        items: ['咖啡', '蛋糕', '水果'],
-        estimatedTime: 5,
-        createdAt: '2025-07-23 14:30:00',
-        startedAt: '2025-07-23 14:31:00',
-        operator: '前台小王'
-      },
-      {
-        id: 'task_003',
-        robotId: 'robot_002',
-        robotName: '送餐机器人-02',
-        taskType: 'maintenance',
-        status: 'completed',
-        priority: 'low',
-        startLocation: '充电站A',
-        destination: '维修间',
-        items: ['电池检查', '系统更新'],
-        estimatedTime: 30,
-        actualTime: 25,
-        createdAt: '2025-07-23 13:00:00',
-        startedAt: '2025-07-23 13:05:00',
-        completedAt: '2025-07-23 13:30:00',
-        operator: '技术员老张'
-      }
-    ];
+    for (let i = 0; i < 5; i++) {
+      alerts.push({
+        id: `alert_${alerts.length + 1}`,
+        type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
+        title: systemNotifications[i],
+        message: `系统${systemNotifications[i]}，请相关人员注意。`,
+        timestamp: dayjs().subtract(Math.random() * 24, 'hour').format('YYYY-MM-DD HH:mm:ss'),
+        read: Math.random() > 0.3
+      });
+    }
 
-    setRobots(robotData);
-    setTasks(taskData);
-
-    // 模拟告警数据
-    const alertData = [
-      {
-        id: 'alert_001',
-        type: 'warning',
-        title: '机器人电量低',
-        message: '送餐机器人-02电量低于20%，建议及时充电',
-        robotId: 'robot_002',
-        timestamp: '2025-07-23 14:25:00',
-        read: false
-      },
-      {
-        id: 'alert_002',
-        type: 'error',
-        title: '机器人故障',
-        message: '送餐机器人-04左轮电机异常，需要维修',
-        robotId: 'robot_004',
-        timestamp: '2025-07-23 14:20:00',
-        read: false
-      },
-      {
-        id: 'alert_003',
-        type: 'info',
-        title: '任务完成',
-        message: '房间201的午餐配送任务已完成',
-        robotId: 'robot_001',
-        timestamp: '2025-07-23 14:15:00',
-        read: true
-      }
-    ];
-    setAlerts(alertData);
+    // 按时间倒序排序
+    return alerts.sort((a, b) => dayjs(b.timestamp).valueOf() - dayjs(a.timestamp).valueOf());
   };
 
   // 模拟性能趋势数据
@@ -369,7 +420,28 @@ const DeliveryRobot: React.FC = () => {
 
   // 初始化数据
   useEffect(() => {
-    loadRobotData();
+    const robotData = generateRobotData();
+    const taskData = generateTaskData(robotData);
+    const alertData = generateAlertData(robotData);
+    
+    setRobots(robotData);
+    setTasks(taskData);
+    setAlerts(alertData);
+
+    // 设置定时器，每30秒更新一次数据
+    const timer = setInterval(() => {
+      const updatedRobots = robotData.map(robot => ({
+        ...robot,
+        battery: Math.max(0, Math.min(100, Math.floor(robot.battery + (Math.random() - 0.5) * 5))),
+        signal: Math.max(0, Math.min(100, Math.floor(robot.signal + (Math.random() - 0.5) * 3))),
+        temperature: formatNumber(Math.max(20, Math.min(35, robot.temperature + (Math.random() - 0.5) * 2))),
+        speed: robot.status === 'online' ? formatNumber(1 + Math.random() * 2) : 0,
+        lastUpdate: dayjs().format('YYYY-MM-DD HH:mm:ss')
+      }));
+      setRobots(updatedRobots);
+    }, 30000);
+
+    return () => clearInterval(timer);
   }, []);
 
   // 刷新状态
@@ -378,7 +450,13 @@ const DeliveryRobot: React.FC = () => {
     try {
       // 模拟API调用延迟
       await new Promise(resolve => setTimeout(resolve, 1000));
-      loadRobotData();
+      const robotData = generateRobotData();
+      const taskData = generateTaskData(robotData);
+      const alertData = generateAlertData(robotData);
+      
+      setRobots(robotData);
+      setTasks(taskData);
+      setAlerts(alertData);
       message.success('状态刷新成功');
     } catch (error) {
       message.error('状态刷新失败');
@@ -675,7 +753,7 @@ const DeliveryRobot: React.FC = () => {
       render: (speed: number) => (
         <Space>
           <ThunderboltOutlined style={{ color: '#fa8c16' }} />
-          {speed} km/h
+          {formatNumber(speed, 1)} km/h
         </Space>
       ),
     },
@@ -1292,7 +1370,7 @@ const DeliveryRobot: React.FC = () => {
                     </div>
                     <div>
                       <Text>当前速度</Text>
-                      <Text strong>{selectedRobot.speed} km/h</Text>
+                      <Text strong>{formatNumber(selectedRobot.speed, 1)} km/h</Text>
                     </div>
                   </Space>
                 </Card>

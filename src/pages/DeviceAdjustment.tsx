@@ -1,22 +1,122 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Slider, Switch, Button, Select, InputNumber, Space, Alert, Modal, Table, Tag, Statistic, Progress } from 'antd';
-import { SettingOutlined, ThunderboltOutlined, BulbOutlined, SnippetsOutlined, SaveOutlined, HistoryOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Slider, Switch, Button, Select, Space, Alert, Modal, Table, Tag, Statistic, Progress, Radio, Tooltip, Badge } from 'antd';
+import { SettingOutlined, ThunderboltOutlined, BulbOutlined, SnippetsOutlined, SaveOutlined, HistoryOutlined, ReloadOutlined, ArrowUpOutlined, ArrowDownOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { hotelDevices, deviceAdjustments, HotelDevice, DeviceAdjustment } from '../data/mockData';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
+import DatePicker from 'antd/es/date-picker';
+import { Line } from '@ant-design/plots';
 
 const { Option } = Select;
+const { RangePicker } = DatePicker;
+
+// 添加图表配置
+const ChartConfig = {
+  height: 300,
+  padding: 'auto',
+  xField: 'timestamp',
+  yField: 'value',
+  seriesField: 'type',
+  smooth: true,
+  animation: {
+    appear: {
+      animation: 'path-in',
+      duration: 1000,
+    },
+  },
+  legend: {
+    position: 'top',
+  },
+};
 
 const DeviceAdjustmentPage: React.FC = () => {
-  const [devices, setDevices] = useState<HotelDevice[]>(hotelDevices);
+  // 使用useEffect来确保每次访问页面时都获取最新数据
+  const [devices, setDevices] = useState<HotelDevice[]>([]);
+  const [adjustmentHistory, setAdjustmentHistory] = useState<DeviceAdjustment[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<string>('101');
   const [historyVisible, setHistoryVisible] = useState(false);
-  const [adjustmentHistory, setAdjustmentHistory] = useState<DeviceAdjustment[]>(deviceAdjustments);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
+  // 添加新的状态
+  const [activeTab, setActiveTab] = useState<'control' | 'analysis'>('control');
+  const [dateRange, setDateRange] = useState<[string, string]>([
+    dayjs().subtract(7, 'day').format('YYYY-MM-DD'),
+    dayjs().format('YYYY-MM-DD')
+  ]);
+  const [filterType, setFilterType] = useState<'all' | 'temperature' | 'brightness'>('all');
+  const [filterOperator, setFilterOperator] = useState<'all' | 'guest' | 'staff' | 'auto_system'>('all');
+
+  useEffect(() => {
+    // 每次进入页面时重新获取最新数据
+    setDevices(hotelDevices);
+    setAdjustmentHistory(deviceAdjustments);
+  }, []);
+  
   // 获取当前房间的设备
   const roomDevices = devices.filter(device => device.roomNumber === selectedRoom);
   
   // 获取房间列表
   const roomNumbers = Array.from(new Set(devices.map(device => device.roomNumber))).sort();
+
+  // 计算统计数据
+  const calculateStats = () => {
+    const filteredHistory = adjustmentHistory.filter(adj => adj.roomNumber === selectedRoom);
+    const temperatureAdjustments = filteredHistory.filter(adj => adj.adjustmentType === 'temperature');
+    const brightnessAdjustments = filteredHistory.filter(adj => adj.adjustmentType === 'brightness');
+    
+    return {
+      totalAdjustments: filteredHistory.length,
+      temperatureAdjustments: temperatureAdjustments.length,
+      brightnessAdjustments: brightnessAdjustments.length,
+      guestAdjustments: filteredHistory.filter(adj => adj.adjustedBy === 'guest').length,
+      staffAdjustments: filteredHistory.filter(adj => adj.adjustedBy === 'staff').length,
+      autoAdjustments: filteredHistory.filter(adj => adj.adjustedBy === 'auto_system').length,
+      totalEnergyImpact: Number(filteredHistory.reduce((sum, adj) => sum + (adj.energyImpact || 0), 0).toFixed(2)),
+      averageTemperature: temperatureAdjustments.length > 0 
+        ? Number((temperatureAdjustments.reduce((sum, adj) => sum + Number(adj.newValue), 0) / temperatureAdjustments.length).toFixed(1))
+        : null,
+      averageBrightness: brightnessAdjustments.length > 0
+        ? Math.round(brightnessAdjustments.reduce((sum, adj) => sum + Number(adj.newValue), 0) / brightnessAdjustments.length)
+        : null
+    };
+  };
+
+  const stats = calculateStats();
+
+  // 过滤历史记录
+  const filteredHistory = adjustmentHistory.filter(adj => {
+    const dateMatch = dayjs(adj.timestamp).format('YYYY-MM-DD') >= dateRange[0] &&
+                     dayjs(adj.timestamp).format('YYYY-MM-DD') <= dateRange[1];
+    const typeMatch = filterType === 'all' || adj.adjustmentType === filterType;
+    const operatorMatch = filterOperator === 'all' || adj.adjustedBy === filterOperator;
+    return adj.roomNumber === selectedRoom && dateMatch && typeMatch && operatorMatch;
+  });
+
+  // 添加图表数据处理函数
+  const getChartData = () => {
+    const data: any[] = [];
+    const sortedHistory = [...filteredHistory].sort((a, b) => 
+      dayjs(a.timestamp).valueOf() - dayjs(b.timestamp).valueOf()
+    );
+
+    sortedHistory.forEach(adj => {
+      if (adj.adjustmentType === 'temperature') {
+        data.push({
+          timestamp: dayjs(adj.timestamp).format('MM-DD HH:mm'),
+          value: adj.newValue,
+          type: '温度(°C)'
+        });
+      } else if (adj.adjustmentType === 'brightness') {
+        data.push({
+          timestamp: dayjs(adj.timestamp).format('MM-DD HH:mm'),
+          value: adj.newValue,
+          type: '亮度(%)'
+        });
+      }
+    });
+
+    return data;
+  };
 
   // 设备控制组件
   const DeviceControl: React.FC<{ device: HotelDevice; onUpdate: (updates: Partial<HotelDevice>) => void }> = 
@@ -189,27 +289,118 @@ const DeviceAdjustmentPage: React.FC = () => {
     );
   };
 
+  // 历史记录表格列
+  const historyColumns = [
+    {
+      title: '时间',
+      dataIndex: 'timestamp',
+      key: 'timestamp',
+      width: 150,
+    },
+    {
+      title: '设备',
+      dataIndex: 'deviceName',
+      key: 'deviceName',
+      width: 120,
+      ellipsis: true,
+    },
+    {
+      title: '类型',
+      dataIndex: 'adjustmentType',
+      key: 'adjustmentType',
+      width: 80,
+      render: (type: string) => {
+        const typeNames = {
+          temperature: '温度',
+          brightness: '亮度',
+          volume: '音量',
+          power: '电源',
+          schedule: '定时'
+        };
+        return typeNames[type as keyof typeof typeNames] || type;
+      }
+    },
+    {
+      title: '调节前',
+      dataIndex: 'oldValue',
+      key: 'oldValue',
+      width: 80,
+      render: (value: number, record: DeviceAdjustment) => {
+        return record.adjustmentType === 'temperature' ? 
+          `${value.toFixed(1)}°C` : 
+          `${value}%`;
+      }
+    },
+    {
+      title: '调节后',
+      dataIndex: 'newValue',
+      key: 'newValue',
+      width: 80,
+      render: (value: number, record: DeviceAdjustment) => {
+        return record.adjustmentType === 'temperature' ? 
+          `${value.toFixed(1)}°C` : 
+          `${value}%`;
+      }
+    },
+    {
+      title: '调节人',
+      dataIndex: 'adjustedBy',
+      key: 'adjustedBy',
+      width: 90,
+      render: (value: string) => {
+        const adjustedByMap = {
+          guest: '客人',
+          staff: '工作人员',
+          auto_system: '自动系统'
+        };
+        return adjustedByMap[value as keyof typeof adjustedByMap] || value;
+      }
+    },
+    {
+      title: '原因',
+      dataIndex: 'reason',
+      key: 'reason',
+      width: 160,
+      ellipsis: true,
+    },
+    {
+      title: '能耗影响',
+      dataIndex: 'energyImpact',
+      key: 'energyImpact',
+      width: 100,
+      align: 'right' as const,
+      render: (impact: number) => (
+        <Tag color={impact > 0 ? '#ff4d4f' : '#52c41a'} style={{ margin: 0 }}>
+          {impact > 0 ? '+' : ''}{impact.toFixed(2)} kWh
+        </Tag>
+      )
+    }
+  ];
+
   // 保存设置
   const saveSettings = () => {
     // 模拟保存到后端
     setHasUnsavedChanges(false);
     
     // 添加到历史记录
-    const newAdjustment: DeviceAdjustment = {
-      id: `adj_${Date.now()}`,
-      deviceId: roomDevices[0]?.id || '',
-      deviceName: `房间${selectedRoom}设备组`,
-      roomNumber: selectedRoom,
-      adjustmentType: 'temperature',
-      oldValue: 24,
-      newValue: roomDevices.find(d => d.type === 'air_conditioner')?.temperature || 22,
-      adjustedBy: 'staff',
-      timestamp: new Date().toLocaleString(),
-      reason: '用户手动调节',
-      energyImpact: Math.random() * 5 - 2.5
-    };
+    const newAdjustments: DeviceAdjustment[] = roomDevices.map(device => {
+      const isTemperature = device.type === 'air_conditioner';
+      return {
+        id: `adj_${Date.now()}_${device.id}`,
+        deviceId: device.id,
+        deviceName: device.name,
+        roomNumber: selectedRoom,
+        adjustmentType: isTemperature ? 'temperature' : 'brightness',
+        oldValue: isTemperature ? device.temperature || 22 : device.brightness || 0,
+        newValue: isTemperature ? device.temperature || 22 : device.brightness || 0,
+        adjustedBy: 'staff',
+        timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+        reason: '工作人员手动调节',
+        energyImpact: 0
+      };
+    });
     
-    setAdjustmentHistory(prev => [newAdjustment, ...prev]);
+    setAdjustmentHistory(prev => [...newAdjustments, ...prev]);
     
     Modal.success({
       title: '设置已保存',
@@ -242,56 +433,194 @@ const DeviceAdjustmentPage: React.FC = () => {
     });
   };
 
-  // 历史记录表格列
-  const historyColumns = [
-    {
-      title: '设备名称',
-      dataIndex: 'deviceName',
-      key: 'deviceName',
-    },
-    {
-      title: '调节类型',
-      dataIndex: 'adjustmentType',
-      key: 'adjustmentType',
-      render: (type: string) => {
-        const typeNames = {
-          temperature: '温度',
-          brightness: '亮度',
-          volume: '音量',
-          power: '电源',
-          schedule: '定时'
-        };
-        return typeNames[type as keyof typeof typeNames] || type;
-      }
-    },
-    {
-      title: '调节值',
-      key: 'values',
-      render: (record: DeviceAdjustment) => (
-        <span>{record.oldValue} → {record.newValue}</span>
-      )
-    },
-    {
-      title: '调节时间',
-      dataIndex: 'timestamp',
-      key: 'timestamp',
-    },
-    {
-      title: '能耗影响',
-      dataIndex: 'energyImpact',
-      key: 'energyImpact',
-      render: (impact: number) => (
-        <Tag color={impact > 0 ? 'red' : 'green'}>
-          {impact > 0 ? '+' : ''}{impact?.toFixed(1)}kWh
-        </Tag>
-      )
-    }
-  ];
-
   // 计算房间能耗统计
   const roomEnergyConsumption = roomDevices.reduce((sum, device) => sum + (device.energyConsumption || 0), 0);
   const roomPowerConsumption = roomDevices.reduce((sum, device) => sum + (device.power || 0), 0);
   const onlineDeviceCount = roomDevices.filter(d => d.status === 'online').length;
+
+  // 渲染统计卡片
+  const renderStatsCards = () => (
+    <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+      <Col span={6}>
+        <Card>
+          <Statistic
+            title={
+              <Space>
+                总调节次数
+                <Tooltip title="包括温度和亮度的所有调节记录">
+                  <InfoCircleOutlined style={{ color: '#8c8c8c' }} />
+                </Tooltip>
+              </Space>
+            }
+            value={stats.totalAdjustments}
+            suffix="次"
+            valueStyle={{ color: '#1890ff' }}
+          />
+          <div style={{ marginTop: 8, fontSize: 12, color: '#666' }}>
+            <Badge color="#1890ff" text={`温度: ${stats.temperatureAdjustments}`} style={{ marginRight: 12 }} />
+            <Badge color="#52c41a" text={`亮度: ${stats.brightnessAdjustments}`} />
+          </div>
+        </Card>
+      </Col>
+      <Col span={6}>
+        <Card>
+          <Statistic
+            title={
+              <Space>
+                调节来源分布
+                <Tooltip title="显示不同操作者的调节次数">
+                  <InfoCircleOutlined style={{ color: '#8c8c8c' }} />
+                </Tooltip>
+              </Space>
+            }
+            value={stats.guestAdjustments + stats.staffAdjustments + stats.autoAdjustments}
+            suffix="次"
+            valueStyle={{ color: '#52c41a' }}
+          />
+          <div style={{ marginTop: 8, fontSize: 12, color: '#666' }}>
+            <Badge color="#f5222d" text={`客人: ${stats.guestAdjustments}`} style={{ marginRight: 8 }} />
+            <Badge color="#1890ff" text={`工作人员: ${stats.staffAdjustments}`} style={{ marginRight: 8 }} />
+            <Badge color="#52c41a" text={`自动: ${stats.autoAdjustments}`} />
+          </div>
+        </Card>
+      </Col>
+      <Col span={6}>
+        <Card>
+          <Statistic
+            title={
+              <Space>
+                能耗影响
+                <Tooltip title="正值表示能耗增加，负值表示节能">
+                  <InfoCircleOutlined style={{ color: '#8c8c8c' }} />
+                </Tooltip>
+              </Space>
+            }
+            value={stats.totalEnergyImpact}
+            suffix="kWh"
+            valueStyle={{ color: stats.totalEnergyImpact > 0 ? '#ff4d4f' : '#52c41a' }}
+            prefix={stats.totalEnergyImpact > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+          />
+          <Progress 
+            percent={Math.abs(stats.totalEnergyImpact / 0.2)} 
+            size="small" 
+            status={stats.totalEnergyImpact > 0 ? "exception" : "success"}
+            showInfo={false}
+            style={{ marginTop: 8 }}
+          />
+        </Card>
+      </Col>
+      <Col span={6}>
+        <Card>
+          <Statistic
+            title={
+              <Space>
+                平均设置
+                <Tooltip title="显示温度或亮度的平均设定值">
+                  <InfoCircleOutlined style={{ color: '#8c8c8c' }} />
+                </Tooltip>
+              </Space>
+            }
+            value={stats.averageTemperature || stats.averageBrightness || 0}
+            suffix={stats.averageTemperature ? '°C' : '%'}
+            valueStyle={{ color: '#722ed1' }}
+          />
+          <div style={{ marginTop: 8, fontSize: 12, color: '#666' }}>
+            {stats.averageTemperature ? '平均温度' : '平均亮度'}
+          </div>
+        </Card>
+      </Col>
+    </Row>
+  );
+
+  // 渲染分析内容
+  const renderAnalysis = () => (
+    <>
+      {renderFilters()}
+      <Card title="调节趋势" style={{ marginBottom: 16 }}>
+        <Line {...ChartConfig} data={getChartData()} />
+      </Card>
+      <Card title="调节记录" extra={
+        <Space>
+          <Badge status="processing" text="总计" />
+          <span style={{ fontWeight: 'bold' }}>{filteredHistory.length}</span>
+          <span>条记录</span>
+        </Space>
+      }>
+        <Table
+          columns={historyColumns}
+          dataSource={filteredHistory}
+          rowKey="id"
+          pagination={{ 
+            pageSize: 10,
+            showQuickJumper: true,
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50'],
+            showTotal: (total) => `共 ${total} 条记录`
+          }}
+          size="small"
+        />
+      </Card>
+    </>
+  );
+
+  // 渲染过滤器
+  const renderFilters = () => (
+    <Row gutter={16} style={{ marginBottom: 16 }}>
+      <Col span={6}>
+        <RangePicker
+          value={[dayjs(dateRange[0]), dayjs(dateRange[1])]}
+          onChange={(dates: [Dayjs | null, Dayjs | null] | null) => {
+            if (dates && dates[0] && dates[1]) {
+              setDateRange([
+                dates[0].format('YYYY-MM-DD'),
+                dates[1].format('YYYY-MM-DD')
+              ]);
+            }
+          }}
+          style={{ width: '100%' }}
+        />
+      </Col>
+      <Col span={6}>
+        <Select
+          value={filterType}
+          onChange={setFilterType}
+          style={{ width: '100%' }}
+        >
+          <Option value="all">全部类型</Option>
+          <Option value="temperature">温度调节</Option>
+          <Option value="brightness">亮度调节</Option>
+        </Select>
+      </Col>
+      <Col span={6}>
+        <Select
+          value={filterOperator}
+          onChange={setFilterOperator}
+          style={{ width: '100%' }}
+        >
+          <Option value="all">全部操作者</Option>
+          <Option value="guest">客人</Option>
+          <Option value="staff">工作人员</Option>
+          <Option value="auto_system">自动系统</Option>
+        </Select>
+      </Col>
+      <Col span={6}>
+        <Button 
+          type="primary" 
+          icon={<ReloadOutlined />}
+          onClick={() => {
+            setDateRange([
+              dayjs().subtract(7, 'day').format('YYYY-MM-DD'),
+              dayjs().format('YYYY-MM-DD')
+            ]);
+            setFilterType('all');
+            setFilterOperator('all');
+          }}
+        >
+          重置筛选
+        </Button>
+      </Col>
+    </Row>
+  );
 
   return (
     <div style={{ padding: '0 16px' }}>
@@ -316,139 +645,119 @@ const DeviceAdjustmentPage: React.FC = () => {
         <Col span={6}>
           <Card>
             <div style={{ marginBottom: 16 }}>
-              <label>选择房间：</label>
+              <Space style={{ marginBottom: 8 }}>
+                <label>选择房间：</label>
+                <Tooltip title="选择要查看的房间">
+                  <InfoCircleOutlined style={{ color: '#8c8c8c' }} />
+                </Tooltip>
+              </Space>
               <Select
-                style={{ width: '100%', marginTop: 8 }}
+                style={{ width: '100%' }}
                 value={selectedRoom}
                 onChange={setSelectedRoom}
+                optionLabelProp="label"
               >
-                {roomNumbers.map(room => (
-                  <Option key={room} value={room}>房间 {room}</Option>
-                ))}
+                {roomNumbers.map(room => {
+                  const floor = Math.floor(Number(room) / 100);
+                  let roomType = '标准间';
+                  if (floor >= 19) roomType = '总统套房';
+                  else if (floor >= 16) roomType = '豪华套房';
+                  else if (floor >= 11) roomType = '豪华间';
+                  
+                  return (
+                    <Option key={room} value={room} label={`${room}房间`}>
+                      <Space>
+                        <span>{room}房间</span>
+                        <Tag color={
+                          floor >= 19 ? 'gold' :
+                          floor >= 16 ? 'purple' :
+                          floor >= 11 ? 'blue' :
+                          'default'
+                        }>{roomType}</Tag>
+                      </Space>
+                    </Option>
+                  );
+                })}
               </Select>
             </div>
           </Card>
         </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="在线设备"
-              value={onlineDeviceCount}
-              suffix={`/ ${roomDevices.length}`}
-              valueStyle={{ color: '#3f8600' }}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="当前功率"
-              value={roomPowerConsumption}
-              suffix="W"
-              prefix={<ThunderboltOutlined />}
-              valueStyle={{ color: '#1890ff' }}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="日能耗"
-              value={roomEnergyConsumption.toFixed(1)}
-              suffix="kWh"
-              valueStyle={{ color: '#722ed1' }}
-            />
-          </Card>
+        <Col span={18}>
+          {renderStatsCards()}
         </Col>
       </Row>
 
-      {/* 设备控制面板 */}
-      <Row gutter={16}>
-        <Col span={18}>
-          <Card 
-            title={`房间 ${selectedRoom} 设备控制`}
-            extra={
-              <Space>
-                <Button onClick={() => setHistoryVisible(true)} icon={<HistoryOutlined />}>
-                  调节历史
-                </Button>
-                <Button onClick={resetSettings}>
-                  重置设置
-                </Button>
-                <Button 
-                  type="primary" 
-                  icon={<SaveOutlined />}
-                  onClick={saveSettings}
-                  disabled={!hasUnsavedChanges}
-                >
-                  保存设置
-                </Button>
-              </Space>
-            }
-          >
-            <Row gutter={16}>
-              {roomDevices.map(device => (
-                <Col span={12} key={device.id} style={{ marginBottom: 16 }}>
-                  <DeviceControl 
-                    device={device} 
-                    onUpdate={(updates) => updateDevice(device.id, updates)}
-                  />
-                </Col>
-              ))}
-            </Row>
+      {/* 主要内容区 */}
+      <Card
+        title={`房间 ${selectedRoom} 设备控制`}
+        extra={
+          <Space>
+            <Radio.Group value={activeTab} onChange={e => setActiveTab(e.target.value)}>
+              <Radio.Button value="control">设备控制</Radio.Button>
+              <Radio.Button value="analysis">调节分析</Radio.Button>
+            </Radio.Group>
+            <Button onClick={() => setHistoryVisible(true)} icon={<HistoryOutlined />}>
+              调节历史
+            </Button>
+            <Button onClick={resetSettings}>
+              重置设置
+            </Button>
+            <Button 
+              type="primary" 
+              icon={<SaveOutlined />}
+              onClick={saveSettings}
+              disabled={!hasUnsavedChanges}
+            >
+              保存设置
+            </Button>
+          </Space>
+        }
+      >
+        {activeTab === 'control' ? (
+          <Row gutter={16}>
+            {roomDevices.map(device => (
+              <Col span={12} key={device.id} style={{ marginBottom: 16 }}>
+                <DeviceControl 
+                  device={device} 
+                  onUpdate={(updates) => updateDevice(device.id, updates)}
+                />
+              </Col>
+            ))}
             {roomDevices.length === 0 && (
               <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
                 该房间暂无设备
               </div>
             )}
-          </Card>
-        </Col>
-        
-        <Col span={6}>
-          <Card title="节能建议" style={{ marginBottom: 16 }}>
-            <Space direction="vertical" style={{ width: '100%' }}>
-              <Alert
-                message="温度建议"
-                description="建议空调温度设置在22-24°C之间，可节省15%的能耗"
-                type="info"
-                showIcon
-                style={{ marginBottom: 8 }}
-              />
-              <Alert
-                message="照明建议"
-                description="根据时间自动调节亮度，夜间建议30%亮度"
-                type="info"
-                showIcon
-              />
-            </Space>
-          </Card>
-          
-          <Card title="能耗监控">
-            <div style={{ textAlign: 'center' }}>
-              <Progress
-                type="dashboard"
-                percent={Math.round((roomEnergyConsumption / 25) * 100)}
-                format={() => `${roomEnergyConsumption.toFixed(1)}kWh`}
-              />
-              <div style={{ marginTop: 16, color: '#666' }}>今日能耗</div>
-            </div>
-          </Card>
-        </Col>
-      </Row>
+          </Row>
+        ) : (
+          renderAnalysis()
+        )}
+      </Card>
 
       {/* 调节历史弹窗 */}
       <Modal
-        title="设备调节历史"
+        title={`房间${selectedRoom}设备调节历史`}
         open={historyVisible}
         onCancel={() => setHistoryVisible(false)}
         footer={null}
-        width={800}
+        width={900}
+        style={{ top: 80 }}
+        bodyStyle={{ padding: '12px' }}
       >
         <Table
           columns={historyColumns}
           dataSource={adjustmentHistory.filter(adj => adj.roomNumber === selectedRoom)}
           rowKey="id"
-          pagination={{ pageSize: 10 }}
+          pagination={{ 
+            pageSize: 10,
+            showQuickJumper: true,
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50'],
+            showTotal: (total) => `共 ${total} 条记录`
+          }}
+          size="small"
+          scroll={{ x: 'max-content' }}
+          style={{ marginTop: 8 }}
         />
       </Modal>
     </div>

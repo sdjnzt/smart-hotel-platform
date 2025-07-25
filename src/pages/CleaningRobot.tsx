@@ -44,6 +44,7 @@ import {
   ClockCircleOutlined,
   TrophyOutlined,
 } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -79,6 +80,21 @@ interface CleaningTask {
   priority: 'low' | 'medium' | 'high';
 }
 
+// 添加数值格式化函数
+const formatNumber = (value: number, precision: number = 1) => {
+  return Number(value.toFixed(precision));
+};
+
+// 添加区域配置
+const AREAS = {
+  public: ['大堂', '前台区域', '电梯厅', '休息区', '走廊'],
+  restaurant: ['中餐厅', '西餐厅', '咖啡厅', '酒吧', '宴会厅'],
+  meeting: ['多功能厅', '会议室A', '会议室B', '会议室C', '商务中心'],
+  facilities: ['健身房', 'SPA', '游泳池', '儿童乐园', '娱乐室'],
+  rooms: Array.from({ length: 20 }, (_, i) => `${i + 1}层客房区`),
+  service: ['员工餐厅', '员工休息室', '洗衣房', '储藏室', '设备间']
+};
+
 const CleaningRobot: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [robots, setRobots] = useState<CleaningRobot[]>([]);
@@ -90,147 +106,199 @@ const CleaningRobot: React.FC = () => {
   const [selectedRobot, setSelectedRobot] = useState<CleaningRobot | null>(null);
   const [activeTab, setActiveTab] = useState('robots');
 
-  // 模拟数据
-  const mockRobots: CleaningRobot[] = [
-    {
-      id: '1',
-      name: '清洁机器人-01',
-      model: 'CR-2000',
-      status: 'working',
-      battery: 85,
-      currentTask: '客房楼层清洁',
-      location: '3楼走廊',
-      efficiency: 92,
-      totalDistance: 125.6,
-      totalTime: 45.2,
-      lastMaintenance: '2025-07-10',
-      nextMaintenance: '2025-07-25',
-      lastUpdate: '2025-07-23 14:30:00',
-    },
-    {
-      id: '2',
-      name: '清洁机器人-02',
-      model: 'CR-2000',
-      status: 'charging',
-      battery: 35,
-      currentTask: '充电中',
-      location: '充电站A',
-      efficiency: 88,
-      totalDistance: 98.3,
-      totalTime: 32.1,
-      lastMaintenance: '2025-07-08',
-      nextMaintenance: '2025-07-23',
-      lastUpdate: '2025-07-23 14:30:00',
-    },
-    {
-      id: '3',
-      name: '清洁机器人-03',
-      model: 'CR-2000',
-      status: 'idle',
-      battery: 95,
-      currentTask: '待机中',
-      location: '大堂',
-      efficiency: 95,
-      totalDistance: 156.7,
-      totalTime: 52.8,
-      lastMaintenance: '2025-07-12',
-      nextMaintenance: '2025-07-27',
-      lastUpdate: '2025-07-23 14:30:00',
-    },
-    {
-      id: '4',
-      name: '清洁机器人-04',
-      model: 'CR-2000',
-      status: 'maintenance',
-      battery: 60,
-      currentTask: '维护中',
-      location: '维修间',
-      efficiency: 78,
-      totalDistance: 89.4,
-      totalTime: 28.9,
-      lastMaintenance: '2025-07-23',
-      nextMaintenance: '2025-07-30',
-      lastUpdate: '2025-07-23 14:30:00',
-    },
-    {
-      id: '5',
-      name: '清洁机器人-05',
-      model: 'CR-2000',
-      status: 'error',
-      battery: 20,
-      currentTask: '故障待处理',
-      location: '2楼走廊',
-      efficiency: 65,
-      totalDistance: 67.2,
-      totalTime: 18.5,
-      lastMaintenance: '2025-07-05',
-      nextMaintenance: '2025-07-20',
-      lastUpdate: '2025-07-23 14:30:00',
-    },
-  ];
+  // 生成机器人数据
+  const generateRobotData = (): CleaningRobot[] => {
+    const robots: CleaningRobot[] = [];
+    
+    // 生成20台清洁机器人
+    for (let i = 1; i <= 20; i++) {
+      const id = i.toString().padStart(3, '0');
+      const battery = Math.floor(30 + Math.random() * 70); // 30-100%
+      const status = battery < 20 ? 'charging' :
+                    Math.random() > 0.95 ? 'maintenance' :
+                    Math.random() > 0.98 ? 'error' : 
+                    Math.random() > 0.3 ? 'working' : 'idle';
 
-  const mockTasks: CleaningTask[] = [
-    {
-      id: '1',
-      robotId: '1',
-      robotName: '清洁机器人-01',
-      area: '客房楼层',
-      taskType: 'daily',
-      status: 'running',
-      startTime: '2025-07-23 08:00',
-      progress: 75,
-      priority: 'high',
-    },
-    {
-      id: '2',
-      robotId: '2',
-      robotName: '清洁机器人-02',
-      area: '大堂区域',
-      taskType: 'deep',
-      status: 'pending',
-      startTime: '2025-07-23 16:00',
-      progress: 0,
-      priority: 'medium',
-    },
-    {
-      id: '3',
-      robotId: '3',
-      robotName: '清洁机器人-03',
-      area: '餐厅区域',
-      taskType: 'daily',
-      status: 'completed',
-      startTime: '2025-07-23 06:00',
-      endTime: '2025-07-23 08:30',
-      duration: 2.5,
-      progress: 100,
-      priority: 'high',
-    },
-    {
-      id: '4',
-      robotId: '4',
-      robotName: '清洁机器人-04',
-      area: '会议室',
-      taskType: 'spot',
-      status: 'cancelled',
-      startTime: '2025-07-23 10:00',
-      progress: 30,
-      priority: 'low',
-    },
-  ];
+      // 随机选择区域
+      const areaTypes = Object.keys(AREAS);
+      const randomAreaType = areaTypes[Math.floor(Math.random() * areaTypes.length)];
+      const areaList = AREAS[randomAreaType as keyof typeof AREAS];
+      const randomArea = areaList[Math.floor(Math.random() * areaList.length)];
+      
+      const efficiency = formatNumber(75 + Math.random() * 20); // 75-95%
+      const totalDistance = formatNumber(50 + Math.random() * 150); // 50-200km
+      const totalTime = formatNumber(20 + Math.random() * 80); // 20-100h
+      
+      // 生成维护日期
+      const lastMaintenance = dayjs().subtract(Math.floor(Math.random() * 14), 'day').format('YYYY-MM-DD');
+      const nextMaintenance = dayjs(lastMaintenance).add(15, 'day').format('YYYY-MM-DD');
 
-  useEffect(() => {
-    loadData();
-  }, []);
+      robots.push({
+        id: `robot_${id}`,
+        name: `清洁机器人-${id}`,
+        model: Math.random() > 0.5 ? 'CR-3000' : 'CR-2000',
+        status,
+        battery,
+        currentTask: status === 'working' ? `清洁${randomArea}` :
+                    status === 'charging' ? '充电中' :
+                    status === 'maintenance' ? '例行维护' :
+                    status === 'error' ? '故障待处理' : '待机中',
+        location: status === 'charging' ? '充电站' :
+                 status === 'maintenance' ? '维修间' :
+                 randomArea,
+        efficiency,
+        totalDistance,
+        totalTime,
+        lastMaintenance,
+        nextMaintenance,
+        lastUpdate: dayjs().format('YYYY-MM-DD HH:mm:ss')
+      });
+    }
 
-  const loadData = () => {
-    setLoading(true);
-    // 模拟API调用
-    setTimeout(() => {
-      setRobots(mockRobots);
-      setTasks(mockTasks);
-      setLoading(false);
-    }, 1000);
+    return robots;
   };
+
+  // 生成任务数据
+  const generateTaskData = (robots: CleaningRobot[]): CleaningTask[] => {
+    const tasks: CleaningTask[] = [];
+    const taskTypes: ('daily' | 'deep' | 'spot')[] = ['daily', 'deep', 'spot'];
+    const priorities: ('low' | 'medium' | 'high')[] = ['low', 'medium', 'high'];
+
+    // 生成100个任务
+    for (let i = 1; i <= 100; i++) {
+      const id = i.toString().padStart(3, '0');
+      const robot = robots[Math.floor(Math.random() * robots.length)];
+      const taskType = taskTypes[Math.floor(Math.random() * taskTypes.length)];
+      const priority = priorities[Math.floor(Math.random() * priorities.length)];
+      
+      // 生成随机时间（过去24小时内）
+      const randomTime = dayjs().subtract(Math.random() * 24, 'hour');
+      const startTime = randomTime.format('YYYY-MM-DD HH:mm:ss');
+      
+      // 根据任务类型设置持续时间
+      let duration: number | undefined;
+      let endTime: string | undefined;
+      let progress: number;
+      let status: 'pending' | 'running' | 'completed' | 'cancelled';
+
+      if (randomTime.isAfter(dayjs())) {
+        // 未来任务
+        status = 'pending';
+        progress = 0;
+      } else {
+        // 已开始的任务
+        const timePassed = dayjs().diff(randomTime, 'minute');
+        const totalDuration = taskType === 'daily' ? 60 : // 1小时
+                            taskType === 'deep' ? 180 : // 3小时
+                            30; // 30分钟（spot）
+        
+        progress = Math.min(100, Math.floor((timePassed / totalDuration) * 100));
+        
+        if (progress >= 100) {
+          status = Math.random() > 0.9 ? 'cancelled' : 'completed';
+          duration = totalDuration / 60; // 转换为小时
+          endTime = dayjs(startTime).add(duration, 'hour').format('YYYY-MM-DD HH:mm:ss');
+        } else {
+          status = 'running';
+        }
+      }
+
+      // 随机选择区域
+      const areaTypes = Object.keys(AREAS);
+      const randomAreaType = areaTypes[Math.floor(Math.random() * areaTypes.length)];
+      const areaList = AREAS[randomAreaType as keyof typeof AREAS];
+      const area = areaList[Math.floor(Math.random() * areaList.length)];
+
+      tasks.push({
+        id: `task_${id}`,
+        robotId: robot.id,
+        robotName: robot.name,
+        area,
+        taskType,
+        status,
+        startTime,
+        endTime,
+        duration,
+        progress,
+        priority
+      });
+    }
+
+    // 按时间倒序排序
+    return tasks.sort((a, b) => dayjs(b.startTime).valueOf() - dayjs(a.startTime).valueOf());
+  };
+
+  // 初始化数据
+  useEffect(() => {
+    const robotData = generateRobotData();
+    const taskData = generateTaskData(robotData);
+    
+    setRobots(robotData);
+    setTasks(taskData);
+
+    // 设置定时器，每30秒更新一次数据
+    const timer = setInterval(() => {
+      const updatedRobots = robotData.map(robot => {
+        // 更新电池电量
+        let battery = robot.status === 'charging' ? 
+                     Math.min(100, robot.battery + 2) : // 充电时每30秒+2%
+                     Math.max(0, robot.battery - 0.5); // 工作时每30秒-0.5%
+        
+        // 更新状态
+        let status = robot.status;
+        if (battery < 20 && status !== 'charging') {
+          status = 'charging';
+        } else if (battery >= 95 && status === 'charging') {
+          status = 'idle';
+        }
+
+        // 更新效率
+        const efficiency = formatNumber(Math.max(75, Math.min(95, robot.efficiency + (Math.random() - 0.5) * 2)));
+        
+        // 更新总里程和工作时间
+        const totalDistance = status === 'working' ? 
+                            formatNumber(robot.totalDistance + 0.1) : // 每30秒+0.1km
+                            robot.totalDistance;
+        const totalTime = status === 'working' ? 
+                         formatNumber(robot.totalTime + 0.5 / 60) : // 每30秒+0.5分钟
+                         robot.totalTime;
+
+        return {
+          ...robot,
+          battery,
+          status,
+          efficiency,
+          totalDistance,
+          totalTime,
+          lastUpdate: dayjs().format('YYYY-MM-DD HH:mm:ss')
+        };
+      });
+
+      setRobots(updatedRobots);
+
+      // 更新任务进度
+      const updatedTasks = tasks.map(task => {
+        if (task.status === 'running') {
+          const progress = Math.min(100, task.progress + 2); // 每30秒+2%进度
+          if (progress >= 100) {
+            return {
+              ...task,
+              status: 'completed' as const,
+              progress: 100,
+              endTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+              duration: dayjs().diff(task.startTime, 'hour', true)
+            };
+          }
+          return { ...task, progress };
+        }
+        return task;
+      });
+
+      setTasks(updatedTasks);
+    }, 30000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -386,8 +454,8 @@ const CleaningRobot: React.FC = () => {
       dataIndex: 'efficiency',
       key: 'efficiency',
       render: (value: number) => (
-        <Text strong style={{ color: value > 90 ? '#52c41a' : value > 70 ? '#faad14' : '#ff4d4f' }}>
-          {value}%
+        <Text strong style={{ color: value > 90 ? '#52c41a' : value > 80 ? '#faad14' : '#ff4d4f' }}>
+          {formatNumber(value, 1)}%
         </Text>
       ),
     },
@@ -396,8 +464,8 @@ const CleaningRobot: React.FC = () => {
       key: 'stats',
       render: (_: any, record: CleaningRobot) => (
         <Space direction="vertical" size="small">
-          <Text>距离: {record.totalDistance.toFixed(1)} km</Text>
-          <Text>时间: {record.totalTime.toFixed(1)} h</Text>
+          <Text>距离: {formatNumber(record.totalDistance, 1)} km</Text>
+          <Text>时间: {formatNumber(record.totalTime, 1)} h</Text>
         </Space>
       ),
     },
@@ -655,7 +723,12 @@ const CleaningRobot: React.FC = () => {
           </Button>
           <Button
             icon={<ReloadOutlined />}
-            onClick={loadData}
+            onClick={() => {
+              const robotData = generateRobotData();
+              const taskData = generateTaskData(robotData);
+              setRobots(robotData);
+              setTasks(taskData);
+            }}
             loading={loading}
           >
             刷新状态
@@ -759,10 +832,10 @@ const CleaningRobot: React.FC = () => {
               {selectedRobot.efficiency}%
             </Descriptions.Item>
             <Descriptions.Item label="累计清洁距离">
-              {selectedRobot.totalDistance.toFixed(1)} km
+              {formatNumber(selectedRobot.totalDistance, 1)} km
             </Descriptions.Item>
             <Descriptions.Item label="累计工作时间">
-              {selectedRobot.totalTime.toFixed(1)} 小时
+              {formatNumber(selectedRobot.totalTime, 1)} 小时
             </Descriptions.Item>
             <Descriptions.Item label="上次维护">
               {selectedRobot.lastMaintenance}
@@ -850,11 +923,15 @@ const CleaningRobot: React.FC = () => {
             <Col span={12}>
               <Form.Item label="清洁区域" required>
                 <Select placeholder="请选择清洁区域">
-                  <Select.Option value="大堂">大堂</Select.Option>
-                  <Select.Option value="客房楼层">客房楼层</Select.Option>
-                  <Select.Option value="餐厅">餐厅</Select.Option>
-                  <Select.Option value="会议室">会议室</Select.Option>
-                  <Select.Option value="健身房">健身房</Select.Option>
+                  {Object.entries(AREAS).map(([key, areas]) => (
+                    <Select.OptGroup key={key} label={key.charAt(0).toUpperCase() + key.slice(1)}>
+                      {areas.map(area => (
+                        <Select.Option key={area} value={area}>
+                          {area}
+                        </Select.Option>
+                      ))}
+                    </Select.OptGroup>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
