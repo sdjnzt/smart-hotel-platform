@@ -26,6 +26,7 @@ import {
   Avatar,
   Upload,
   Drawer,
+  Checkbox,
 } from 'antd';
 import {
   UserOutlined,
@@ -55,12 +56,405 @@ import {
   GlobalOutlined,
   CalendarOutlined,
 } from '@ant-design/icons';
+import dayjs from 'dayjs';
+import { pinyin } from 'pinyin-pro';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { TextArea } = Input;
+
+// 部门配置
+const DEPARTMENTS = {
+  IT: {
+    name: '信息技术部',
+    roles: ['系统管理员', '网络工程师', 'IT支持'],
+    prefix: 'IT'
+  },
+  FO: {
+    name: '前厅部',
+    roles: ['大堂经理', '前台接待', '礼宾员', '行李员'],
+    prefix: 'FO'
+  },
+  HK: {
+    name: '客房部',
+    roles: ['客房主管', '楼层主管', '客房服务员', '保洁员'],
+    prefix: 'HK'
+  },
+  FB: {
+    name: '餐饮部',
+    roles: ['餐饮部经理', '厨师长', '厨师', '服务员'],
+    prefix: 'FB'
+  },
+  FIN: {
+    name: '财务部',
+    roles: ['财务经理', '会计主管', '会计', '出纳'],
+    prefix: 'FIN'
+  },
+  HR: {
+    name: '人力资源部',
+    roles: ['人力资源经理', '人事专员', '培训专员', '招聘专员'],
+    prefix: 'HR'
+  },
+  ENG: {
+    name: '工程部',
+    roles: ['工程部经理', '维修主管', '电工', '空调技工'],
+    prefix: 'ENG'
+  },
+  SEC: {
+    name: '保安部',
+    roles: ['保安队长', '保安班长', '保安员'],
+    prefix: 'SEC'
+  },
+  PUR: {
+    name: '采购部',
+    roles: ['采购经理', '采购专员', '仓管员'],
+    prefix: 'PUR'
+  },
+  SAL: {
+    name: '销售部',
+    roles: ['销售总监', '销售经理', '销售代表'],
+    prefix: 'SAL'
+  }
+};
+
+// 权限配置
+const PERMISSIONS = {
+  SYSTEM: {
+    prefix: 'system',
+    name: '系统管理',
+    permissions: [
+      { code: 'admin', name: '系统管理' },
+      { code: 'config', name: '系统配置' },
+      { code: 'log', name: '系统日志' },
+      { code: 'backup', name: '系统备份' }
+    ]
+  },
+  USER: {
+    prefix: 'user',
+    name: '用户管理',
+    permissions: [
+      { code: 'read', name: '查看用户' },
+      { code: 'write', name: '编辑用户' },
+      { code: 'delete', name: '删除用户' }
+    ]
+  },
+  ROOM: {
+    prefix: 'room',
+    name: '房间管理',
+    permissions: [
+      { code: 'read', name: '查看房间' },
+      { code: 'write', name: '编辑房间' },
+      { code: 'assign', name: '分配房间' },
+      { code: 'maintain', name: '房间维护' }
+    ]
+  },
+  FINANCE: {
+    prefix: 'finance',
+    name: '财务管理',
+    permissions: [
+      { code: 'read', name: '查看财务' },
+      { code: 'write', name: '编辑财务' },
+      { code: 'approve', name: '审批财务' },
+      { code: 'report', name: '财务报表' }
+    ]
+  },
+  HR: {
+    prefix: 'hr',
+    name: '人力资源',
+    permissions: [
+      { code: 'read', name: '查看人事' },
+      { code: 'write', name: '编辑人事' },
+      { code: 'approve', name: '审批人事' },
+      { code: 'report', name: '人事报表' }
+    ]
+  },
+  INVENTORY: {
+    prefix: 'inventory',
+    name: '库存管理',
+    permissions: [
+      { code: 'read', name: '查看库存' },
+      { code: 'write', name: '编辑库存' },
+      { code: 'approve', name: '审批库存' },
+      { code: 'report', name: '库存报表' }
+    ]
+  },
+  MAINTENANCE: {
+    prefix: 'maintenance',
+    name: '维护管理',
+    permissions: [
+      { code: 'read', name: '查看维护' },
+      { code: 'write', name: '编辑维护' },
+      { code: 'assign', name: '分配维护' },
+      { code: 'report', name: '维护报表' }
+    ]
+  },
+  SECURITY: {
+    prefix: 'security',
+    name: '安全管理',
+    permissions: [
+      { code: 'read', name: '查看安全' },
+      { code: 'write', name: '编辑安全' },
+      { code: 'monitor', name: '安全监控' },
+      { code: 'report', name: '安全报表' }
+    ]
+  },
+  GUEST: {
+    prefix: 'guest',
+    name: '客户管理',
+    permissions: [
+      { code: 'read', name: '查看客户' },
+      { code: 'write', name: '编辑客户' },
+      { code: 'service', name: '客户服务' }
+    ]
+  },
+  REPORT: {
+    prefix: 'report',
+    name: '报表管理',
+    permissions: [
+      { code: 'read', name: '查看报表' },
+      { code: 'write', name: '编辑报表' },
+      { code: 'export', name: '导出报表' }
+    ]
+  }
+};
+
+// 角色权限映射
+const ROLE_PERMISSIONS: { [key: string]: string[] } = {
+  '系统管理员': [
+    'system:admin', 'system:config', 'system:log', 'system:backup',
+    'user:read', 'user:write', 'user:delete'
+  ],
+  '部门经理': [
+    'user:read', 'room:read', 'room:write', 'report:read',
+    'inventory:read', 'inventory:write'
+  ],
+  '前台接待': [
+    'guest:read', 'guest:write', 'guest:service',
+    'room:read', 'room:assign'
+  ],
+  '客房服务员': [
+    'room:read', 'room:maintain',
+    'inventory:read'
+  ],
+  '财务专员': [
+    'finance:read', 'finance:write', 'finance:report',
+    'report:read', 'report:export'
+  ],
+  '人事专员': [
+    'hr:read', 'hr:write', 'hr:report',
+    'user:read'
+  ],
+  '工程师': [
+    'maintenance:read', 'maintenance:write', 'maintenance:assign',
+    'inventory:read'
+  ],
+  '保安员': [
+    'security:read', 'security:monitor',
+    'guest:read'
+  ]
+};
+
+// 生成随机中文名
+function generateChineseName(): string {
+  const surnames = '赵钱孙李周吴郑王冯陈褚卫蒋沈韩杨朱秦尤许何吕施张孔曹严华金魏陶姜戚谢邹喻柏水窦章';
+  const names1 = '玉明永林耀建国华成志伟嘉东洪健一凤兰松江平子晓光正达安荣泽凯';
+  const names2 = '芳娜秀娟英华慧巧美娜静淑惠珠翠雅芝玉萍红娥玲芬芳燕彩春菊兴';
+
+  const surname = surnames[Math.floor(Math.random() * surnames.length)];
+  const name1 = names1[Math.floor(Math.random() * names1.length)];
+  const name2 = Math.random() > 0.5 ? names2[Math.floor(Math.random() * names2.length)] : '';
+
+  return surname + name1 + name2;
+}
+
+// 生成用户名
+function generateUsername(realName: string): string {
+  // 将中文名转换为拼音
+  const pinyinName = pinyin(realName, { toneType: 'none' })
+    .split(' ')
+    .map(p => p.toLowerCase())
+    .join('');
+  
+  // 添加随机数字后缀
+  return pinyinName + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+}
+
+// 生成邮箱
+function generateEmail(username: string): string {
+  const domains = ['hotel.com', 'resort.com', 'inn.com'];
+  return `${username}@${domains[Math.floor(Math.random() * domains.length)]}`;
+}
+
+// 生成手机号
+function generatePhone(): string {
+  const prefixes = ['137', '138', '139', '150', '151', '152', '157', '158', '159', '186', '187', '188'];
+  const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+  const suffix = Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
+  return prefix + suffix;
+}
+
+// 生成登录记录
+function generateLoginHistory(userId: string, count: number): LoginRecord[] {
+  const records: LoginRecord[] = [];
+  const now = dayjs();
+  const locations = ['山东省济宁市邹城市', '山东省济宁市市中区', '山东省济宁市任城区'];
+  const userAgents = [
+    'Chrome/120.0.0.0',
+    'Firefox/121.0',
+    'Safari/617.1.76',
+    'Edge/120.0.2210.133'
+  ];
+
+  // 生成最近30天内的登录记录
+  for (let i = 0; i < count; i++) {
+    const loginTime = now.subtract(Math.floor(Math.random() * 30), 'days')
+      .subtract(Math.floor(Math.random() * 24), 'hours')
+      .subtract(Math.floor(Math.random() * 60), 'minutes')
+      .format('YYYY-MM-DD HH:mm');
+
+    const logoutTime = Math.random() > 0.1 ? // 10%的登录没有登出时间
+      dayjs(loginTime).add(Math.floor(Math.random() * 8), 'hours')
+        .add(Math.floor(Math.random() * 60), 'minutes')
+        .format('YYYY-MM-DD HH:mm') :
+      undefined;
+
+    records.push({
+      id: `LOGIN${dayjs().format('YYMMDDHHmmss')}${i}`,
+      userId,
+      loginTime,
+      logoutTime,
+      ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+      userAgent: userAgents[Math.floor(Math.random() * userAgents.length)],
+      status: Math.random() > 0.05 ? 'success' : 'failed', // 5%的登录失败率
+      location: locations[Math.floor(Math.random() * locations.length)]
+    });
+  }
+
+  return records.sort((a, b) => dayjs(b.loginTime).unix() - dayjs(a.loginTime).unix());
+}
+
+// 生成用户数据
+function generateUsers(count: number): User[] {
+  const users: User[] = [];
+  const departments = Object.values(DEPARTMENTS);
+  const now = dayjs();
+
+  // 确保至少有一个系统管理员
+  const adminName = generateChineseName();
+  const adminUsername = 'admin';
+  const adminLoginCount = Math.floor(Math.random() * 1000) + 500;
+  const adminLastLogin = now.subtract(Math.floor(Math.random() * 24), 'hours')
+    .subtract(Math.floor(Math.random() * 60), 'minutes')
+    .format('YYYY-MM-DD HH:mm');
+
+  users.push({
+    id: 'USER001',
+    username: adminUsername,
+    realName: adminName,
+    email: 'admin@hotel.com',
+    phone: generatePhone(),
+    role: '系统管理员',
+    department: '信息技术部',
+    status: 'active',
+    lastLogin: adminLastLogin,
+    loginCount: adminLoginCount,
+    createTime: '2023-01-01', // 系统管理员创建时间固定为系统上线时间
+    lastPasswordChange: now.subtract(Math.floor(Math.random() * 30), 'days').format('YYYY-MM-DD'),
+    permissions: ROLE_PERMISSIONS['系统管理员'],
+    twoFactorEnabled: true,
+    loginHistory: generateLoginHistory('USER001', Math.min(10, adminLoginCount))
+  });
+
+  // 生成其他用户
+  for (let i = 1; i < count; i++) {
+    const department = departments[Math.floor(Math.random() * departments.length)];
+    const role = department.roles[Math.floor(Math.random() * department.roles.length)];
+    const realName = generateChineseName();
+    const username = generateUsername(realName);
+    
+    // 创建时间在最近2年内，但不超过当前时间
+    const createDate = now.subtract(Math.floor(Math.random() * 730), 'days');
+    
+    // 登录次数和最后登录时间相关
+    const loginCount = Math.floor(Math.random() * 500);
+    const lastLogin = loginCount > 0 ?
+      now.subtract(Math.floor(Math.random() * 30), 'days')
+        .subtract(Math.floor(Math.random() * 24), 'hours')
+        .subtract(Math.floor(Math.random() * 60), 'minutes')
+        .format('YYYY-MM-DD HH:mm') :
+      '-';
+
+    // 最后密码修改时间不能早于创建时间
+    const lastPasswordChange = dayjs(createDate)
+      .add(Math.floor(Math.random() * dayjs().diff(createDate, 'days')), 'days')
+      .format('YYYY-MM-DD');
+
+    // 用户状态
+    const status: User['status'] = Math.random() > 0.15 ? 'active' :
+      Math.random() > 0.5 ? 'inactive' :
+      Math.random() > 0.5 ? 'locked' : 'pending';
+
+    const user: User = {
+      id: `USER${(i + 1).toString().padStart(3, '0')}`,
+      username,
+      realName,
+      email: generateEmail(username),
+      phone: generatePhone(),
+      role,
+      department: department.name,
+      status,
+      lastLogin,
+      loginCount,
+      createTime: createDate.format('YYYY-MM-DD'),
+      lastPasswordChange,
+      permissions: ROLE_PERMISSIONS[role] || ['public:read'],
+      twoFactorEnabled: Math.random() > 0.7, // 30%的用户启用双因素认证
+      loginHistory: generateLoginHistory(`USER${(i + 1).toString().padStart(3, '0')}`, Math.min(5, loginCount))
+    };
+
+    users.push(user);
+  }
+
+  return users;
+}
+
+// 生成角色数据
+function generateRoles(): Role[] {
+  const roles: Role[] = [];
+  let id = 1;
+  const now = dayjs();
+
+  Object.values(DEPARTMENTS).forEach(department => {
+    department.roles.forEach(roleName => {
+      const basePermissions = ROLE_PERMISSIONS[roleName] || ['public:read'];
+      const userCount = Math.floor(Math.random() * 5) + 1;
+      
+      // 创建时间在最近2年内
+      const createDate = now.subtract(Math.floor(Math.random() * 730), 'days');
+      
+      // 更新时间在创建时间之后，但不超过当前时间
+      const updateDate = dayjs(createDate)
+        .add(Math.floor(Math.random() * now.diff(createDate, 'days')), 'days');
+      
+      roles.push({
+        id: id.toString(),
+        name: roleName,
+        description: `${department.name}${roleName}，负责相关业务管理和操作`,
+        permissions: basePermissions,
+        userCount,
+        status: Math.random() > 0.1 ? 'active' : 'inactive',
+        createTime: createDate.format('YYYY-MM-DD'),
+        updateTime: updateDate.format('YYYY-MM-DD')
+      });
+
+      id++;
+    });
+  });
+
+  return roles;
+}
 
 interface User {
   id: string;
@@ -104,6 +498,56 @@ interface Role {
   updateTime: string;
 }
 
+// 权限名称映射
+const PERMISSION_NAMES: { [key: string]: string } = {
+  // 系统权限
+  'system:admin': '系统管理',
+  'system:config': '系统配置',
+  'system:log': '系统日志',
+  
+  // 公共权限
+  'public:read': '公共查看',
+  'public:write': '公共编辑',
+  
+  // 客户权限
+  'guest:read': '查看客户',
+  'guest:write': '编辑客户',
+  'guest:service': '客户服务'
+};
+
+// 获取权限的中文名称
+const getPermissionName = (permission: string): string => {
+  return PERMISSION_NAMES[permission] || permission;
+};
+
+// 获取权限标签的颜色
+const getPermissionTagColor = (permission: string): string => {
+  if (permission.startsWith('system:')) {
+    return '#ff4d4f';
+  }
+  if (permission.startsWith('public:')) {
+    return '#1890ff';
+  }
+  if (permission.startsWith('guest:')) {
+    return '#52c41a';
+  }
+  return '#666666';
+};
+
+// 获取状态的颜色
+const getStatusBadgeStyle = (status: 'active' | 'inactive' | 'locked' | 'pending'): { status: string; text: string } => {
+  switch (status) {
+    case 'active':
+      return { status: 'success', text: '正常' };
+    case 'inactive':
+      return { status: 'default', text: '停用' };
+    case 'locked':
+      return { status: 'error', text: '锁定' };
+    case 'pending':
+      return { status: 'warning', text: '待审核' };
+  }
+};
+
 const UserManagement: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [userList, setUserList] = useState<User[]>([]);
@@ -115,589 +559,13 @@ const UserManagement: React.FC = () => {
   const [roleModalVisible, setRoleModalVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState('users');
-
-  // 模拟数据
-  const mockUsers: User[] = [
-    {
-      id: '1',
-      username: 'admin',
-      realName: '系统管理员',
-      email: 'admin@hotel.com',
-      phone: '13800138001',
-      role: '超级管理员',
-      department: '信息技术部',
-      status: 'active',
-      lastLogin: '2025-07-23 14:30',
-      loginCount: 1250,
-      createTime: '2023-01-01',
-      lastPasswordChange: '2025-07-10',
-      permissions: ['user:read', 'user:write', 'user:delete', 'system:admin'],
-      twoFactorEnabled: true,
-      loginHistory: [
-        {
-          id: '1',
-          userId: '1',
-          loginTime: '2025-07-23 14:30',
-          logoutTime: '2025-07-23 18:00',
-          ipAddress: '192.168.1.100',
-          userAgent: 'Chrome/120.0.0.0',
-          status: 'success',
-          location: '山东省济宁市',
-        },
-      ],
-    },
-    {
-      id: '2',
-      username: 'manager',
-      realName: '张经理',
-      email: 'zhang@hotel.com',
-      phone: '13800138002',
-      role: '部门经理',
-      department: '前厅部',
-      status: 'active',
-      lastLogin: '2025-07-23 09:15',
-      loginCount: 856,
-      createTime: '2023-03-15',
-      lastPasswordChange: '2025-07-05',
-      permissions: ['user:read', 'room:read', 'room:write'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '3',
-      username: 'staff001',
-      realName: '李员工',
-      email: 'li@hotel.com',
-      phone: '13800138003',
-      role: '普通员工',
-      department: '客房部',
-      status: 'active',
-      lastLogin: '2025-07-23 08:00',
-      loginCount: 342,
-      createTime: '2023-06-20',
-      lastPasswordChange: '2025-07-01',
-      permissions: ['room:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '4',
-      username: 'finance',
-      realName: '王财务',
-      email: 'wang@hotel.com',
-      phone: '13800138004',
-      role: '财务专员',
-      department: '财务部',
-      status: 'locked',
-      lastLogin: '2025-07-14 16:45',
-      loginCount: 567,
-      createTime: '2023-04-10',
-      lastPasswordChange: '2025-07-08',
-      permissions: ['finance:read', 'finance:write'],
-      twoFactorEnabled: true,
-      loginHistory: [],
-    },
-    {
-      id: '5',
-      username: 'guest',
-      realName: '陈访客',
-      email: 'chen@hotel.com',
-      phone: '13800138005',
-      role: '访客',
-      department: '外部用户',
-      status: 'pending',
-      lastLogin: '2025-07-23 10:20',
-      loginCount: 23,
-      createTime: '2025-07-10',
-      lastPasswordChange: '2025-07-10',
-      permissions: ['public:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '6',
-      username: 'chenmeiling',
-      realName: '陈美玲',
-      email: 'chenml@hotel.com',
-      phone: '13800138006',
-      role: '客房主管',
-      department: '客房部',
-      status: 'active',
-      lastLogin: '2025-07-23 11:30',
-      loginCount: 456,
-      createTime: '2023-05-15',
-      lastPasswordChange: '2025-07-03',
-      permissions: ['room:read', 'room:write', 'staff:read', 'report:read'],
-      twoFactorEnabled: true,
-      loginHistory: [],
-    },
-    {
-      id: '7',
-      username: 'liuzhiqiang',
-      realName: '刘志强',
-      email: 'liuzq@hotel.com',
-      phone: '13800138007',
-      role: '服务员',
-      department: '餐饮部',
-      status: 'active',
-      lastLogin: '2025-07-23 08:45',
-      loginCount: 234,
-      createTime: '2023-07-10',
-      lastPasswordChange: '2025-07-02',
-      permissions: ['food:read', 'order:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '8',
-      username: 'wangyating',
-      realName: '王雅婷',
-      email: 'wangyt@hotel.com',
-      phone: '13800138008',
-      role: '前台接待',
-      department: '前厅部',
-      status: 'active',
-      lastLogin: '2025-07-23 09:00',
-      loginCount: 189,
-      createTime: '2023-08-20',
-      lastPasswordChange: '2025-07-01',
-      permissions: ['guest:read', 'guest:write', 'room:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '9',
-      username: 'zhangjianguo',
-      realName: '张建国',
-      email: 'zhangjg@hotel.com',
-      phone: '13800138009',
-      role: '维修工程师',
-      department: '工程部',
-      status: 'active',
-      lastLogin: '2025-07-23 07:30',
-      loginCount: 312,
-      createTime: '2023-06-05',
-      lastPasswordChange: '2025-07-05',
-      permissions: ['equipment:read', 'equipment:write', 'maintenance:read'],
-      twoFactorEnabled: true,
-      loginHistory: [],
-    },
-    {
-      id: '10',
-      username: 'lixiaohong',
-      realName: '李小红',
-      email: 'lixh@hotel.com',
-      phone: '13800138010',
-      role: '客房服务员',
-      department: '客房部',
-      status: 'active',
-      lastLogin: '2025-07-23 08:15',
-      loginCount: 156,
-      createTime: '2023-09-12',
-      lastPasswordChange: '2025-07-01',
-      permissions: ['room:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '11',
-      username: 'zhaominghua',
-      realName: '赵明华',
-      email: 'zhaomh@hotel.com',
-      phone: '13800138011',
-      role: '厨师长',
-      department: '餐饮部',
-      status: 'active',
-      lastLogin: '2025-07-23 06:00',
-      loginCount: 423,
-      createTime: '2023-04-18',
-      lastPasswordChange: '2025-07-04',
-      permissions: ['food:read', 'food:write', 'kitchen:admin'],
-      twoFactorEnabled: true,
-      loginHistory: [],
-    },
-    {
-      id: '12',
-      username: 'sunlina',
-      realName: '孙丽娜',
-      email: 'sunln@hotel.com',
-      phone: '13800138012',
-      role: '大堂经理',
-      department: '前厅部',
-      status: 'active',
-      lastLogin: '2025-07-23 09:30',
-      loginCount: 567,
-      createTime: '2023-03-25',
-      lastPasswordChange: '2025-07-06',
-      permissions: ['guest:read', 'guest:write', 'room:read', 'room:write', 'staff:read'],
-      twoFactorEnabled: true,
-      loginHistory: [],
-    },
-    {
-      id: '13',
-      username: 'zhoujianjun',
-      realName: '周建军',
-      email: 'zhoujj@hotel.com',
-      phone: '13800138013',
-      role: '电气工程师',
-      department: '工程部',
-      status: 'active',
-      lastLogin: '2025-07-23 07:45',
-      loginCount: 298,
-      createTime: '2023-07-08',
-      lastPasswordChange: '2025-07-02',
-      permissions: ['equipment:read', 'equipment:write'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '14',
-      username: 'wuxiuying',
-      realName: '吴秀英',
-      email: 'wuxy@hotel.com',
-      phone: '13800138014',
-      role: '客房服务员',
-      department: '客房部',
-      status: 'inactive',
-      lastLogin: '2025-07-14 17:00',
-      loginCount: 89,
-      createTime: '2023-10-15',
-      lastPasswordChange: '2025-07-01',
-      permissions: ['room:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '15',
-      username: 'zhengweidong',
-      realName: '郑伟东',
-      email: 'zhengwd@hotel.com',
-      phone: '13800138015',
-      role: '服务员',
-      department: '餐饮部',
-      status: 'active',
-      lastLogin: '2025-07-23 08:30',
-      loginCount: 145,
-      createTime: '2023-11-03',
-      lastPasswordChange: '2025-07-01',
-      permissions: ['food:read', 'order:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '16',
-      username: 'maxiaoyan',
-      realName: '马晓燕',
-      email: 'maxy@hotel.com',
-      phone: '13800138016',
-      role: '礼宾员',
-      department: '前厅部',
-      status: 'active',
-      lastLogin: '2025-07-23 09:15',
-      loginCount: 178,
-      createTime: '2023-12-10',
-      lastPasswordChange: '2025-07-01',
-      permissions: ['guest:read', 'guest:write'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '17',
-      username: 'huangzhiqiang',
-      realName: '黄志强',
-      email: 'huangzq@hotel.com',
-      phone: '13800138017',
-      role: '空调工程师',
-      department: '工程部',
-      status: 'active',
-      lastLogin: '2025-07-23 07:15',
-      loginCount: 267,
-      createTime: '2023-08-05',
-      lastPasswordChange: '2025-07-03',
-      permissions: ['equipment:read', 'equipment:write'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '18',
-      username: 'linmeihua',
-      realName: '林美华',
-      email: 'linmh@hotel.com',
-      phone: '13800138018',
-      role: '客房服务员',
-      department: '客房部',
-      status: 'active',
-      lastLogin: '2025-07-23 08:20',
-      loginCount: 134,
-      createTime: '2024-01-15',
-      lastPasswordChange: '2025-07-01',
-      permissions: ['room:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '19',
-      username: 'xujianguo',
-      realName: '徐建国',
-      email: 'xujg@hotel.com',
-      phone: '13800138019',
-      role: '厨师',
-      department: '餐饮部',
-      status: 'active',
-      lastLogin: '2025-07-23 06:30',
-      loginCount: 198,
-      createTime: '2023-09-20',
-      lastPasswordChange: '2025-07-02',
-      permissions: ['food:read', 'food:write'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '20',
-      username: 'heliping',
-      realName: '何丽萍',
-      email: 'help@hotel.com',
-      phone: '13800138020',
-      role: '前台接待',
-      department: '前厅部',
-      status: 'active',
-      lastLogin: '2025-07-23 09:45',
-      loginCount: 167,
-      createTime: '2024-02-10',
-      lastPasswordChange: '2025-07-01',
-      permissions: ['guest:read', 'guest:write', 'room:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '21',
-      username: 'yangzhiqiang',
-      realName: '杨志强',
-      email: 'yangzq@hotel.com',
-      phone: '13800138021',
-      role: '保安队长',
-      department: '保安部',
-      status: 'active',
-      lastLogin: '2025-07-23 08:00',
-      loginCount: 345,
-      createTime: '2023-05-20',
-      lastPasswordChange: '2025-07-04',
-      permissions: ['security:read', 'security:write', 'staff:read'],
-      twoFactorEnabled: true,
-      loginHistory: [],
-    },
-    {
-      id: '22',
-      username: 'liumeihua',
-      realName: '刘美华',
-      email: 'liumh@hotel.com',
-      phone: '13800138022',
-      role: '会计',
-      department: '财务部',
-      status: 'active',
-      lastLogin: '2025-07-23 10:00',
-      loginCount: 478,
-      createTime: '2023-06-12',
-      lastPasswordChange: '2025-07-05',
-      permissions: ['finance:read', 'finance:write', 'report:read'],
-      twoFactorEnabled: true,
-      loginHistory: [],
-    },
-    {
-      id: '23',
-      username: 'wangjianguo',
-      realName: '王建国',
-      email: 'wangjg@hotel.com',
-      phone: '13800138023',
-      role: '人事专员',
-      department: '人事部',
-      status: 'active',
-      lastLogin: '2025-07-23 10:30',
-      loginCount: 234,
-      createTime: '2023-07-25',
-      lastPasswordChange: '2025-07-03',
-      permissions: ['hr:read', 'hr:write', 'staff:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '24',
-      username: 'zhanglina',
-      realName: '张丽娜',
-      email: 'zhangln@hotel.com',
-      phone: '13800138024',
-      role: '客房服务员',
-      department: '客房部',
-      status: 'active',
-      lastLogin: '2025-07-23 08:25',
-      loginCount: 123,
-      createTime: '2024-03-05',
-      lastPasswordChange: '2025-07-01',
-      permissions: ['room:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-    {
-      id: '25',
-      username: 'chenzhiming',
-      realName: '陈志明',
-      email: 'chenzm@hotel.com',
-      phone: '13800138025',
-      role: '服务员',
-      department: '餐饮部',
-      status: 'locked',
-      lastLogin: '2025-07-14 15:30',
-      loginCount: 67,
-      createTime: '2024-04-10',
-      lastPasswordChange: '2025-07-01',
-      permissions: ['food:read', 'order:read'],
-      twoFactorEnabled: false,
-      loginHistory: [],
-    },
-  ];
-
-  const mockRoles: Role[] = [
-    {
-      id: '1',
-      name: '超级管理员',
-      description: '拥有系统所有权限，可以管理所有用户和系统设置',
-      permissions: ['user:read', 'user:write', 'user:delete', 'system:admin', 'role:admin'],
-      userCount: 1,
-      status: 'active',
-      createTime: '2023-01-01',
-      updateTime: '2025-07-10',
-    },
-    {
-      id: '2',
-      name: '部门经理',
-      description: '可以管理本部门用户，查看部门相关数据',
-      permissions: ['user:read', 'room:read', 'room:write', 'staff:read'],
-      userCount: 3,
-      status: 'active',
-      createTime: '2023-02-01',
-      updateTime: '2025-07-05',
-    },
-    {
-      id: '3',
-      name: '普通员工',
-      description: '基础操作权限，可以查看和操作分配的功能',
-      permissions: ['room:read', 'inventory:read'],
-      userCount: 15,
-      status: 'active',
-      createTime: '2023-03-01',
-      updateTime: '2025-07-01',
-    },
-    {
-      id: '4',
-      name: '财务专员',
-      description: '财务相关操作权限',
-      permissions: ['finance:read', 'finance:write', 'report:read'],
-      userCount: 2,
-      status: 'active',
-      createTime: '2023-04-01',
-      updateTime: '2025-07-08',
-    },
-    {
-      id: '5',
-      name: '访客',
-      description: '仅可查看公开信息',
-      permissions: ['public:read'],
-      userCount: 5,
-      status: 'active',
-      createTime: '2025-07-01',
-      updateTime: '2025-07-10',
-    },
-    {
-      id: '6',
-      name: '客房主管',
-      description: '管理客房部员工和客房相关业务',
-      permissions: ['room:read', 'room:write', 'staff:read', 'report:read', 'inventory:read'],
-      userCount: 2,
-      status: 'active',
-      createTime: '2023-05-01',
-      updateTime: '2025-07-03',
-    },
-    {
-      id: '7',
-      name: '厨师长',
-      description: '管理厨房和餐饮制作',
-      permissions: ['food:read', 'food:write', 'kitchen:admin', 'inventory:read'],
-      userCount: 1,
-      status: 'active',
-      createTime: '2023-04-01',
-      updateTime: '2025-07-04',
-    },
-    {
-      id: '8',
-      name: '大堂经理',
-      description: '管理前厅部运营和客户服务',
-      permissions: ['guest:read', 'guest:write', 'room:read', 'room:write', 'staff:read', 'report:read'],
-      userCount: 1,
-      status: 'active',
-      createTime: '2023-03-01',
-      updateTime: '2025-07-06',
-    },
-    {
-      id: '9',
-      name: '工程师',
-      description: '设备维护和工程管理',
-      permissions: ['equipment:read', 'equipment:write', 'maintenance:read', 'maintenance:write'],
-      userCount: 3,
-      status: 'active',
-      createTime: '2023-06-01',
-      updateTime: '2025-07-05',
-    },
-    {
-      id: '10',
-      name: '保安队长',
-      description: '安全管理团队负责人',
-      permissions: ['security:read', 'security:write', 'staff:read', 'report:read'],
-      userCount: 1,
-      status: 'active',
-      createTime: '2023-05-01',
-      updateTime: '2025-07-04',
-    },
-    {
-      id: '11',
-      name: '人事专员',
-      description: '人力资源管理和员工关系',
-      permissions: ['hr:read', 'hr:write', 'staff:read', 'staff:write'],
-      userCount: 1,
-      status: 'active',
-      createTime: '2023-07-01',
-      updateTime: '2025-07-03',
-    },
-    {
-      id: '12',
-      name: '服务员',
-      description: '餐饮服务基础权限',
-      permissions: ['food:read', 'order:read'],
-      userCount: 4,
-      status: 'active',
-      createTime: '2023-07-01',
-      updateTime: '2025-07-02',
-    },
-    {
-      id: '13',
-      name: '前台接待',
-      description: '客户接待和房间管理',
-      permissions: ['guest:read', 'guest:write', 'room:read'],
-      userCount: 3,
-      status: 'active',
-      createTime: '2023-08-01',
-      updateTime: '2025-07-01',
-    },
-    {
-      id: '14',
-      name: '客房服务员',
-      description: '客房清洁和服务',
-      permissions: ['room:read'],
-      userCount: 5,
-      status: 'active',
-      createTime: '2023-09-01',
-      updateTime: '2025-07-01',
-    },
-  ];
+  const [addUserModalVisible, setAddUserModalVisible] = useState(false);
+  const [userForm] = Form.useForm();
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [addRoleModalVisible, setAddRoleModalVisible] = useState(false);
+  const [roleForm] = Form.useForm();
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
 
   useEffect(() => {
     loadData();
@@ -707,40 +575,10 @@ const UserManagement: React.FC = () => {
     setLoading(true);
     // 模拟API调用
     setTimeout(() => {
-      setUserList(mockUsers);
-      setRoleList(mockRoles);
+      setUserList(generateUsers(100)); // 生成100个用户
+      setRoleList(generateRoles());
       setLoading(false);
     }, 1000);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'green';
-      case 'inactive':
-        return 'default';
-      case 'locked':
-        return 'red';
-      case 'pending':
-        return 'orange';
-      default:
-        return 'default';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'active':
-        return '正常';
-      case 'inactive':
-        return '停用';
-      case 'locked':
-        return '锁定';
-      case 'pending':
-        return '待审核';
-      default:
-        return '未知';
-    }
   };
 
   const userColumns = [
@@ -781,19 +619,12 @@ const UserManagement: React.FC = () => {
     {
       title: '状态',
       key: 'status',
-      render: (_: any, record: User) => (
-        <Space direction="vertical" size="small">
-          <Badge
-            status={getStatusColor(record.status) as any}
-            text={getStatusText(record.status)}
-          />
-          {record.twoFactorEnabled && (
-            <Tag color="blue" icon={<SecurityScanOutlined />}>
-              2FA
-            </Tag>
-          )}
-        </Space>
-      ),
+      render: (_: any, record: User) => {
+        const style = getStatusBadgeStyle(record.status);
+        return (
+          <Badge status={style.status as any} text={style.text} />
+        );
+      },
     },
     {
       title: '登录信息',
@@ -813,14 +644,15 @@ const UserManagement: React.FC = () => {
       render: (_: any, record: User) => (
         <Space wrap>
           {record.permissions.slice(0, 3).map((permission, index) => (
-            <Tag key={index} color="blue">
-              {permission}
+            <Tag
+              key={index}
+              color={getPermissionTagColor(permission)}
+            >
+              {getPermissionName(permission)}
             </Tag>
           ))}
           {record.permissions.length > 3 && (
-            <Tag color="blue">
-              +{record.permissions.length - 3}
-            </Tag>
+            <Tag>+{record.permissions.length - 3}</Tag>
           )}
         </Space>
       ),
@@ -900,30 +732,37 @@ const UserManagement: React.FC = () => {
     {
       title: '状态',
       key: 'status',
-      render: (_: any, record: Role) => (
-        <Badge
-          status={getStatusColor(record.status) as any}
-          text={getStatusText(record.status)}
-        />
-      ),
+      render: (_: any, record: Role) => {
+        const style = getStatusBadgeStyle(record.status);
+        return (
+          <Badge status={style.status as any} text={style.text} />
+        );
+      },
     },
     {
       title: '权限',
       key: 'permissions',
-      render: (_: any, record: Role) => (
-        <Space wrap>
-          {record.permissions.slice(0, 3).map((permission, index) => (
-            <Tag key={index} color="green">
-              {permission}
-            </Tag>
-          ))}
-          {record.permissions.length > 3 && (
-            <Tag color="green">
-              +{record.permissions.length - 3}
-            </Tag>
-          )}
-        </Space>
-      ),
+      render: (_: any, record: Role) => {
+        // 获取主要权限（最多显示3个）和额外权限数量
+        const mainPermissions = record.permissions.slice(0, 3);
+        const extraCount = record.permissions.length - 3;
+
+        return (
+          <Space wrap>
+            {mainPermissions.map(permission => (
+              <Tag
+                key={permission}
+                color={getPermissionTagColor(permission)}
+              >
+                {getPermissionName(permission)}
+              </Tag>
+            ))}
+            {extraCount > 0 && (
+              <Tag>+{extraCount}</Tag>
+            )}
+          </Space>
+        );
+      },
     },
     {
       title: '更新时间',
@@ -1033,6 +872,99 @@ const UserManagement: React.FC = () => {
     message.info('数据导入功能开发中...');
   };
 
+  // 处理部门变更
+  const handleDepartmentChange = (value: string) => {
+    setSelectedDepartment(value);
+    userForm.setFieldsValue({
+      role: undefined
+    });
+  };
+
+  // 生成随机密码
+  const generateRandomPassword = () => {
+    const length = 12;
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      password += charset[Math.floor(Math.random() * charset.length)];
+    }
+    return password;
+  };
+
+  // 处理新增用户
+  const handleAddUser = (values: any) => {
+    const department = Object.values(DEPARTMENTS).find(d => d.name === values.department);
+    if (!department) {
+      message.error('部门不存在');
+      return;
+    }
+
+    const realName = values.realName;
+    const username = values.username || generateUsername(realName);
+
+    const newUser: User = {
+      id: `USER${dayjs().format('YYMMDDHHmmss')}`,
+      username,
+      realName,
+      email: values.email || generateEmail(username),
+      phone: values.phone,
+      role: values.role,
+      department: values.department,
+      status: 'active',
+      lastLogin: '-',
+      loginCount: 0,
+      createTime: dayjs().format('YYYY-MM-DD'),
+      lastPasswordChange: dayjs().format('YYYY-MM-DD'),
+      permissions: ROLE_PERMISSIONS[values.role] || ['public:read'],
+      twoFactorEnabled: values.twoFactorEnabled,
+      loginHistory: []
+    };
+
+    setUserList([newUser, ...userList]);
+    message.success('用户添加成功');
+    setAddUserModalVisible(false);
+    userForm.resetFields();
+    setSelectedDepartment('');
+  };
+
+  // 获取所有可用权限
+  const getAllPermissions = () => {
+    const permissions: { module: string; moduleName: string; permissions: { code: string; name: string; value: string }[] }[] = [];
+    Object.entries(PERMISSIONS).forEach(([module, config]) => {
+      const modulePermissions = config.permissions.map(p => ({
+        code: p.code,
+        name: p.name,
+        value: `${config.prefix}:${p.code}`
+      }));
+      permissions.push({
+        module,
+        moduleName: config.name,
+        permissions: modulePermissions
+      });
+    });
+    return permissions;
+  };
+
+  // 处理新增角色
+  const handleAddRole = (values: any) => {
+    const newRole: Role = {
+      id: `ROLE${dayjs().format('YYMMDDHHmmss')}`,
+      name: values.name,
+      description: values.description,
+      permissions: values.permissions,
+      userCount: 0, // 新角色初始用户数为0
+      status: 'active',
+      createTime: dayjs().format('YYYY-MM-DD'),
+      updateTime: dayjs().format('YYYY-MM-DD')
+    };
+
+    setRoleList([newRole, ...roleList]);
+    message.success('角色添加成功');
+    setAddRoleModalVisible(false);
+    roleForm.resetFields();
+    setSelectedPermissions([]);
+  };
+
   // 统计数据
   const totalUsers = userList.length;
   const activeUsers = userList.filter(user => user.status === 'active').length;
@@ -1118,7 +1050,11 @@ const UserManagement: React.FC = () => {
           <TabPane tab="用户管理" key="users">
             <div style={{ marginBottom: 16 }}>
               <Space>
-                <Button type="primary" icon={<UserAddOutlined />}>
+                <Button
+                  type="primary"
+                  icon={<UserAddOutlined />}
+                  onClick={() => setAddUserModalVisible(true)}
+                >
                   新增用户
                 </Button>
                 <Button icon={<ExportOutlined />} onClick={handleExport}>
@@ -1151,7 +1087,11 @@ const UserManagement: React.FC = () => {
           <TabPane tab="角色管理" key="roles">
             <div style={{ marginBottom: 16 }}>
               <Space>
-                <Button type="primary" icon={<UserAddOutlined />}>
+                <Button
+                  type="primary"
+                  icon={<UserAddOutlined />}
+                  onClick={() => setAddRoleModalVisible(true)}
+                >
                   新增角色
                 </Button>
                 <Button icon={<ExportOutlined />}>
@@ -1199,8 +1139,8 @@ const UserManagement: React.FC = () => {
               <Descriptions.Item label="部门">{currentUser.department}</Descriptions.Item>
               <Descriptions.Item label="状态">
                 <Badge
-                  status={getStatusColor(currentUser.status) as any}
-                  text={getStatusText(currentUser.status)}
+                  status={getStatusBadgeStyle(currentUser.status).status as any}
+                  text={getStatusBadgeStyle(currentUser.status).text}
                 />
               </Descriptions.Item>
               <Descriptions.Item label="创建时间">{currentUser.createTime}</Descriptions.Item>
@@ -1215,7 +1155,9 @@ const UserManagement: React.FC = () => {
             <Divider>权限列表</Divider>
             <Space wrap>
               {currentUser.permissions.map((permission, index) => (
-                <Tag key={index} color="blue">{permission}</Tag>
+                <Tag key={index} color={getPermissionTagColor(permission)}>
+                  {getPermissionName(permission)}
+                </Tag>
               ))}
             </Space>
 
@@ -1317,6 +1259,317 @@ const UserManagement: React.FC = () => {
           </Form.Item>
           <Form.Item label="双因素认证">
             <Switch defaultChecked={currentUser?.twoFactorEnabled} />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* 新增用户模态框 */}
+      <Modal
+        title="新增用户"
+        open={addUserModalVisible}
+        onCancel={() => {
+          setAddUserModalVisible(false);
+          userForm.resetFields();
+          setSelectedDepartment('');
+        }}
+        footer={null}
+        width={800}
+      >
+        <Form
+          form={userForm}
+          layout="vertical"
+          onFinish={handleAddUser}
+          initialValues={{
+            status: 'active',
+            twoFactorEnabled: false
+          }}
+        >
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="realName"
+                label="真实姓名"
+                rules={[
+                  { required: true, message: '请输入真实姓名' },
+                  { pattern: /^[\u4e00-\u9fa5]{2,4}$/, message: '请输入2-4个汉字' }
+                ]}
+              >
+                <Input placeholder="请输入真实姓名" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="username"
+                label="用户名"
+                rules={[
+                  { required: true, message: '请输入用户名' },
+                  { pattern: /^[a-zA-Z0-9_]{4,20}$/, message: '4-20个字符，只能包含字母、数字和下划线' }
+                ]}
+              >
+                <Input placeholder="请输入用户名，不填将自动生成" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="department"
+                label="所属部门"
+                rules={[{ required: true, message: '请选择所属部门' }]}
+              >
+                <Select
+                  placeholder="请选择所属部门"
+                  onChange={handleDepartmentChange}
+                >
+                  {Object.values(DEPARTMENTS).map(department => (
+                    <Option key={department.name} value={department.name}>
+                      {department.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="role"
+                label="角色"
+                rules={[{ required: true, message: '请选择角色' }]}
+              >
+                <Select
+                  placeholder="请选择角色"
+                  disabled={!selectedDepartment}
+                >
+                  {selectedDepartment &&
+                    Object.values(DEPARTMENTS)
+                      .find(d => d.name === selectedDepartment)
+                      ?.roles.map(role => (
+                        <Option key={role} value={role}>
+                          {role}
+                        </Option>
+                      ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="phone"
+                label="手机号码"
+                rules={[
+                  { required: true, message: '请输入手机号码' },
+                  { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码' }
+                ]}
+              >
+                <Input placeholder="请输入手机号码" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="email"
+                label="电子邮箱"
+                rules={[
+                  { required: true, message: '请输入电子邮箱' },
+                  { type: 'email', message: '请输入正确的邮箱格式' }
+                ]}
+              >
+                <Input placeholder="请输入电子邮箱，不填将自动生成" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="password"
+                label="登录密码"
+                rules={[
+                  { required: true, message: '请输入登录密码' },
+                  { min: 8, message: '密码长度不能小于8位' },
+                  {
+                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                    message: '密码必须包含大小写字母、数字和特殊字符'
+                  }
+                ]}
+              >
+                <Input.Password
+                  placeholder="请输入登录密码"
+                  visibilityToggle={{ visible: passwordVisible, onVisibleChange: setPasswordVisible }}
+                  addonAfter={
+                    <Button
+                      type="link"
+                      size="small"
+                      onClick={() => {
+                        const password = generateRandomPassword();
+                        userForm.setFieldsValue({ password });
+                        message.success('已生成随机密码');
+                      }}
+                    >
+                      生成随机密码
+                    </Button>
+                  }
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="confirmPassword"
+                label="确认密码"
+                dependencies={['password']}
+                rules={[
+                  { required: true, message: '请确认密码' },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('两次输入的密码不一致'));
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password
+                  placeholder="请再次输入密码"
+                  visibilityToggle={{ visible: passwordVisible, onVisibleChange: setPasswordVisible }}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item
+            name="twoFactorEnabled"
+            valuePropName="checked"
+          >
+            <Switch checkedChildren="启用双因素认证" unCheckedChildren="禁用双因素认证" />
+          </Form.Item>
+
+          <Form.Item>
+            <Space>
+              <Button type="primary" htmlType="submit">
+                确认添加
+              </Button>
+              <Button onClick={() => {
+                setAddUserModalVisible(false);
+                userForm.resetFields();
+                setSelectedDepartment('');
+              }}>
+                取消
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* 新增角色模态框 */}
+      <Modal
+        title="新增角色"
+        open={addRoleModalVisible}
+        onCancel={() => {
+          setAddRoleModalVisible(false);
+          roleForm.resetFields();
+          setSelectedPermissions([]);
+        }}
+        footer={null}
+        width={800}
+      >
+        <Form
+          form={roleForm}
+          layout="vertical"
+          onFinish={handleAddRole}
+          initialValues={{
+            status: 'active'
+          }}
+        >
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="name"
+                label="角色名称"
+                rules={[
+                  { required: true, message: '请输入角色名称' },
+                  { min: 2, max: 20, message: '角色名称长度为2-20个字符' },
+                  { pattern: /^[\u4e00-\u9fa5A-Za-z0-9_-]+$/, message: '角色名称只能包含中文、英文、数字、下划线和连字符' }
+                ]}
+              >
+                <Input placeholder="请输入角色名称" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="status"
+                label="状态"
+                rules={[{ required: true, message: '请选择状态' }]}
+              >
+                <Select>
+                  <Option value="active">正常</Option>
+                  <Option value="inactive">停用</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item
+            name="description"
+            label="角色描述"
+            rules={[
+              { required: true, message: '请输入角色描述' },
+              { min: 10, max: 200, message: '角色描述长度为10-200个字符' }
+            ]}
+          >
+            <Input.TextArea
+              rows={3}
+              placeholder="请输入角色描述"
+            />
+          </Form.Item>
+
+          {/* 权限设置部分 */}
+          <Form.Item
+            name="permissions"
+            label="权限设置"
+            rules={[{ required: true, message: '请至少选择一个权限' }]}
+          >
+            <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '2px' }}>
+              {getAllPermissions().map(({ module, moduleName, permissions }) => (
+                <div key={module} style={{ marginBottom: '16px' }}>
+                  <Typography.Title level={5}>{moduleName}</Typography.Title>
+                  <Space wrap>
+                    {permissions.map(permission => (
+                      <Checkbox
+                        key={permission.value}
+                        value={permission.value}
+                        onChange={e => {
+                          const newPermissions = e.target.checked
+                            ? [...selectedPermissions, permission.value]
+                            : selectedPermissions.filter(p => p !== permission.value);
+                          setSelectedPermissions(newPermissions);
+                          roleForm.setFieldsValue({ permissions: newPermissions });
+                        }}
+                        checked={selectedPermissions.includes(permission.value)}
+                      >
+                        {permission.name}
+                      </Checkbox>
+                    ))}
+                  </Space>
+                </div>
+              ))}
+            </div>
+          </Form.Item>
+
+          <Form.Item>
+            <Space>
+              <Button type="primary" htmlType="submit">
+                确认添加
+              </Button>
+              <Button onClick={() => {
+                setAddRoleModalVisible(false);
+                roleForm.resetFields();
+                setSelectedPermissions([]);
+              }}>
+                取消
+              </Button>
+            </Space>
           </Form.Item>
         </Form>
       </Modal>
