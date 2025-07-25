@@ -50,6 +50,8 @@ import {
   FileTextOutlined,
   CloudOutlined,
 } from '@ant-design/icons';
+import ReactECharts from 'echarts-for-react';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -93,6 +95,310 @@ interface EnergyAlert {
   status: 'active' | 'acknowledged' | 'resolved';
 }
 
+// 生成更真实的能耗数据
+function generateConsumptionData(): EnergyConsumption[] {
+  const locations = [
+    { name: '主楼', weight: 1 },
+    { name: '客房区', weight: 0.8 },
+    { name: '餐饮区', weight: 0.6 },
+    { name: '公共区域', weight: 0.4 },
+    { name: '后勤区', weight: 0.3 }
+  ];
+
+  const consumptionData: EnergyConsumption[] = [];
+  let id = 1;
+
+  // 电力消耗
+  locations.forEach(loc => {
+    const baseUsage = 1200 * loc.weight;
+    const currentUsage = Math.round(baseUsage * (0.9 + Math.random() * 0.2));
+    const lastMonthUsage = Math.round(baseUsage * (0.85 + Math.random() * 0.2));
+    const changeRate = Number(((currentUsage - lastMonthUsage) / lastMonthUsage * 100).toFixed(1));
+    
+    consumptionData.push({
+      id: id.toString(),
+      type: 'electricity',
+      location: loc.name,
+      currentUsage,
+      lastMonthUsage,
+      changeRate,
+      cost: Math.round(currentUsage * 0.8), // 0.8元/kWh
+      unit: 'kWh',
+      status: changeRate > 10 ? 'high' : changeRate > 5 ? 'warning' : 'normal',
+      efficiency: Math.round(85 + Math.random() * 10),
+      lastUpdate: dayjs().format('YYYY-MM-DD HH:mm:ss')
+    });
+    id++;
+  });
+
+  // 用水消耗
+  locations.forEach(loc => {
+    const baseUsage = 150 * loc.weight;
+    const currentUsage = Math.round(baseUsage * (0.9 + Math.random() * 0.2));
+    const lastMonthUsage = Math.round(baseUsage * (0.85 + Math.random() * 0.2));
+    const changeRate = Number(((currentUsage - lastMonthUsage) / lastMonthUsage * 100).toFixed(1));
+    
+    consumptionData.push({
+      id: id.toString(),
+      type: 'water',
+      location: loc.name,
+      currentUsage,
+      lastMonthUsage,
+      changeRate,
+      cost: Math.round(currentUsage * 2.5), // 2.5元/m³
+      unit: 'm³',
+      status: changeRate > 10 ? 'high' : changeRate > 5 ? 'warning' : 'normal',
+      efficiency: Math.round(88 + Math.random() * 8),
+      lastUpdate: dayjs().format('YYYY-MM-DD HH:mm:ss')
+    });
+    id++;
+  });
+
+  // 燃气消耗（主要在餐饮区和后勤区）
+  ['餐饮区', '后勤区'].forEach(loc => {
+    const baseUsage = 80;
+    const currentUsage = Math.round(baseUsage * (0.9 + Math.random() * 0.2));
+    const lastMonthUsage = Math.round(baseUsage * (0.85 + Math.random() * 0.2));
+    const changeRate = Number(((currentUsage - lastMonthUsage) / lastMonthUsage * 100).toFixed(1));
+    
+    consumptionData.push({
+      id: id.toString(),
+      type: 'gas',
+      location: loc,
+      currentUsage,
+      lastMonthUsage,
+      changeRate,
+      cost: Math.round(currentUsage * 5), // 5元/m³
+      unit: 'm³',
+      status: changeRate > 10 ? 'high' : changeRate > 5 ? 'warning' : 'normal',
+      efficiency: Math.round(82 + Math.random() * 8),
+      lastUpdate: dayjs().format('YYYY-MM-DD HH:mm:ss')
+    });
+    id++;
+  });
+
+  // 供暖和制冷（主要在客房区和公共区域）
+  ['heating', 'cooling'].forEach(type => {
+    ['客房区', '公共区域'].forEach(loc => {
+      const baseUsage = 300;
+      const currentUsage = Math.round(baseUsage * (0.9 + Math.random() * 0.2));
+      const lastMonthUsage = Math.round(baseUsage * (0.85 + Math.random() * 0.2));
+      const changeRate = Number(((currentUsage - lastMonthUsage) / lastMonthUsage * 100).toFixed(1));
+      
+      consumptionData.push({
+        id: id.toString(),
+        type: type as 'heating' | 'cooling',
+        location: loc,
+        currentUsage,
+        lastMonthUsage,
+        changeRate,
+        cost: Math.round(currentUsage * 1.2), // 1.2元/kWh
+        unit: 'kWh',
+        status: changeRate > 10 ? 'high' : changeRate > 5 ? 'warning' : 'normal',
+        efficiency: Math.round(85 + Math.random() * 10),
+        lastUpdate: dayjs().format('YYYY-MM-DD HH:mm:ss')
+      });
+      id++;
+    });
+  });
+
+  return consumptionData;
+}
+
+// 生成更真实的设备数据
+function generateDeviceData(): EnergyDevice[] {
+  const devices: EnergyDevice[] = [];
+  let id = 1;
+
+  // HVAC设备
+  const hvacLocations = ['主楼', '客房区', '餐饮区', '公共区域'];
+  hvacLocations.forEach((loc, index) => {
+    const power = 15 + Math.random() * 5;
+    const dailyUsage = Math.round(power * (12 + Math.random() * 4));
+    devices.push({
+      id: id.toString(),
+      name: `中央空调-${(index + 1).toString().padStart(2, '0')}`,
+      type: 'hvac',
+      location: loc,
+      power: Number(power.toFixed(1)),
+      currentStatus: Math.random() > 0.1 ? 'on' : Math.random() > 0.5 ? 'standby' : 'off',
+      dailyUsage,
+      monthlyUsage: dailyUsage * 30,
+      efficiency: Math.round(85 + Math.random() * 10),
+      lastMaintenance: dayjs().subtract(Math.floor(Math.random() * 30), 'days').format('YYYY-MM-DD'),
+      nextMaintenance: dayjs().add(Math.floor(Math.random() * 30 + 30), 'days').format('YYYY-MM-DD')
+    });
+    id++;
+  });
+
+  // 照明系统
+  const lightingLocations = ['客房走廊', '大堂', '餐厅', '会议室', '停车场'];
+  lightingLocations.forEach((loc, index) => {
+    const power = 5 + Math.random() * 3;
+    const dailyUsage = Math.round(power * (14 + Math.random() * 4));
+    devices.push({
+      id: id.toString(),
+      name: `照明系统-${(index + 1).toString().padStart(2, '0')}`,
+      type: 'lighting',
+      location: loc,
+      power: Number(power.toFixed(1)),
+      currentStatus: Math.random() > 0.1 ? 'on' : 'off',
+      dailyUsage,
+      monthlyUsage: dailyUsage * 30,
+      efficiency: Math.round(90 + Math.random() * 8),
+      lastMaintenance: dayjs().subtract(Math.floor(Math.random() * 30), 'days').format('YYYY-MM-DD'),
+      nextMaintenance: dayjs().add(Math.floor(Math.random() * 30 + 30), 'days').format('YYYY-MM-DD')
+    });
+    id++;
+  });
+
+  // 厨房设备
+  const kitchenEquipment = ['主厨房', '中餐厅', '西餐厅', '员工餐厅'];
+  kitchenEquipment.forEach((loc, index) => {
+    const power = 10 + Math.random() * 5;
+    const dailyUsage = Math.round(power * (8 + Math.random() * 4));
+    devices.push({
+      id: id.toString(),
+      name: `厨房设备-${(index + 1).toString().padStart(2, '0')}`,
+      type: 'kitchen',
+      location: loc,
+      power: Number(power.toFixed(1)),
+      currentStatus: Math.random() > 0.2 ? 'on' : Math.random() > 0.5 ? 'standby' : 'off',
+      dailyUsage,
+      monthlyUsage: dailyUsage * 30,
+      efficiency: Math.round(80 + Math.random() * 15),
+      lastMaintenance: dayjs().subtract(Math.floor(Math.random() * 30), 'days').format('YYYY-MM-DD'),
+      nextMaintenance: dayjs().add(Math.floor(Math.random() * 30 + 30), 'days').format('YYYY-MM-DD')
+    });
+    id++;
+  });
+
+  // 洗衣设备
+  const laundryEquipment = ['洗衣房'];
+  laundryEquipment.forEach((loc, index) => {
+    const power = 8 + Math.random() * 4;
+    const dailyUsage = Math.round(power * (6 + Math.random() * 4));
+    devices.push({
+      id: id.toString(),
+      name: `洗衣设备-${(index + 1).toString().padStart(2, '0')}`,
+      type: 'laundry',
+      location: loc,
+      power: Number(power.toFixed(1)),
+      currentStatus: Math.random() > 0.3 ? 'on' : Math.random() > 0.5 ? 'standby' : 'off',
+      dailyUsage,
+      monthlyUsage: dailyUsage * 30,
+      efficiency: Math.round(85 + Math.random() * 10),
+      lastMaintenance: dayjs().subtract(Math.floor(Math.random() * 30), 'days').format('YYYY-MM-DD'),
+      nextMaintenance: dayjs().add(Math.floor(Math.random() * 30 + 30), 'days').format('YYYY-MM-DD')
+    });
+    id++;
+  });
+
+  // 其他设备（电梯、水泵等）
+  const otherEquipment = [
+    { name: '客用电梯', loc: '主楼' },
+    { name: '货梯', loc: '后勤区' },
+    { name: '水泵系统', loc: '设备房' },
+    { name: '热水系统', loc: '锅炉房' }
+  ];
+  otherEquipment.forEach((equip, index) => {
+    const power = 6 + Math.random() * 4;
+    const dailyUsage = Math.round(power * (10 + Math.random() * 4));
+    devices.push({
+      id: id.toString(),
+      name: equip.name,
+      type: 'other',
+      location: equip.loc,
+      power: Number(power.toFixed(1)),
+      currentStatus: Math.random() > 0.1 ? 'on' : Math.random() > 0.5 ? 'standby' : 'off',
+      dailyUsage,
+      monthlyUsage: dailyUsage * 30,
+      efficiency: Math.round(88 + Math.random() * 8),
+      lastMaintenance: dayjs().subtract(Math.floor(Math.random() * 30), 'days').format('YYYY-MM-DD'),
+      nextMaintenance: dayjs().add(Math.floor(Math.random() * 30 + 30), 'days').format('YYYY-MM-DD')
+    });
+    id++;
+  });
+
+  return devices;
+}
+
+// 生成更真实的告警数据
+function generateAlertData(): EnergyAlert[] {
+  const alerts: EnergyAlert[] = [];
+  let id = 1;
+
+  // 高能耗告警
+  const highConsumptionLocations = ['厨房', '客房区', '公共区域'];
+  highConsumptionLocations.forEach(loc => {
+    if (Math.random() > 0.7) {
+      alerts.push({
+        id: id.toString(),
+        type: 'high_consumption',
+        severity: Math.random() > 0.7 ? 'high' : 'medium',
+        location: loc,
+        description: `${loc}能耗异常增加，较上月增长${Math.round(5 + Math.random() * 10)}%`,
+        timestamp: dayjs().subtract(Math.floor(Math.random() * 24), 'hours').format('YYYY-MM-DD HH:mm:ss'),
+        status: Math.random() > 0.6 ? 'active' : Math.random() > 0.5 ? 'acknowledged' : 'resolved'
+      });
+      id++;
+    }
+  });
+
+  // 设备故障告警
+  const devices = ['中央空调', '热水系统', '电梯', '洗衣设备'];
+  devices.forEach(device => {
+    if (Math.random() > 0.8) {
+      alerts.push({
+        id: id.toString(),
+        type: 'device_fault',
+        severity: Math.random() > 0.7 ? 'critical' : 'high',
+        location: device,
+        description: `${device}运行异常，需要检查维护`,
+        timestamp: dayjs().subtract(Math.floor(Math.random() * 24), 'hours').format('YYYY-MM-DD HH:mm:ss'),
+        status: Math.random() > 0.5 ? 'active' : 'acknowledged'
+      });
+      id++;
+    }
+  });
+
+  // 效率低下告警
+  const areas = ['空调系统', '照明系统', '热水系统', '洗衣系统'];
+  areas.forEach(area => {
+    if (Math.random() > 0.8) {
+      alerts.push({
+        id: id.toString(),
+        type: 'efficiency_low',
+        severity: 'medium',
+        location: area,
+        description: `${area}效率低于预期，建议进行维护检查`,
+        timestamp: dayjs().subtract(Math.floor(Math.random() * 24), 'hours').format('YYYY-MM-DD HH:mm:ss'),
+        status: Math.random() > 0.6 ? 'active' : Math.random() > 0.5 ? 'acknowledged' : 'resolved'
+      });
+      id++;
+    }
+  });
+
+  // 成本超支告警
+  const costAreas = ['总体', '客房区', '餐饮区'];
+  costAreas.forEach(area => {
+    if (Math.random() > 0.8) {
+      alerts.push({
+        id: id.toString(),
+        type: 'cost_overrun',
+        severity: Math.random() > 0.7 ? 'high' : 'medium',
+        location: area,
+        description: `${area}能耗成本超出预算${Math.round(5 + Math.random() * 10)}%`,
+        timestamp: dayjs().subtract(Math.floor(Math.random() * 24), 'hours').format('YYYY-MM-DD HH:mm:ss'),
+        status: Math.random() > 0.6 ? 'active' : Math.random() > 0.5 ? 'acknowledged' : 'resolved'
+      });
+      id++;
+    }
+  });
+
+  return alerts;
+}
+
 const EnergyAnalysis: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [consumption, setConsumption] = useState<EnergyConsumption[]>([]);
@@ -101,183 +407,17 @@ const EnergyAnalysis: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('overview');
-
-  // 模拟数据
-  const mockConsumption: EnergyConsumption[] = [
-    {
-      id: '1',
-      type: 'electricity',
-      location: '主楼',
-      currentUsage: 1250,
-      lastMonthUsage: 1180,
-      changeRate: 5.9,
-      cost: 875,
-      unit: 'kWh',
-      status: 'normal',
-      efficiency: 85,
-      lastUpdate: '2025-07-23 14:30:00',
-    },
-    {
-      id: '2',
-      type: 'water',
-      location: '全酒店',
-      currentUsage: 180,
-      lastMonthUsage: 175,
-      changeRate: 2.9,
-      cost: 360,
-      unit: 'm³',
-      status: 'normal',
-      efficiency: 90,
-      lastUpdate: '2025-07-23 14:30:00',
-    },
-    {
-      id: '3',
-      type: 'gas',
-      location: '厨房',
-      currentUsage: 85,
-      lastMonthUsage: 78,
-      changeRate: 9.0,
-      cost: 425,
-      unit: 'm³',
-      status: 'high',
-      efficiency: 75,
-      lastUpdate: '2025-07-23 14:30:00',
-    },
-    {
-      id: '4',
-      type: 'heating',
-      location: '客房区',
-      currentUsage: 320,
-      lastMonthUsage: 350,
-      changeRate: -8.6,
-      cost: 640,
-      unit: 'kWh',
-      status: 'normal',
-      efficiency: 88,
-      lastUpdate: '2025-07-23 14:30:00',
-    },
-    {
-      id: '5',
-      type: 'cooling',
-      location: '公共区域',
-      currentUsage: 450,
-      lastMonthUsage: 420,
-      changeRate: 7.1,
-      cost: 675,
-      unit: 'kWh',
-      status: 'warning',
-      efficiency: 82,
-      lastUpdate: '2025-07-23 14:30:00',
-    },
-  ];
-
-  const mockDevices: EnergyDevice[] = [
-    {
-      id: '1',
-      name: '中央空调-01',
-      type: 'hvac',
-      location: '1楼大厅',
-      power: 15.5,
-      currentStatus: 'on',
-      dailyUsage: 186,
-      monthlyUsage: 5580,
-      efficiency: 88,
-      lastMaintenance: '2025-07-10',
-      nextMaintenance: '2024-02-10',
-    },
-    {
-      id: '2',
-      name: '照明系统-01',
-      type: 'lighting',
-      location: '客房走廊',
-      power: 8.2,
-      currentStatus: 'on',
-      dailyUsage: 98.4,
-      monthlyUsage: 2952,
-      efficiency: 95,
-      lastMaintenance: '2025-07-05',
-      nextMaintenance: '2024-02-05',
-    },
-    {
-      id: '3',
-      name: '厨房设备-01',
-      type: 'kitchen',
-      location: '主厨房',
-      power: 12.8,
-      currentStatus: 'on',
-      dailyUsage: 153.6,
-      monthlyUsage: 4608,
-      efficiency: 78,
-      lastMaintenance: '2025-07-08',
-      nextMaintenance: '2024-02-08',
-    },
-    {
-      id: '4',
-      name: '洗衣设备-01',
-      type: 'laundry',
-      location: '洗衣房',
-      power: 10.5,
-      currentStatus: 'standby',
-      dailyUsage: 84,
-      monthlyUsage: 2520,
-      efficiency: 85,
-      lastMaintenance: '2025-07-12',
-      nextMaintenance: '2024-02-12',
-    },
-    {
-      id: '5',
-      name: '电梯系统-01',
-      type: 'other',
-      location: '主楼',
-      power: 6.8,
-      currentStatus: 'on',
-      dailyUsage: 81.6,
-      monthlyUsage: 2448,
-      efficiency: 92,
-      lastMaintenance: '2025-07-23',
-      nextMaintenance: '2024-02-15',
-    },
-  ];
-
-  const mockAlerts: EnergyAlert[] = [
-    {
-      id: '1',
-      type: 'high_consumption',
-      severity: 'medium',
-      location: '厨房',
-      description: '燃气消耗异常增加，较上月增长9%',
-      timestamp: '2025-07-23 14:30:00',
-      status: 'active',
-    },
-    {
-      id: '2',
-      type: 'efficiency_low',
-      severity: 'low',
-      location: '公共区域',
-      description: '制冷系统效率偏低，建议检查维护',
-      timestamp: '2025-07-23 14:25:00',
-      status: 'acknowledged',
-    },
-    {
-      id: '3',
-      type: 'device_fault',
-      severity: 'high',
-      location: '中央空调-01',
-      description: '设备运行异常，需要立即检查',
-      timestamp: '2025-07-23 14:20:00',
-      status: 'active',
-    },
-    {
-      id: '4',
-      type: 'cost_overrun',
-      severity: 'medium',
-      location: '全酒店',
-      description: '本月能耗成本超出预算5%',
-      timestamp: '2025-07-23 14:15:00',
-      status: 'resolved',
-    },
-  ];
+  const [activeTab, setActiveTab] = useState('consumption'); // 修改默认标签页为能耗监控
+  const [dateRangeModalVisible, setDateRangeModalVisible] = useState(false);
+  const [trendModalVisible, setTrendModalVisible] = useState(false);
+  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs().subtract(30, 'days'),
+    dayjs()
+  ]);
+  const [selectedDateRange, setSelectedDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs().subtract(30, 'days'),
+    dayjs()
+  ]);
 
   useEffect(() => {
     loadData();
@@ -285,13 +425,195 @@ const EnergyAnalysis: React.FC = () => {
 
   const loadData = () => {
     setLoading(true);
-    // 模拟API调用
-    setTimeout(() => {
-      setConsumption(mockConsumption);
-      setDevices(mockDevices);
-      setAlerts(mockAlerts);
-      setLoading(false);
-    }, 1000);
+    const consumptionData = generateConsumptionData();
+    const deviceData = generateDeviceData();
+    const alertData = generateAlertData();
+
+    setConsumption(consumptionData);
+    setDevices(deviceData);
+    setAlerts(alertData);
+    setLoading(false);
+  };
+
+  // 处理日期范围选择
+  const handleDateRangeOk = () => {
+    setDateRange(selectedDateRange);
+    setDateRangeModalVisible(false);
+    loadData(); // 重新加载数据
+  };
+
+  // 处理趋势分析
+  const handleTrendAnalysis = () => {
+    setTrendModalVisible(true);
+  };
+
+  // 生成能耗趋势图表配置
+  const getConsumptionTrendOption = () => {
+    const dates = Array.from({ length: 30 }, (_, i) => {
+      return dayjs().subtract(29 - i, 'days').format('MM-DD');
+    });
+
+    // 生成各类能耗的趋势数据
+    const electricityData = dates.map(() => Math.round(1000 + Math.random() * 500));
+    const waterData = dates.map(() => Math.round(150 + Math.random() * 60));
+    const gasData = dates.map(() => Math.round(70 + Math.random() * 30));
+
+    return {
+      tooltip: {
+        trigger: 'axis',
+      },
+      legend: {
+        data: ['用电量(kWh)', '用水量(m³)', '燃气量(m³)'],
+        top: 10
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: dates,
+        axisLabel: {
+          rotate: 30
+        }
+      },
+      yAxis: [
+        {
+          type: 'value',
+          name: '用电量(kWh)',
+          position: 'left'
+        },
+        {
+          type: 'value',
+          name: '用水/燃气量(m³)',
+          position: 'right'
+        }
+      ],
+      series: [
+        {
+          name: '用电量(kWh)',
+          type: 'line',
+          data: electricityData,
+          smooth: true,
+          lineStyle: { color: '#1890ff' },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [{
+                offset: 0,
+                color: 'rgba(24,144,255,0.3)'
+              }, {
+                offset: 1,
+                color: 'rgba(24,144,255,0.1)'
+              }]
+            }
+          }
+        },
+        {
+          name: '用水量(m³)',
+          type: 'line',
+          yAxisIndex: 1,
+          data: waterData,
+          smooth: true,
+          lineStyle: { color: '#52c41a' },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [{
+                offset: 0,
+                color: 'rgba(82,196,26,0.3)'
+              }, {
+                offset: 1,
+                color: 'rgba(82,196,26,0.1)'
+              }]
+            }
+          }
+        },
+        {
+          name: '燃气量(m³)',
+          type: 'line',
+          yAxisIndex: 1,
+          data: gasData,
+          smooth: true,
+          lineStyle: { color: '#fa8c16' },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0, y: 0, x2: 0, y2: 1,
+              colorStops: [{
+                offset: 0,
+                color: 'rgba(250,140,22,0.3)'
+              }, {
+                offset: 1,
+                color: 'rgba(250,140,22,0.1)'
+              }]
+            }
+          }
+        }
+      ]
+    };
+  };
+
+  // 生成设备效率对比图表配置
+  const getDeviceEfficiencyOption = () => {
+    const deviceTypes = ['空调系统', '照明系统', '厨房设备', '洗衣设备', '其他设备'];
+    const efficiencyData = deviceTypes.map(() => Math.round(75 + Math.random() * 20));
+    const maintenanceData = deviceTypes.map(() => Math.round(70 + Math.random() * 25));
+    const utilizationData = deviceTypes.map(() => Math.round(65 + Math.random() * 30));
+
+    return {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      legend: {
+        data: ['设备效率', '维护状况', '使用率'],
+        top: 10
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: '{value}%'
+        }
+      },
+      yAxis: {
+        type: 'category',
+        data: deviceTypes
+      },
+      series: [
+        {
+          name: '设备效率',
+          type: 'bar',
+          data: efficiencyData,
+          itemStyle: { color: '#1890ff' }
+        },
+        {
+          name: '维护状况',
+          type: 'bar',
+          data: maintenanceData,
+          itemStyle: { color: '#52c41a' }
+        },
+        {
+          name: '使用率',
+          type: 'bar',
+          data: utilizationData,
+          itemStyle: { color: '#fa8c16' }
+        }
+      ]
+    };
   };
 
   const getStatusColor = (status: string) => {
@@ -740,11 +1062,13 @@ const EnergyAnalysis: React.FC = () => {
           </Button>
           <Button
             icon={<CalendarOutlined />}
+            onClick={() => setDateRangeModalVisible(true)}
           >
             选择时间范围
           </Button>
           <Button
             icon={<LineChartOutlined />}
+            onClick={handleTrendAnalysis}
           >
             趋势分析
           </Button>
@@ -760,55 +1084,6 @@ const EnergyAnalysis: React.FC = () => {
       {/* 主要内容区域 */}
       <Card>
         <Tabs activeKey={activeTab} onChange={setActiveTab}>
-          <TabPane tab="综合概览" key="overview">
-            <Row gutter={16}>
-              <Col span={12}>
-                <Card title="能耗分布" size="small">
-                  <List
-                    dataSource={consumption}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          avatar={<Avatar icon={getTypeIcon(item.type)} />}
-                          title={getTypeText(item.type)}
-                          description={item.location}
-                        />
-                        <div>
-                          <Text strong>{item.currentUsage} {item.unit}</Text>
-                          <br />
-                          <Text type="secondary">¥{item.cost}</Text>
-                        </div>
-                      </List.Item>
-                    )}
-                  />
-                </Card>
-              </Col>
-              <Col span={12}>
-                <Card title="设备状态" size="small">
-                  <List
-                    dataSource={devices.slice(0, 5)}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          avatar={<Avatar icon={getTypeIcon(item.type)} />}
-                          title={item.name}
-                          description={item.location}
-                        />
-                        <div>
-                          <Badge
-                            status={getStatusColor(item.currentStatus) as any}
-                            text={getStatusText(item.currentStatus)}
-                          />
-                          <br />
-                          <Text type="secondary">{item.power} kW</Text>
-                        </div>
-                      </List.Item>
-                    )}
-                  />
-                </Card>
-              </Col>
-            </Row>
-          </TabPane>
           <TabPane tab="能耗监控" key="consumption">
             <Table
               columns={consumptionColumns}
@@ -915,6 +1190,54 @@ const EnergyAnalysis: React.FC = () => {
             )}
           </Descriptions>
         )}
+      </Modal>
+
+      {/* 日期范围选择模态框 */}
+      <Modal
+        title="选择时间范围"
+        open={dateRangeModalVisible}
+        onOk={handleDateRangeOk}
+        onCancel={() => setDateRangeModalVisible(false)}
+      >
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Alert
+            message="选择要查看的能耗数据时间范围"
+            type="info"
+            showIcon
+            style={{ marginBottom: 16 }}
+          />
+          <RangePicker
+            value={selectedDateRange}
+            onChange={(dates) => {
+              if (dates) {
+                setSelectedDateRange([dates[0]!, dates[1]!]);
+              }
+            }}
+            style={{ width: '100%' }}
+          />
+        </Space>
+      </Modal>
+
+      {/* 趋势分析模态框 */}
+      <Modal
+        title="能耗趋势分析"
+        open={trendModalVisible}
+        onCancel={() => setTrendModalVisible(false)}
+        width={1000}
+        footer={null}
+      >
+        <Tabs defaultActiveKey="trend">
+          <TabPane tab="能耗趋势" key="trend">
+            <Card>
+              <ReactECharts option={getConsumptionTrendOption()} style={{ height: 400 }} />
+            </Card>
+          </TabPane>
+          <TabPane tab="设备效率" key="efficiency">
+            <Card>
+              <ReactECharts option={getDeviceEfficiencyOption()} style={{ height: 600 }} />
+            </Card>
+          </TabPane>
+        </Tabs>
       </Modal>
     </div>
   );

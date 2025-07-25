@@ -47,7 +47,9 @@ import {
   ToolOutlined,
   ClearOutlined,
   KeyOutlined,
+  LineChartOutlined,
 } from '@ant-design/icons';
+import ReactECharts from 'echarts-for-react';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -84,6 +86,224 @@ interface Booking {
   specialRequests?: string;
 }
 
+// 房型配置
+const ROOM_TYPES = {
+  standard: {
+    name: '标准间',
+    basePrice: 288,
+    amenities: ['WiFi', '空调', '电视', '独立卫浴'],
+    count: { min: 40, max: 50 }
+  },
+  deluxe: {
+    name: '豪华间',
+    basePrice: 388,
+    amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台'],
+    count: { min: 30, max: 40 }
+  },
+  suite: {
+    name: '套房',
+    basePrice: 688,
+    amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '厨房'],
+    count: { min: 15, max: 20 }
+  },
+  business: {
+    name: '商务套房',
+    basePrice: 888,
+    amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '办公桌', '会议设施'],
+    count: { min: 10, max: 15 }
+  },
+  family: {
+    name: '家庭套房',
+    basePrice: 988,
+    amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '儿童房', '游戏区'],
+    count: { min: 8, max: 12 }
+  },
+  presidential: {
+    name: '总统套房',
+    basePrice: 1288,
+    amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '厨房', '会议室', '健身房', '私人管家'],
+    count: { min: 2, max: 4 }
+  },
+  honeymoon: {
+    name: '蜜月套房',
+    basePrice: 1088,
+    amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
+    count: { min: 5, max: 8 }
+  }
+};
+
+// 生成更真实的房间数据
+function generateRoomData(): Room[] {
+  const rooms: Room[] = [];
+  let id = 1;
+
+  // 遍历每个楼层（1-20层）
+  for (let floor = 1; floor <= 20; floor++) {
+    // 确定这个楼层的房型分布
+    let floorRoomTypes: string[] = [];
+    
+    if (floor >= 18) { // 18-20层
+      floorRoomTypes = ['presidential', 'honeymoon'];
+    } else if (floor >= 15) { // 15-17层
+      floorRoomTypes = ['business', 'suite'];
+    } else if (floor >= 12) { // 12-14层
+      floorRoomTypes = ['family', 'suite'];
+    } else if (floor >= 8) { // 8-11层
+      floorRoomTypes = ['deluxe', 'suite'];
+    } else if (floor >= 4) { // 4-7层
+      floorRoomTypes = ['deluxe', 'standard'];
+    } else { // 1-3层
+      floorRoomTypes = ['standard'];
+    }
+
+    // 生成每层的房间
+    for (let roomNum = 1; roomNum <= 12; roomNum++) {
+      // 选择房型
+      const roomType = floorRoomTypes[Math.floor(Math.random() * floorRoomTypes.length)];
+      const typeConfig = ROOM_TYPES[roomType as keyof typeof ROOM_TYPES];
+
+      // 生成房间号（例如：0301表示3层01号房）
+      const roomNumber = `${floor.toString().padStart(2, '0')}${roomNum.toString().padStart(2, '0')}`;
+
+      // 生成房间状态
+      const rand = Math.random();
+      const status: 'occupied' | 'vacant' | 'cleaning' | 'maintenance' | 'reserved' =
+        rand > 0.9 ? 'maintenance' :
+        rand > 0.8 ? 'cleaning' :
+        rand > 0.6 ? 'occupied' :
+        rand > 0.45 ? 'reserved' : 'vacant';
+
+      // 生成清洁状态
+      const cleaningStatus: 'clean' | 'dirty' | 'cleaning' =
+        status === 'cleaning' ? 'cleaning' :
+        status === 'occupied' ? (Math.random() > 0.7 ? 'dirty' : 'clean') :
+        status === 'maintenance' ? 'dirty' : 'clean';
+
+      // 生成维护状态
+      const maintenanceStatus: 'normal' | 'minor' | 'major' =
+        status === 'maintenance' ? (Math.random() > 0.7 ? 'major' : 'minor') : 'normal';
+
+      // 生成价格（基础价格±10%）
+      const price = Math.round(typeConfig.basePrice * (0.9 + Math.random() * 0.2));
+
+      // 生成清洁时间
+      const now = dayjs();
+      const lastCleaned = cleaningStatus === 'clean' ? 
+        now.subtract(Math.floor(Math.random() * 24), 'hours').format('YYYY-MM-DD HH:mm') :
+        now.subtract(Math.floor(Math.random() * 72 + 24), 'hours').format('YYYY-MM-DD HH:mm');
+      const nextCleaning = dayjs(lastCleaned).add(24, 'hours').format('YYYY-MM-DD HH:mm');
+
+      // 生成客人信息（如果房间已入住或已预订）
+      let guestName, checkInDate, checkOutDate;
+      if (status === 'occupied' || status === 'reserved') {
+        const lastNames = ['张', '李', '王', '刘', '陈', '杨', '黄', '赵', '吴', '周'];
+        const titles = ['先生', '女士'];
+        guestName = lastNames[Math.floor(Math.random() * lastNames.length)] + 
+                   titles[Math.floor(Math.random() * titles.length)];
+        
+        if (status === 'occupied') {
+          checkInDate = now.subtract(Math.floor(Math.random() * 5), 'days').format('YYYY-MM-DD');
+          checkOutDate = dayjs(checkInDate).add(Math.floor(Math.random() * 5 + 1), 'days').format('YYYY-MM-DD');
+        } else { // reserved
+          checkInDate = now.add(Math.floor(Math.random() * 10), 'days').format('YYYY-MM-DD');
+          checkOutDate = dayjs(checkInDate).add(Math.floor(Math.random() * 5 + 1), 'days').format('YYYY-MM-DD');
+        }
+      }
+
+      rooms.push({
+        id: id.toString(),
+        roomNumber,
+        type: typeConfig.name,
+        floor,
+        status,
+        guestName,
+        checkInDate,
+        checkOutDate,
+        price,
+        amenities: typeConfig.amenities,
+        cleaningStatus,
+        maintenanceStatus,
+        lastCleaned,
+        nextCleaning
+      });
+
+      id++;
+    }
+  }
+
+  return rooms;
+}
+
+// 生成更真实的预订数据
+function generateBookingData(rooms: Room[]): Booking[] {
+  const bookings: Booking[] = [];
+  let id = 1;
+
+  // 获取所有可预订的房间（空闲或预订状态）
+  const bookableRooms = rooms.filter(room => room.status === 'vacant' || room.status === 'reserved');
+
+  // 为30%的可预订房间生成预订记录
+  const bookingCount = Math.floor(bookableRooms.length * 0.3);
+  
+  for (let i = 0; i < bookingCount; i++) {
+    const room = bookableRooms[Math.floor(Math.random() * bookableRooms.length)];
+    
+    // 生成客人信息
+    const lastNames = ['张', '李', '王', '刘', '陈', '杨', '黄', '赵', '吴', '周'];
+    const titles = ['先生', '女士'];
+    const guestName = lastNames[Math.floor(Math.random() * lastNames.length)] + 
+                     titles[Math.floor(Math.random() * titles.length)];
+
+    // 生成手机号
+    const phone = `1${Math.floor(Math.random() * 9000000000 + 1000000000)}`;
+
+    // 生成入住日期（未来10天内）
+    const checkInDate = dayjs().add(Math.floor(Math.random() * 10), 'days').format('YYYY-MM-DD');
+    const checkOutDate = dayjs(checkInDate).add(Math.floor(Math.random() * 5 + 1), 'days').format('YYYY-MM-DD');
+
+    // 计算总金额（房价 * 天数）
+    const days = dayjs(checkOutDate).diff(dayjs(checkInDate), 'days');
+    const totalAmount = room.price * days;
+
+    // 生成订金（总金额的20-30%）
+    const deposit = Math.round(totalAmount * (0.2 + Math.random() * 0.1));
+
+    // 生成预订状态
+    const status: 'confirmed' | 'pending' | 'cancelled' =
+      Math.random() > 0.8 ? 'pending' :
+      Math.random() > 0.1 ? 'confirmed' : 'cancelled';
+
+    // 生成特殊要求
+    const specialRequests = Math.random() > 0.7 ? [
+      '需要婴儿床',
+      '希望安静的房间',
+      '需要加床',
+      '高层房间',
+      '靠近电梯',
+      '禁烟房间',
+      '有浴缸的房间',
+      '需要接送机服务'
+    ][Math.floor(Math.random() * 8)] : undefined;
+
+    bookings.push({
+      id: id.toString(),
+      roomNumber: room.roomNumber,
+      guestName,
+      phone,
+      checkInDate,
+      checkOutDate,
+      status,
+      totalAmount,
+      deposit,
+      specialRequests
+    });
+
+    id++;
+  }
+
+  return bookings.sort((a, b) => dayjs(a.checkInDate).unix() - dayjs(b.checkInDate).unix());
+}
+
 const RoomManagement: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [roomList, setRoomList] = useState<Room[]>([]);
@@ -95,874 +315,16 @@ const RoomManagement: React.FC = () => {
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [currentRoom, setCurrentRoom] = useState<Room | null>(null);
   const [activeTab, setActiveTab] = useState('rooms');
-
-  // 模拟数据
-  const mockRooms: Room[] = [
-    {
-      id: '1',
-      roomNumber: '101',
-      type: '标准间',
-      floor: 1,
-      status: 'occupied',
-      guestName: '张先生',
-      checkInDate: '2025-07-14',
-      checkOutDate: '2025-07-16',
-      price: 288,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-14 14:30',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '2',
-      roomNumber: '102',
-      type: '标准间',
-      floor: 1,
-      status: 'vacant',
-      price: 288,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 09:15',
-      nextCleaning: '2025-07-17 10:00',
-    },
-    {
-      id: '3',
-      roomNumber: '103',
-      type: '标准间',
-      floor: 1,
-      status: 'vacant',
-      price: 288,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴'],
-      cleaningStatus: 'dirty',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-14 16:00',
-      nextCleaning: '2025-07-23 14:00',
-    },
-    {
-      id: '4',
-      roomNumber: '104',
-      type: '标准间',
-      floor: 1,
-      status: 'cleaning',
-      price: 288,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴'],
-      cleaningStatus: 'cleaning',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 08:00',
-      nextCleaning: '2025-07-23 12:00',
-    },
-    {
-      id: '5',
-      roomNumber: '105',
-      type: '标准间',
-      floor: 1,
-      status: 'maintenance',
-      price: 288,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴'],
-      cleaningStatus: 'dirty',
-      maintenanceStatus: 'minor',
-      lastCleaned: '2025-07-14 16:00',
-      nextCleaning: '2025-07-16 14:00',
-    },
-    {
-      id: '6',
-      roomNumber: '201',
-      type: '豪华间',
-      floor: 2,
-      status: 'cleaning',
-      price: 388,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台'],
-      cleaningStatus: 'cleaning',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 08:00',
-      nextCleaning: '2025-07-23 12:00',
-    },
-    {
-      id: '7',
-      roomNumber: '202',
-      type: '豪华间',
-      floor: 2,
-      status: 'reserved',
-      guestName: '李女士',
-      checkInDate: '2025-07-16',
-      checkOutDate: '2025-07-18',
-      price: 388,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 10:30',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '8',
-      roomNumber: '203',
-      type: '豪华间',
-      floor: 2,
-      status: 'occupied',
-      guestName: '陈女士',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 388,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 11:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '9',
-      roomNumber: '204',
-      type: '豪华间',
-      floor: 2,
-      status: 'vacant',
-      price: 388,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 09:30',
-      nextCleaning: '2025-07-17 10:00',
-    },
-    {
-      id: '10',
-      roomNumber: '205',
-      type: '豪华间',
-      floor: 2,
-      status: 'vacant',
-      price: 388,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台'],
-      cleaningStatus: 'dirty',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-14 17:00',
-      nextCleaning: '2025-07-23 15:00',
-    },
-    {
-      id: '11',
-      roomNumber: '301',
-      type: '套房',
-      floor: 3,
-      status: 'maintenance',
-      price: 688,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '厨房'],
-      cleaningStatus: 'dirty',
-      maintenanceStatus: 'minor',
-      lastCleaned: '2025-07-14 16:00',
-      nextCleaning: '2025-07-16 14:00',
-    },
-    {
-      id: '12',
-      roomNumber: '302',
-      type: '套房',
-      floor: 3,
-      status: 'occupied',
-      guestName: '王先生',
-      checkInDate: '2025-07-13',
-      checkOutDate: '2025-07-20',
-      price: 688,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '厨房'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 11:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '13',
-      roomNumber: '303',
-      type: '套房',
-      floor: 3,
-      status: 'reserved',
-      guestName: '赵女士',
-      checkInDate: '2025-07-19',
-      checkOutDate: '2025-07-22',
-      price: 688,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '厨房'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:30',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '14',
-      roomNumber: '401',
-      type: '总统套房',
-      floor: 4,
-      status: 'occupied',
-      guestName: '刘先生',
-      checkInDate: '2025-07-12',
-      checkOutDate: '2025-07-25',
-      price: 1288,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '厨房', '会议室', '健身房'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 13:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '15',
-      roomNumber: '402',
-      type: '总统套房',
-      floor: 4,
-      status: 'vacant',
-      price: 1288,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '厨房', '会议室', '健身房'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 14:30',
-      nextCleaning: '2025-07-17 10:00',
-    },
-    {
-      id: '16',
-      roomNumber: '501',
-      type: '商务套房',
-      floor: 5,
-      status: 'occupied',
-      guestName: '孙女士',
-      checkInDate: '2025-07-14',
-      checkOutDate: '2025-07-18',
-      price: 888,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '办公桌'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 10:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '17',
-      roomNumber: '502',
-      type: '商务套房',
-      floor: 5,
-      status: 'vacant',
-      price: 888,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '办公桌'],
-      cleaningStatus: 'dirty',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-14 18:00',
-      nextCleaning: '2025-07-23 16:00',
-    },
-    {
-      id: '18',
-      roomNumber: '601',
-      type: '家庭套房',
-      floor: 6,
-      status: 'reserved',
-      guestName: '周先生',
-      checkInDate: '2025-07-20',
-      checkOutDate: '2025-07-23',
-      price: 988,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '儿童房', '游戏区'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 11:30',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '19',
-      roomNumber: '602',
-      type: '家庭套房',
-      floor: 6,
-      status: 'maintenance',
-      price: 988,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '儿童房', '游戏区'],
-      cleaningStatus: 'dirty',
-      maintenanceStatus: 'major',
-      lastCleaned: '2025-07-14 15:00',
-      nextCleaning: '2025-07-18 14:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-    {
-      id: '20',
-      roomNumber: '701',
-      type: '蜜月套房',
-      floor: 7,
-      status: 'occupied',
-      guestName: '吴先生',
-      checkInDate: '2025-07-23',
-      checkOutDate: '2025-07-17',
-      price: 1088,
-      amenities: ['WiFi', '空调', '电视', '独立卫浴', '迷你吧', '景观阳台', '客厅', '按摩浴缸', '浪漫装饰'],
-      cleaningStatus: 'clean',
-      maintenanceStatus: 'normal',
-      lastCleaned: '2025-07-23 12:00',
-      nextCleaning: '2025-07-16 10:00',
-    },
-  ];
-
-  const mockBookings: Booking[] = [
-    {
-      id: '1',
-      roomNumber: '203',
-      guestName: '陈女士',
-      phone: '13900139001',
-      checkInDate: '2025-07-17',
-      checkOutDate: '2025-07-19',
-      status: 'confirmed',
-      totalAmount: 776,
-      deposit: 200,
-      specialRequests: '需要婴儿床',
-    },
-    {
-      id: '2',
-      roomNumber: '103',
-      guestName: '刘先生',
-      phone: '13900139002',
-      checkInDate: '2025-07-18',
-      checkOutDate: '2025-07-20',
-      status: 'pending',
-      totalAmount: 576,
-      deposit: 0,
-    },
-    {
-      id: '3',
-      roomNumber: '401',
-      guestName: '赵女士',
-      phone: '13900139003',
-      checkInDate: '2025-07-19',
-      checkOutDate: '2025-07-22',
-      status: 'confirmed',
-      totalAmount: 1164,
-      deposit: 300,
-      specialRequests: '高层房间，安静环境',
-    },
-    {
-      id: '4',
-      roomNumber: '205',
-      guestName: '郑先生',
-      phone: '13900139004',
-      checkInDate: '2025-07-18',
-      checkOutDate: '2025-07-21',
-      status: 'confirmed',
-      totalAmount: 1164,
-      deposit: 250,
-      specialRequests: '需要加床',
-    },
-    {
-      id: '5',
-      roomNumber: '502',
-      guestName: '马女士',
-      phone: '13900139005',
-      checkInDate: '2025-07-20',
-      checkOutDate: '2025-07-25',
-      status: 'pending',
-      totalAmount: 4440,
-      deposit: 0,
-      specialRequests: '商务出差，需要安静环境',
-    },
-    {
-      id: '6',
-      roomNumber: '701',
-      guestName: '黄先生',
-      phone: '13900139006',
-      checkInDate: '2025-07-22',
-      checkOutDate: '2025-07-24',
-      status: 'confirmed',
-      totalAmount: 2176,
-      deposit: 500,
-      specialRequests: '蜜月旅行，需要浪漫装饰',
-    },
-    {
-      id: '7',
-      roomNumber: '104',
-      guestName: '林女士',
-      phone: '13900139007',
-      checkInDate: '2025-07-19',
-      checkOutDate: '2025-07-21',
-      status: 'cancelled',
-      totalAmount: 576,
-      deposit: 0,
-    },
-    {
-      id: '8',
-      roomNumber: '601',
-      guestName: '周先生',
-      phone: '13900139008',
-      checkInDate: '2025-07-20',
-      checkOutDate: '2025-07-23',
-      status: 'confirmed',
-      totalAmount: 2964,
-      deposit: 400,
-      specialRequests: '家庭旅行，需要儿童设施',
-    },
-  ];
+  const [dateRangeModalVisible, setDateRangeModalVisible] = useState(false);
+  const [trendModalVisible, setTrendModalVisible] = useState(false);
+  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs().subtract(30, 'days'),
+    dayjs()
+  ]);
+  const [selectedDateRange, setSelectedDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs().subtract(30, 'days'),
+    dayjs()
+  ]);
 
   useEffect(() => {
     loadData();
@@ -970,12 +332,122 @@ const RoomManagement: React.FC = () => {
 
   const loadData = () => {
     setLoading(true);
-    // 模拟API调用
-    setTimeout(() => {
-      setRoomList(mockRooms);
-      setBookingList(mockBookings);
-      setLoading(false);
-    }, 1000);
+    const roomData = generateRoomData();
+    const bookingData = generateBookingData(roomData);
+
+    setRoomList(roomData);
+    setBookingList(bookingData);
+    setLoading(false);
+  };
+
+  // 处理日期范围选择
+  const handleDateRangeOk = () => {
+    setDateRange(selectedDateRange);
+    setDateRangeModalVisible(false);
+    loadData(); // 重新加载数据
+  };
+
+  // 处理趋势分析
+  const handleTrendAnalysis = () => {
+    setTrendModalVisible(true);
+  };
+
+  // 生成房型分布图表配置
+  const getRoomTypeDistributionOption = () => {
+    const roomTypes = Array.from(new Set(roomList.map(room => room.type)));
+    const data = roomTypes.map(type => {
+      const count = roomList.filter(room => room.type === type).length;
+      return { value: count, name: type };
+    });
+
+    return {
+      tooltip: {
+        trigger: 'item',
+        formatter: '{b}: {c}间 ({d}%)'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left',
+        top: 'middle'
+      },
+      series: [
+        {
+          type: 'pie',
+          radius: '70%',
+          center: ['60%', '50%'],
+          data: data,
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    };
+  };
+
+  // 生成房间状态分布图表配置
+  const getRoomStatusOption = () => {
+    const floors = Array.from(new Set(roomList.map(room => room.floor))).sort((a, b) => a - b);
+    const statuses = ['occupied', 'vacant', 'cleaning', 'maintenance', 'reserved'];
+    const statusNames = {
+      occupied: '已入住',
+      vacant: '空闲',
+      cleaning: '清洁中',
+      maintenance: '维护中',
+      reserved: '已预订'
+    };
+
+    const data = floors.map(floor => {
+      const floorRooms = roomList.filter(room => room.floor === floor);
+      return statuses.map(status => 
+        floorRooms.filter(room => room.status === status).length
+      );
+    });
+
+    return {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      legend: {
+        data: statuses.map(status => statusNames[status as keyof typeof statusNames]),
+        top: 10
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value'
+      },
+      yAxis: {
+        type: 'category',
+        data: floors.map(f => `${f}层`)
+      },
+      series: statuses.map((status, index) => ({
+        name: statusNames[status as keyof typeof statusNames],
+        type: 'bar',
+        stack: 'total',
+        label: {
+          show: true
+        },
+        data: floors.map((_, floorIndex) => data[floorIndex][index]),
+        itemStyle: {
+          color: status === 'occupied' ? '#52c41a' :
+                status === 'vacant' ? '#1890ff' :
+                status === 'cleaning' ? '#faad14' :
+                status === 'maintenance' ? '#ff4d4f' :
+                '#722ed1'
+        }
+      }))
+    };
   };
 
   const getStatusColor = (status: string) => {
@@ -1588,6 +1060,9 @@ const RoomManagement: React.FC = () => {
                 <Button icon={<ImportOutlined />} onClick={handleImport}>
                   导入数据
                 </Button>
+                <Button icon={<LineChartOutlined />} onClick={handleTrendAnalysis}>
+                  数据分析
+                </Button>
                 <Button icon={<SearchOutlined />}>
                   高级搜索
                 </Button>
@@ -2080,6 +1555,28 @@ const RoomManagement: React.FC = () => {
             </Select>
           </Form.Item>
         </Form>
+      </Modal>
+
+      {/* 趋势分析模态框 */}
+      <Modal
+        title="房间数据分析"
+        open={trendModalVisible}
+        onCancel={() => setTrendModalVisible(false)}
+        width={1000}
+        footer={null}
+      >
+        <Tabs defaultActiveKey="type">
+          <TabPane tab="房型分布" key="type">
+            <Card>
+              <ReactECharts option={getRoomTypeDistributionOption()} style={{ height: 400 }} />
+            </Card>
+          </TabPane>
+          <TabPane tab="房间状态" key="status">
+            <Card>
+              <ReactECharts option={getRoomStatusOption()} style={{ height: 600 }} />
+            </Card>
+          </TabPane>
+        </Tabs>
       </Modal>
     </div>
   );

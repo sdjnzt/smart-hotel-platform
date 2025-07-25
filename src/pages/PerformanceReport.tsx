@@ -51,6 +51,8 @@ import {
   CalendarOutlined,
   FileTextOutlined,
 } from '@ant-design/icons';
+import ReactECharts from 'echarts-for-react';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -406,6 +408,16 @@ const PerformanceReport: React.FC = () => {
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [dateRangeModalVisible, setDateRangeModalVisible] = useState(false);
+  const [trendModalVisible, setTrendModalVisible] = useState(false);
+  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs().subtract(30, 'days'),
+    dayjs()
+  ]);
+  const [selectedDateRange, setSelectedDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs().subtract(30, 'days'),
+    dayjs()
+  ]);
 
   useEffect(() => {
     loadData();
@@ -421,7 +433,7 @@ const PerformanceReport: React.FC = () => {
     setEmployees(employeeData);
     setDepartments(departmentData);
     setKpiIndicators(kpiData);
-    setLoading(false);
+      setLoading(false);
   };
 
   const getStatusColor = (status: string) => {
@@ -874,6 +886,200 @@ const PerformanceReport: React.FC = () => {
     },
   };
 
+  // 处理日期范围选择
+  const handleDateRangeOk = () => {
+    setDateRange(selectedDateRange);
+    setDateRangeModalVisible(false);
+    loadData(); // 重新加载数据
+  };
+
+  // 处理趋势分析
+  const handleTrendAnalysis = () => {
+    setTrendModalVisible(true);
+  };
+
+  // 生成趋势图表配置
+  const getTrendChartOption = () => {
+    const dates = Array.from({ length: 30 }, (_, i) => {
+      return dayjs().subtract(29 - i, 'days').format('MM-DD');
+    });
+
+    // 计算每天的平均分数
+    const avgScores = dates.map(() => Math.round(70 + Math.random() * 20));
+    const excellentRate = dates.map(() => Math.round(10 + Math.random() * 20));
+    const satisfactionRate = dates.map(() => Math.round(80 + Math.random() * 15));
+
+    return {
+      tooltip: {
+        trigger: 'axis',
+      },
+      legend: {
+        data: ['平均绩效分', '优秀率', '满意度'],
+        top: 10
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: dates,
+        axisLabel: {
+          rotate: 30
+        }
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: '{value}%'
+        }
+      },
+      series: [
+        {
+          name: '平均绩效分',
+          type: 'line',
+          data: avgScores,
+          smooth: true,
+          lineStyle: {
+            color: '#1890ff'
+          },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [{
+                offset: 0,
+                color: 'rgba(24,144,255,0.3)'
+              }, {
+                offset: 1,
+                color: 'rgba(24,144,255,0.1)'
+              }]
+            }
+          }
+        },
+        {
+          name: '优秀率',
+          type: 'line',
+          data: excellentRate,
+          smooth: true,
+          lineStyle: {
+            color: '#52c41a'
+          },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [{
+                offset: 0,
+                color: 'rgba(82,196,26,0.3)'
+              }, {
+                offset: 1,
+                color: 'rgba(82,196,26,0.1)'
+              }]
+            }
+          }
+        },
+        {
+          name: '满意度',
+          type: 'line',
+          data: satisfactionRate,
+          smooth: true,
+          lineStyle: {
+            color: '#fa8c16'
+          },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [{
+                offset: 0,
+                color: 'rgba(250,140,22,0.3)'
+              }, {
+                offset: 1,
+                color: 'rgba(250,140,22,0.1)'
+              }]
+            }
+          }
+        }
+      ]
+    };
+  };
+
+  // 生成部门对比图表配置
+  const getDepartmentComparisonOption = () => {
+    const departmentNames = departments.map(d => d.name);
+    const overallScores = departments.map(d => d.overallScore);
+    const attendanceRates = departments.map(d => d.attendance);
+    const satisfactionRates = departments.map(d => d.customerSatisfaction);
+
+    return {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      legend: {
+        data: ['综合评分', '出勤率', '满意度'],
+        top: 10
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: '{value}%'
+        }
+      },
+      yAxis: {
+        type: 'category',
+        data: departmentNames
+      },
+      series: [
+        {
+          name: '综合评分',
+          type: 'bar',
+          data: overallScores,
+          itemStyle: {
+            color: '#1890ff'
+          }
+        },
+        {
+          name: '出勤率',
+          type: 'bar',
+          data: attendanceRates,
+          itemStyle: {
+            color: '#52c41a'
+          }
+        },
+        {
+          name: '满意度',
+          type: 'bar',
+          data: satisfactionRates,
+          itemStyle: {
+            color: '#fa8c16'
+          }
+        }
+      ]
+    };
+  };
+
   return (
     <div style={{ padding: '24px' }}>
       <div style={{ marginBottom: '24px' }}>
@@ -944,11 +1150,13 @@ const PerformanceReport: React.FC = () => {
           </Button>
           <Button
             icon={<CalendarOutlined />}
+            onClick={() => setDateRangeModalVisible(true)}
           >
             选择时间范围
           </Button>
           <Button
             icon={<LineChartOutlined />}
+            onClick={handleTrendAnalysis}
           >
             趋势分析
           </Button>
@@ -1122,6 +1330,54 @@ const PerformanceReport: React.FC = () => {
             </Descriptions.Item>
           </Descriptions>
         )}
+      </Modal>
+
+      {/* 日期范围选择模态框 */}
+      <Modal
+        title="选择时间范围"
+        open={dateRangeModalVisible}
+        onOk={handleDateRangeOk}
+        onCancel={() => setDateRangeModalVisible(false)}
+      >
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Alert
+            message="选择要查看的绩效数据时间范围"
+            type="info"
+            showIcon
+            style={{ marginBottom: 16 }}
+          />
+          <RangePicker
+            value={selectedDateRange}
+            onChange={(dates) => {
+              if (dates) {
+                setSelectedDateRange([dates[0]!, dates[1]!]);
+              }
+            }}
+            style={{ width: '100%' }}
+          />
+        </Space>
+      </Modal>
+
+      {/* 趋势分析模态框 */}
+      <Modal
+        title="绩效趋势分析"
+        open={trendModalVisible}
+        onCancel={() => setTrendModalVisible(false)}
+        width={1000}
+        footer={null}
+      >
+        <Tabs defaultActiveKey="trend">
+          <TabPane tab="整体趋势" key="trend">
+            <Card>
+              <ReactECharts option={getTrendChartOption()} style={{ height: 400 }} />
+            </Card>
+          </TabPane>
+          <TabPane tab="部门对比" key="department">
+            <Card>
+              <ReactECharts option={getDepartmentComparisonOption()} style={{ height: 600 }} />
+            </Card>
+          </TabPane>
+        </Tabs>
       </Modal>
     </div>
   );

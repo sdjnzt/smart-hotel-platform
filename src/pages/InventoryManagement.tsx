@@ -51,6 +51,7 @@ import {
   UploadOutlined,
   StarOutlined,
 } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -106,6 +107,287 @@ interface Supplier {
   totalOrders: number;
 }
 
+// 商品分类配置
+const ITEM_CATEGORIES = {
+  ROOM_SUPPLIES: {
+    name: '客房用品',
+    items: [
+      { name: '毛巾', unit: '条', minStock: 500, maxStock: 2000, basePrice: 15.5 },
+      { name: '浴巾', unit: '条', minStock: 300, maxStock: 1000, basePrice: 35.0 },
+      { name: '床单', unit: '套', minStock: 200, maxStock: 600, basePrice: 45.0 },
+      { name: '枕套', unit: '个', minStock: 200, maxStock: 600, basePrice: 12.0 },
+      { name: '被套', unit: '套', minStock: 200, maxStock: 600, basePrice: 65.0 },
+      { name: '浴袍', unit: '件', minStock: 100, maxStock: 300, basePrice: 88.0 },
+      { name: '拖鞋', unit: '双', minStock: 1000, maxStock: 3000, basePrice: 3.5 }
+    ]
+  },
+  TOILETRIES: {
+    name: '洗护用品',
+    items: [
+      { name: '洗发水', unit: '瓶', minStock: 500, maxStock: 1500, basePrice: 8.5 },
+      { name: '沐浴露', unit: '瓶', minStock: 500, maxStock: 1500, basePrice: 8.5 },
+      { name: '牙刷', unit: '支', minStock: 1000, maxStock: 3000, basePrice: 2.5 },
+      { name: '牙膏', unit: '支', minStock: 1000, maxStock: 3000, basePrice: 3.5 },
+      { name: '香皂', unit: '块', minStock: 1000, maxStock: 3000, basePrice: 2.0 },
+      { name: '梳子', unit: '把', minStock: 500, maxStock: 1500, basePrice: 1.5 },
+      { name: '浴帽', unit: '个', minStock: 1000, maxStock: 3000, basePrice: 0.5 }
+    ]
+  },
+  CLEANING: {
+    name: '清洁用品',
+    items: [
+      { name: '地毯清洁剂', unit: '瓶', minStock: 50, maxStock: 150, basePrice: 35.0 },
+      { name: '玻璃清洁剂', unit: '瓶', minStock: 100, maxStock: 300, basePrice: 12.5 },
+      { name: '消毒液', unit: '瓶', minStock: 200, maxStock: 600, basePrice: 18.0 },
+      { name: '洁厕剂', unit: '瓶', minStock: 100, maxStock: 300, basePrice: 15.0 },
+      { name: '空气清新剂', unit: '瓶', minStock: 100, maxStock: 300, basePrice: 22.0 },
+      { name: '清洁抹布', unit: '包', minStock: 200, maxStock: 600, basePrice: 8.0 },
+      { name: '垃圾袋', unit: '包', minStock: 300, maxStock: 900, basePrice: 5.0 }
+    ]
+  },
+  FOOD_BEVERAGE: {
+    name: '餐饮用品',
+    items: [
+      { name: '咖啡豆', unit: 'kg', minStock: 50, maxStock: 150, basePrice: 85.0 },
+      { name: '茶包', unit: '盒', minStock: 100, maxStock: 300, basePrice: 45.0 },
+      { name: '矿泉水', unit: '箱', minStock: 200, maxStock: 600, basePrice: 24.0 },
+      { name: '一次性餐具', unit: '套', minStock: 1000, maxStock: 3000, basePrice: 1.5 },
+      { name: '餐巾纸', unit: '包', minStock: 500, maxStock: 1500, basePrice: 2.0 },
+      { name: '饮料杯', unit: '个', minStock: 1000, maxStock: 3000, basePrice: 0.8 },
+      { name: '吸管', unit: '包', minStock: 200, maxStock: 600, basePrice: 3.0 }
+    ]
+  },
+  OFFICE: {
+    name: '办公用品',
+    items: [
+      { name: '打印纸', unit: '包', minStock: 50, maxStock: 150, basePrice: 25.0 },
+      { name: '圆珠笔', unit: '盒', minStock: 20, maxStock: 60, basePrice: 15.0 },
+      { name: '便签纸', unit: '本', minStock: 100, maxStock: 300, basePrice: 2.5 },
+      { name: '订书钉', unit: '盒', minStock: 50, maxStock: 150, basePrice: 3.0 },
+      { name: '文件夹', unit: '个', minStock: 100, maxStock: 300, basePrice: 4.0 },
+      { name: '复印纸', unit: '箱', minStock: 10, maxStock: 30, basePrice: 180.0 },
+      { name: '墨盒', unit: '个', minStock: 10, maxStock: 30, basePrice: 150.0 }
+    ]
+  }
+};
+
+// 供应商配置
+const SUPPLIERS = [
+  {
+    id: '1',
+    name: '邹城市优质纺织品有限公司',
+    contact: '陈经理',
+    phone: '0537-12345678',
+    email: 'chen@textile.com',
+    address: '山东省济宁市邹城市纺织工业园区A区12号',
+    category: '客房用品',
+    categories: ['客房用品'],
+    baseDiscount: 0.85
+  },
+  {
+    id: '2',
+    name: '邹城市洁雅日化有限公司',
+    contact: '李总',
+    phone: '0537-87654321',
+    email: 'li@clean.com',
+    address: '山东省济宁市邹城市化工园区B区23号',
+    category: '洗护用品',
+    categories: ['洗护用品', '清洁用品'],
+    baseDiscount: 0.88
+  },
+  {
+    id: '3',
+    name: '邹城市品味食品有限公司',
+    contact: '王经理',
+    phone: '0537-11223344',
+    email: 'wang@food.com',
+    address: '山东省济宁市邹城市食品工业园区C区34号',
+    category: '餐饮用品',
+    categories: ['餐饮用品'],
+    baseDiscount: 0.9
+  },
+  {
+    id: '4',
+    name: '邹城市办公伙伴贸易有限公司',
+    contact: '赵总',
+    phone: '0537-55667788',
+    email: 'zhao@office.com',
+    address: '山东省济宁市邹城市商贸城D区45号',
+    category: '办公用品',
+    categories: ['办公用品'],
+    baseDiscount: 0.92
+  }
+];
+
+// 生成更真实的库存数据
+function generateInventoryItems(): InventoryItem[] {
+  const items: InventoryItem[] = [];
+  let id = 1;
+
+  Object.entries(ITEM_CATEGORIES).forEach(([categoryKey, category]) => {
+    category.items.forEach(item => {
+      // 生成当前库存（在最小和最大库存之间随机）
+      const currentStock = Math.floor(
+        item.minStock + Math.random() * (item.maxStock - item.minStock)
+      );
+
+      // 确定库存状态
+      const stockRatio = currentStock / item.maxStock;
+      const status: 'normal' | 'low' | 'out' | 'overstock' =
+        currentStock === 0 ? 'out' :
+        stockRatio < 0.2 ? 'low' :
+        stockRatio > 0.9 ? 'overstock' : 'normal';
+
+      // 找到对应的供应商
+      const supplier = SUPPLIERS.find(s => s.categories.includes(category.name));
+
+      // 生成SKU和条码
+      const sku = `${categoryKey.slice(0, 3)}-${String(id).padStart(3, '0')}`;
+      const barcode = `${Math.floor(Math.random() * 900000000 + 100000000)}`;
+
+      // 生成价格（基础价格±10%）
+      const price = Number((item.basePrice * (0.9 + Math.random() * 0.2)).toFixed(2));
+
+      // 生成最后更新时间（最近7天内）
+      const lastUpdated = dayjs()
+        .subtract(Math.floor(Math.random() * 7), 'days')
+        .subtract(Math.floor(Math.random() * 24), 'hours')
+        .format('YYYY-MM-DD HH:mm');
+
+      // 生成过期时间（如果是消耗品）
+      const needsExpiry = ['洗护用品', '清洁用品', '餐饮用品'].includes(category.name);
+      const expiryDate = needsExpiry ?
+        dayjs().add(Math.floor(Math.random() * 12 + 6), 'months').format('YYYY-MM-DD') :
+        undefined;
+
+      items.push({
+        id: id.toString(),
+        name: item.name,
+        category: category.name,
+        sku,
+        barcode,
+        currentStock,
+        minStock: item.minStock,
+        maxStock: item.maxStock,
+        unit: item.unit,
+        price,
+        supplier: supplier?.name || '未指定',
+        location: `${categoryKey.slice(0, 1)}区-${Math.floor(id / 10 + 1).toString().padStart(2, '0')}-${(id % 10 + 1).toString().padStart(2, '0')}`,
+        status,
+        lastUpdated,
+        expiryDate,
+        description: `${category.name}类${item.name}，规格：每${item.unit}`
+      });
+
+      id++;
+    });
+  });
+
+  return items;
+}
+
+// 生成更真实的交易记录
+function generateTransactions(items: InventoryItem[]): Transaction[] {
+  const transactions: Transaction[] = [];
+  let id = 1;
+
+  // 生成最近30天的交易记录
+  for (let i = 30; i >= 0; i--) {
+    const date = dayjs().subtract(i, 'days');
+    
+    // 每天生成2-5条记录
+    const dailyTransactions = Math.floor(Math.random() * 4 + 2);
+    
+    for (let j = 0; j < dailyTransactions; j++) {
+      // 随机选择一个商品
+      const item = items[Math.floor(Math.random() * items.length)];
+      
+      // 生成交易类型（入库概率较小）
+      const type: 'in' | 'out' | 'adjustment' = 
+        Math.random() > 0.8 ? 'in' :
+        Math.random() > 0.1 ? 'out' : 'adjustment';
+
+      // 生成数量（入库量较大，出库量较小）
+      const quantity = type === 'in' ?
+        Math.floor(item.maxStock * (0.3 + Math.random() * 0.3)) :
+        Math.floor(item.minStock * (0.1 + Math.random() * 0.2));
+
+      // 生成操作员
+      const operators = {
+        in: ['张库管', '李库管', '王库管'],
+        out: ['赵服务员', '钱服务员', '孙服务员'],
+        adjustment: ['刘主管', '周主管']
+      };
+      const operator = operators[type][Math.floor(Math.random() * operators[type].length)];
+
+      // 生成参考号
+      const refPrefix = {
+        in: 'PO',
+        out: 'REQ',
+        adjustment: 'ADJ'
+      };
+      const reference = `${refPrefix[type]}-${dayjs().format('YYYYMM')}-${String(id).padStart(3, '0')}`;
+
+      // 生成备注
+      const notes = {
+        in: ['正常补货', '紧急补货', '批量采购'],
+        out: ['客房补充', '餐厅领用', '会议室准备'],
+        adjustment: ['盘点调整', '损耗记录', '质量问题']
+      };
+      const note = notes[type][Math.floor(Math.random() * notes[type].length)];
+
+      transactions.push({
+        id: id.toString(),
+        type,
+        itemId: item.id,
+        itemName: item.name,
+        quantity,
+        unit: item.unit,
+        price: item.price,
+        totalAmount: Number((quantity * item.price).toFixed(2)),
+        operator,
+        date: date.add(Math.floor(Math.random() * 24), 'hours').format('YYYY-MM-DD HH:mm'),
+        reference,
+        notes: note
+      });
+
+      id++;
+    }
+  }
+
+  return transactions.sort((a, b) => dayjs(b.date).unix() - dayjs(a.date).unix());
+}
+
+// 生成更真实的供应商数据
+function generateSuppliers(): Supplier[] {
+  return SUPPLIERS.map(supplier => {
+    // 生成订单数量（基于供应商折扣）
+    const totalOrders = Math.floor((1 - supplier.baseDiscount) * 1000);
+    
+    // 生成最后订单日期（最近7天内）
+    const lastOrder = dayjs()
+      .subtract(Math.floor(Math.random() * 7), 'days')
+      .format('YYYY-MM-DD');
+
+    // 生成评分（基于折扣）
+    const rating = Number((4 + (1 - supplier.baseDiscount) * 10).toFixed(1));
+
+    return {
+      id: supplier.id,
+      name: supplier.name,
+      contact: supplier.contact,
+      phone: supplier.phone,
+      email: supplier.email,
+      address: supplier.address,
+      category: supplier.category,
+      status: Math.random() > 0.1 ? 'active' : 'inactive',
+      rating,
+      lastOrder,
+      totalOrders
+    };
+  });
+}
+
 const InventoryManagement: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
@@ -120,241 +402,21 @@ const InventoryManagement: React.FC = () => {
   const [currentItem, setCurrentItem] = useState<InventoryItem | null>(null);
   const [activeTab, setActiveTab] = useState('inventory');
 
-  // 模拟数据
-  const mockInventoryItems: InventoryItem[] = [
-    {
-      id: '1',
-      name: '毛巾',
-      category: '客房用品',
-      sku: 'TOWEL-001',
-      barcode: '1234567890123',
-      currentStock: 150,
-      minStock: 50,
-      maxStock: 300,
-      unit: '条',
-      price: 15.5,
-      supplier: '优质纺织品有限公司',
-      location: 'A区-01-01',
-      status: 'normal',
-      lastUpdated: '2025-07-23 10:30',
-      description: '白色纯棉毛巾，尺寸70x140cm',
-    },
-    {
-      id: '2',
-      name: '洗发水',
-      category: '洗护用品',
-      sku: 'SHAMPOO-001',
-      barcode: '1234567890124',
-      currentStock: 25,
-      minStock: 30,
-      maxStock: 100,
-      unit: '瓶',
-      price: 8.5,
-      supplier: '清洁用品供应商',
-      location: 'B区-02-03',
-      status: 'low',
-      lastUpdated: '2025-07-23 09:15',
-      expiryDate: '2025-06-30',
-      description: '500ml洗发水，适合所有发质',
-    },
-    {
-      id: '3',
-      name: '床单',
-      category: '客房用品',
-      sku: 'SHEET-001',
-      barcode: '1234567890125',
-      currentStock: 0,
-      minStock: 20,
-      maxStock: 80,
-      unit: '套',
-      price: 45.0,
-      supplier: '优质纺织品有限公司',
-      location: 'A区-01-02',
-      status: 'out',
-      lastUpdated: '2025-07-14 16:45',
-      description: '纯棉床单，尺寸1.8x2.0m',
-    },
-    {
-      id: '4',
-      name: '咖啡豆',
-      category: '餐饮用品',
-      sku: 'COFFEE-001',
-      barcode: '1234567890126',
-      currentStock: 120,
-      minStock: 50,
-      maxStock: 100,
-      unit: 'kg',
-      price: 35.0,
-      supplier: '咖啡供应商',
-      location: 'C区-03-01',
-      status: 'overstock',
-      lastUpdated: '2025-07-23 11:20',
-      expiryDate: '2024-12-31',
-      description: '阿拉比卡咖啡豆，中度烘焙',
-    },
-    {
-      id: '5',
-      name: '清洁剂',
-      category: '清洁用品',
-      sku: 'CLEANER-001',
-      barcode: '1234567890127',
-      currentStock: 45,
-      minStock: 40,
-      maxStock: 120,
-      unit: '瓶',
-      price: 12.5,
-      supplier: '清洁用品供应商',
-      location: 'B区-02-01',
-      status: 'normal',
-      lastUpdated: '2025-07-23 08:30',
-      description: '多功能清洁剂，1L装',
-    },
-    {
-      id: '6',
-      name: '一次性牙刷',
-      category: '客房用品',
-      sku: 'TOOTHBRUSH-001',
-      barcode: '1234567890128',
-      currentStock: 200,
-      minStock: 100,
-      maxStock: 500,
-      unit: '支',
-      price: 2.5,
-      supplier: '日用品供应商',
-      location: 'A区-01-03',
-      status: 'normal',
-      lastUpdated: '2025-07-23 14:15',
-      description: '软毛牙刷，独立包装',
-    },
-  ];
-
-  const mockTransactions: Transaction[] = [
-    {
-      id: '1',
-      type: 'in',
-      itemId: '1',
-      itemName: '毛巾',
-      quantity: 50,
-      unit: '条',
-      price: 15.5,
-      totalAmount: 775,
-      operator: '张库管',
-      date: '2025-07-23 10:30',
-      reference: 'PO-2024-001',
-      notes: '正常补货',
-    },
-    {
-      id: '2',
-      type: 'out',
-      itemId: '2',
-      itemName: '洗发水',
-      quantity: 10,
-      unit: '瓶',
-      price: 8.5,
-      totalAmount: 85,
-      operator: '李服务员',
-      date: '2025-07-23 09:15',
-      reference: 'REQ-2024-001',
-      notes: '客房补充',
-    },
-    {
-      id: '3',
-      type: 'out',
-      itemId: '3',
-      itemName: '床单',
-      quantity: 15,
-      unit: '套',
-      price: 45.0,
-      totalAmount: 675,
-      operator: '王客房',
-      date: '2025-07-14 16:45',
-      reference: 'REQ-2024-002',
-      notes: '客房更换',
-    },
-    {
-      id: '4',
-      type: 'in',
-      itemId: '4',
-      itemName: '咖啡豆',
-      quantity: 80,
-      unit: 'kg',
-      price: 35.0,
-      totalAmount: 2800,
-      operator: '张库管',
-      date: '2025-07-23 11:20',
-      reference: 'PO-2024-002',
-      notes: '大批量采购',
-    },
-  ];
-
-  const mockSuppliers: Supplier[] = [
-    {
-      id: '1',
-      name: '优质纺织品有限公司',
-      contact: '陈经理',
-      phone: '0537-12345678',
-      email: 'chen@textile.com',
-      address: '山东省济宁市邹城市纺织工业园',
-      category: '纺织品',
-      status: 'active',
-      rating: 4.8,
-      lastOrder: '2025-07-23',
-      totalOrders: 45,
-    },
-    {
-      id: '2',
-      name: '清洁用品供应商',
-      contact: '李总',
-      phone: '0537-87654321',
-      email: 'li@clean.com',
-      address: '山东省济宁市邹城市化工园区',
-      category: '清洁用品',
-      status: 'active',
-      rating: 4.5,
-      lastOrder: '2025-07-14',
-      totalOrders: 32,
-    },
-    {
-      id: '3',
-      name: '咖啡供应商',
-      contact: '王经理',
-      phone: '0537-11223344',
-      email: 'wang@coffee.com',
-      address: '山东省济宁市邹城市食品工业园',
-      category: '食品',
-      status: 'active',
-      rating: 4.7,
-      lastOrder: '2025-07-23',
-      totalOrders: 28,
-    },
-    {
-      id: '4',
-      name: '日用品供应商',
-      contact: '赵总',
-      phone: '0537-55667788',
-      email: 'zhao@daily.com',
-      address: '山东省济宁市邹城市轻工业园',
-      category: '日用品',
-      status: 'inactive',
-      rating: 4.2,
-      lastOrder: '2025-07-10',
-      totalOrders: 15,
-    },
-  ];
-
   useEffect(() => {
     loadData();
   }, []);
 
   const loadData = () => {
     setLoading(true);
-    // 模拟API调用
-    setTimeout(() => {
-      setInventoryItems(mockInventoryItems);
-      setTransactions(mockTransactions);
-      setSuppliers(mockSuppliers);
-      setLoading(false);
-    }, 1000);
+    // 生成数据
+    const itemData = generateInventoryItems();
+    const transactionData = generateTransactions(itemData);
+    const supplierData = generateSuppliers();
+
+    setInventoryItems(itemData);
+    setTransactions(transactionData);
+    setSuppliers(supplierData);
+    setLoading(false);
   };
 
   const getStatusColor = (status: string) => {

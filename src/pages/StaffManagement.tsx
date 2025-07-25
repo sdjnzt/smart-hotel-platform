@@ -43,7 +43,10 @@ import {
   MailOutlined,
   IdcardOutlined,
   BankOutlined,
+  LineChartOutlined,
 } from '@ant-design/icons';
+import ReactECharts from 'echarts-for-react';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -76,6 +79,171 @@ interface Attendance {
   workHours: number;
 }
 
+// 生成更真实的员工数据
+function generateStaffData(count: number): Staff[] {
+  const staff: Staff[] = [];
+  const lastNames = ['张', '李', '王', '刘', '陈', '杨', '黄', '赵', '吴', '周', '徐', '孙', '马', '朱', '胡', '郭', '何', '高', '林', '郑'];
+  const firstNames = ['伟', '芳', '娜', '秀英', '敏', '静', '丽', '强', '磊', '军', '洋', '勇', '艳', '杰', '涛', '明', '超', '秀兰', '霞', '平', '刚'];
+  
+  const departments = [
+    {
+      name: '前厅部',
+      positions: ['前台经理', '前台主管', '前台接待', '礼宾员', '行李员'],
+      baseSalary: 4000
+    },
+    {
+      name: '客房部',
+      positions: ['客房经理', '楼层主管', '客房服务员', '布草员'],
+      baseSalary: 3800
+    },
+    {
+      name: '餐饮部',
+      positions: ['餐饮经理', '餐厅主管', '服务员', '厨师长', '厨师', '传菜员'],
+      baseSalary: 4200
+    },
+    {
+      name: '工程部',
+      positions: ['工程经理', '维修主管', '维修工程师', '空调技工', '电工'],
+      baseSalary: 4500
+    },
+    {
+      name: '保安部',
+      positions: ['保安经理', '保安队长', '保安员', '监控员'],
+      baseSalary: 3500
+    },
+    {
+      name: '人事部',
+      positions: ['人事经理', '人事主管', '招聘专员', '培训专员'],
+      baseSalary: 5000
+    },
+    {
+      name: '财务部',
+      positions: ['财务经理', '会计主管', '会计', '出纳'],
+      baseSalary: 5500
+    },
+    {
+      name: '销售部',
+      positions: ['销售经理', '销售主管', '销售代表', '客户经理'],
+      baseSalary: 4800
+    }
+  ];
+
+  const shifts = [
+    { name: '早班', time: '8:00-16:00', type: 'morning' },
+    { name: '中班', time: '16:00-24:00', type: 'afternoon' },
+    { name: '夜班', time: '0:00-8:00', type: 'night' }
+  ];
+
+  for (let i = 1; i <= count; i++) {
+    // 生成部门和职位
+    const department = departments[Math.floor(Math.random() * departments.length)];
+    const position = department.positions[Math.floor(Math.random() * department.positions.length)];
+    
+    // 根据职位计算薪资
+    let salaryMultiplier = 1;
+    if (position.includes('经理')) salaryMultiplier = 1.8;
+    else if (position.includes('主管')) salaryMultiplier = 1.4;
+    else if (position.includes('工程师')) salaryMultiplier = 1.3;
+    
+    const baseSalary = department.baseSalary;
+    const salary = Math.round(baseSalary * salaryMultiplier * (0.9 + Math.random() * 0.2));
+
+    // 生成入职日期（1-3年内）
+    const joinDate = dayjs().subtract(Math.floor(Math.random() * 1000 + 100), 'days');
+
+    // 生成工作班次
+    const shift = shifts[Math.floor(Math.random() * shifts.length)];
+    const workSchedule = `${shift.name} ${shift.time}`;
+
+    // 生成最后考勤时间（今天）
+    const shiftStartHour = parseInt(shift.time.split(':')[0]);
+    const lastAttendance = dayjs().hour(shiftStartHour).minute(Math.floor(Math.random() * 10)).format('YYYY-MM-DD HH:mm');
+
+    // 生成员工状态（大部分在职，少部分请假或离职）
+    const status: 'active' | 'inactive' | 'leave' = 
+      Math.random() > 0.9 ? 'inactive' :
+      Math.random() > 0.85 ? 'leave' : 'active';
+
+    staff.push({
+      id: i.toString().padStart(3, '0'),
+      name: lastNames[Math.floor(Math.random() * lastNames.length)] + 
+            firstNames[Math.floor(Math.random() * firstNames.length)],
+      employeeId: `EMP${i.toString().padStart(3, '0')}`,
+      department: department.name,
+      position,
+      phone: `1${Math.floor(Math.random() * 9000000000 + 1000000000)}`,
+      email: `emp${i}@hotel.com`,
+      status,
+      joinDate: joinDate.format('YYYY-MM-DD'),
+      salary,
+      workSchedule,
+      lastAttendance
+    });
+  }
+
+  return staff.sort((a, b) => a.employeeId.localeCompare(b.employeeId));
+}
+
+// 生成更真实的考勤数据
+function generateAttendanceData(staff: Staff[]): Attendance[] {
+  const attendance: Attendance[] = [];
+  let id = 1;
+
+  staff.forEach(employee => {
+    // 只为在职和请假的员工生成考勤记录
+    if (employee.status !== 'inactive') {
+      const shift = employee.workSchedule.split(' ')[1];
+      const [startTime, endTime] = shift.split('-');
+      const startHour = parseInt(startTime.split(':')[0]);
+      
+      // 生成考勤状态
+      let status: 'present' | 'absent' | 'late' | 'leave';
+      let checkIn = '';
+      let checkOut = '';
+      let workHours = 0;
+
+      if (employee.status === 'leave') {
+        status = 'leave';
+        checkIn = '00:00';
+        checkOut = '00:00';
+      } else {
+        const rand = Math.random();
+        if (rand > 0.95) {
+          status = 'absent';
+          checkIn = '00:00';
+          checkOut = '00:00';
+        } else if (rand > 0.85) {
+          status = 'late';
+          checkIn = `${startHour.toString().padStart(2, '0')}:${(Math.floor(Math.random() * 20) + 5).toString().padStart(2, '0')}`;
+          const endHour = (startHour + 8) % 24;
+          checkOut = `${endHour.toString().padStart(2, '0')}:${Math.floor(Math.random() * 15).toString().padStart(2, '0')}`;
+          workHours = 7.8;
+        } else {
+          status = 'present';
+          checkIn = `${startHour.toString().padStart(2, '0')}:${Math.floor(Math.random() * 5).toString().padStart(2, '0')}`;
+          const endHour = (startHour + 8) % 24;
+          checkOut = `${endHour.toString().padStart(2, '0')}:${Math.floor(Math.random() * 15).toString().padStart(2, '0')}`;
+          workHours = 8.1;
+        }
+      }
+
+      attendance.push({
+        id: id.toString(),
+        staffId: employee.id,
+        staffName: employee.name,
+        date: dayjs().format('YYYY-MM-DD'),
+        checkIn,
+        checkOut,
+        status,
+        workHours
+      });
+      id++;
+    }
+  });
+
+  return attendance;
+}
+
 const StaffManagement: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [staffList, setStaffList] = useState<Staff[]>([]);
@@ -86,253 +254,16 @@ const StaffManagement: React.FC = () => {
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [currentStaff, setCurrentStaff] = useState<Staff | null>(null);
   const [activeTab, setActiveTab] = useState('staff');
-
-  // 模拟数据
-  const mockStaff: Staff[] = [
-    {
-      id: '1',
-      name: '陈雅琪',
-      employeeId: 'EMP001',
-      department: '前厅部',
-      position: '前台接待',
-      phone: '13800138001',
-      email: 'chenyaqi@hotel.com',
-      status: 'active',
-      joinDate: '2023-01-15',
-      salary: 4500,
-      workSchedule: '早班 8:00-16:00',
-      lastAttendance: '2025-07-23 08:05',
-    },
-    {
-      id: '2',
-      name: '刘志强',
-      employeeId: 'EMP002',
-      department: '客房部',
-      position: '客房服务员',
-      phone: '13800138002',
-      email: 'liuzhiqiang@hotel.com',
-      status: 'active',
-      joinDate: '2023-03-20',
-      salary: 4200,
-      workSchedule: '中班 16:00-24:00',
-      lastAttendance: '2025-07-23 16:02',
-    },
-    {
-      id: '3',
-      name: '王美玲',
-      employeeId: 'EMP003',
-      department: '餐饮部',
-      position: '餐厅经理',
-      phone: '13800138003',
-      email: 'wangmeiling@hotel.com',
-      status: 'active',
-      joinDate: '2022-08-10',
-      salary: 6500,
-      workSchedule: '早班 7:00-15:00',
-      lastAttendance: '2025-07-23 07:15',
-    },
-    {
-      id: '4',
-      name: '张建国',
-      employeeId: 'EMP004',
-      department: '工程部',
-      position: '维修工程师',
-      phone: '13800138004',
-      email: 'zhangjianguo@hotel.com',
-      status: 'leave',
-      joinDate: '2023-06-12',
-      salary: 5500,
-      workSchedule: '夜班 0:00-8:00',
-      lastAttendance: '2025-07-14 23:58',
-    },
-    {
-      id: '5',
-      name: '李明华',
-      employeeId: 'EMP005',
-      department: '保安部',
-      position: '保安队长',
-      phone: '13800138005',
-      email: 'liminghua@hotel.com',
-      status: 'active',
-      joinDate: '2022-12-01',
-      salary: 4800,
-      workSchedule: '中班 16:00-24:00',
-      lastAttendance: '2025-07-23 15:55',
-    },
-    {
-      id: '6',
-      name: '赵晓雯',
-      employeeId: 'EMP006',
-      department: '前厅部',
-      position: '礼宾员',
-      phone: '13800138006',
-      email: 'zhaoxiaowen@hotel.com',
-      status: 'active',
-      joinDate: '2023-04-10',
-      salary: 3800,
-      workSchedule: '早班 8:00-16:00',
-      lastAttendance: '2025-07-23 08:00',
-    },
-    {
-      id: '7',
-      name: '孙伟东',
-      employeeId: 'EMP007',
-      department: '客房部',
-      position: '客房主管',
-      phone: '13800138007',
-      email: 'sunweidong@hotel.com',
-      status: 'active',
-      joinDate: '2022-05-15',
-      salary: 5200,
-      workSchedule: '早班 7:00-15:00',
-      lastAttendance: '2025-07-23 07:05',
-    },
-    {
-      id: '8',
-      name: '周丽娜',
-      employeeId: 'EMP008',
-      department: '餐饮部',
-      position: '服务员',
-      phone: '13800138008',
-      email: 'zhoulina@hotel.com',
-      status: 'active',
-      joinDate: '2023-07-20',
-      salary: 3500,
-      workSchedule: '中班 16:00-24:00',
-      lastAttendance: '2025-07-23 16:00',
-    },
-    {
-      id: '9',
-      name: '吴建华',
-      employeeId: 'EMP009',
-      department: '工程部',
-      position: '电工',
-      phone: '13800138009',
-      email: 'wujianhua@hotel.com',
-      status: 'active',
-      joinDate: '2023-02-28',
-      salary: 4800,
-      workSchedule: '夜班 0:00-8:00',
-      lastAttendance: '2025-07-23 00:05',
-    },
-    {
-      id: '10',
-      name: '郑雅琴',
-      employeeId: 'EMP010',
-      department: '财务部',
-      position: '会计',
-      phone: '13800138010',
-      email: 'zhengyaqin@hotel.com',
-      status: 'active',
-      joinDate: '2022-11-08',
-      salary: 5800,
-      workSchedule: '早班 9:00-17:00',
-      lastAttendance: '2025-07-23 09:02',
-    },
-  ];
-
-  const mockAttendance: Attendance[] = [
-    {
-      id: '1',
-      staffId: '1',
-      staffName: '陈雅琪',
-      date: '2025-07-23',
-      checkIn: '08:05',
-      checkOut: '16:10',
-      status: 'late',
-      workHours: 8.1,
-    },
-    {
-      id: '2',
-      staffId: '2',
-      staffName: '刘志强',
-      date: '2025-07-23',
-      checkIn: '16:02',
-      checkOut: '24:05',
-      status: 'present',
-      workHours: 8.0,
-    },
-    {
-      id: '3',
-      staffId: '3',
-      staffName: '王美玲',
-      date: '2025-07-23',
-      checkIn: '07:15',
-      checkOut: '15:20',
-      status: 'present',
-      workHours: 8.1,
-    },
-    {
-      id: '4',
-      staffId: '4',
-      staffName: '张建国',
-      date: '2025-07-23',
-      checkIn: '00:00',
-      checkOut: '00:00',
-      status: 'leave',
-      workHours: 0,
-    },
-    {
-      id: '5',
-      staffId: '5',
-      staffName: '李明华',
-      date: '2025-07-23',
-      checkIn: '15:55',
-      checkOut: '24:00',
-      status: 'present',
-      workHours: 8.1,
-    },
-    {
-      id: '6',
-      staffId: '6',
-      staffName: '赵晓雯',
-      date: '2025-07-23',
-      checkIn: '08:00',
-      checkOut: '16:05',
-      status: 'present',
-      workHours: 8.1,
-    },
-    {
-      id: '7',
-      staffId: '7',
-      staffName: '孙伟东',
-      date: '2025-07-23',
-      checkIn: '07:05',
-      checkOut: '15:10',
-      status: 'present',
-      workHours: 8.1,
-    },
-    {
-      id: '8',
-      staffId: '8',
-      staffName: '周丽娜',
-      date: '2025-07-23',
-      checkIn: '16:00',
-      checkOut: '24:05',
-      status: 'present',
-      workHours: 8.1,
-    },
-    {
-      id: '9',
-      staffId: '9',
-      staffName: '吴建华',
-      date: '2025-07-23',
-      checkIn: '00:05',
-      checkOut: '08:10',
-      status: 'present',
-      workHours: 8.1,
-    },
-    {
-      id: '10',
-      staffId: '10',
-      staffName: '郑雅琴',
-      date: '2025-07-23',
-      checkIn: '09:02',
-      checkOut: '17:05',
-      status: 'present',
-      workHours: 8.1,
-    },
-  ];
+  const [dateRangeModalVisible, setDateRangeModalVisible] = useState(false);
+  const [trendModalVisible, setTrendModalVisible] = useState(false);
+  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs().subtract(30, 'days'),
+    dayjs()
+  ]);
+  const [selectedDateRange, setSelectedDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs().subtract(30, 'days'),
+    dayjs()
+  ]);
 
   useEffect(() => {
     loadData();
@@ -340,12 +271,12 @@ const StaffManagement: React.FC = () => {
 
   const loadData = () => {
     setLoading(true);
-    // 模拟API调用
-    setTimeout(() => {
-      setStaffList(mockStaff);
-      setAttendanceList(mockAttendance);
-      setLoading(false);
-    }, 1000);
+    const staffData = generateStaffData(100);
+    const attendanceData = generateAttendanceData(staffData);
+
+    setStaffList(staffData);
+    setAttendanceList(attendanceData);
+    setLoading(false);
   };
 
   const getStatusColor = (status: string) => {
@@ -576,6 +507,118 @@ const StaffManagement: React.FC = () => {
     },
   };
 
+  // 处理日期范围选择
+  const handleDateRangeOk = () => {
+    setDateRange(selectedDateRange);
+    setDateRangeModalVisible(false);
+    loadData(); // 重新加载数据
+  };
+
+  // 处理趋势分析
+  const handleTrendAnalysis = () => {
+    setTrendModalVisible(true);
+  };
+
+  // 生成部门人员分布图表配置
+  const getDepartmentDistributionOption = () => {
+    const departments = Array.from(new Set(staffList.map(staff => staff.department)));
+    const data = departments.map(dept => {
+      const staffCount = staffList.filter(staff => staff.department === dept).length;
+      return { value: staffCount, name: dept };
+    });
+
+    return {
+      tooltip: {
+        trigger: 'item',
+        formatter: '{b}: {c}人 ({d}%)'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left',
+        top: 'middle'
+      },
+      series: [
+        {
+          type: 'pie',
+          radius: '70%',
+          center: ['60%', '50%'],
+          data: data,
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    };
+  };
+
+  // 生成考勤状态分布图表配置
+  const getAttendanceStatusOption = () => {
+    const departments = Array.from(new Set(staffList.map(staff => staff.department)));
+    const statuses = ['present', 'late', 'absent', 'leave'];
+    const statusNames = {
+      present: '正常',
+      late: '迟到',
+      absent: '缺勤',
+      leave: '请假'
+    };
+
+    const data = departments.map(dept => {
+      const deptStaff = staffList.filter(staff => staff.department === dept);
+      const deptAttendance = attendanceList.filter(att => 
+        deptStaff.some(staff => staff.id === att.staffId)
+      );
+
+      return statuses.map(status => 
+        deptAttendance.filter(att => att.status === status).length
+      );
+    });
+
+    return {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      legend: {
+        data: statuses.map(status => statusNames[status as keyof typeof statusNames]),
+        top: 10
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value'
+      },
+      yAxis: {
+        type: 'category',
+        data: departments
+      },
+      series: statuses.map((status, index) => ({
+        name: statusNames[status as keyof typeof statusNames],
+        type: 'bar',
+        stack: 'total',
+        label: {
+          show: true
+        },
+        data: departments.map((_, deptIndex) => data[deptIndex][index]),
+        itemStyle: {
+          color: status === 'present' ? '#52c41a' :
+                status === 'late' ? '#faad14' :
+                status === 'absent' ? '#ff4d4f' :
+                '#1890ff'
+        }
+      }))
+    };
+  };
+
   return (
     <div style={{ padding: '24px' }}>
       <div style={{ marginBottom: '24px' }}>
@@ -654,6 +697,12 @@ const StaffManagement: React.FC = () => {
             onClick={handleExport}
           >
             导出数据
+          </Button>
+          <Button
+            icon={<LineChartOutlined />}
+            onClick={handleTrendAnalysis}
+          >
+            数据分析
           </Button>
           {selectedStaff.length > 0 && (
             <Button
@@ -921,6 +970,28 @@ const StaffManagement: React.FC = () => {
             </Select>
           </Form.Item>
         </Form>
+      </Modal>
+
+      {/* 趋势分析模态框 */}
+      <Modal
+        title="员工数据分析"
+        open={trendModalVisible}
+        onCancel={() => setTrendModalVisible(false)}
+        width={1000}
+        footer={null}
+      >
+        <Tabs defaultActiveKey="department">
+          <TabPane tab="部门分布" key="department">
+            <Card>
+              <ReactECharts option={getDepartmentDistributionOption()} style={{ height: 400 }} />
+            </Card>
+          </TabPane>
+          <TabPane tab="考勤状态" key="attendance">
+            <Card>
+              <ReactECharts option={getAttendanceStatusOption()} style={{ height: 600 }} />
+            </Card>
+          </TabPane>
+        </Tabs>
       </Modal>
     </div>
   );
