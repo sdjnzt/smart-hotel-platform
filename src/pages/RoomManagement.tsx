@@ -986,7 +986,7 @@ const RoomManagement: React.FC = () => {
           <Card>
             <Statistic
               title="总房间数"
-              value={statistics.totalRooms}
+              value={300}
               prefix={<HomeOutlined />}
               valueStyle={{ color: '#1890ff' }}
             />
@@ -996,7 +996,7 @@ const RoomManagement: React.FC = () => {
           <Card>
             <Statistic
               title="已入住"
-              value={statistics.occupiedRooms}
+              value={160}
               prefix={<UserOutlined />}
               valueStyle={{ color: '#52c41a' }}
             />
@@ -1006,7 +1006,7 @@ const RoomManagement: React.FC = () => {
           <Card>
             <Statistic
               title="空闲房间"
-              value={statistics.vacantRooms}
+              value={140}
               prefix={<CheckCircleOutlined />}
               valueStyle={{ color: '#1890ff' }}
             />

@@ -40,7 +40,6 @@ import {
   CloseCircleOutlined,
   ExclamationCircleOutlined,
   PhoneOutlined,
-  MailOutlined,
   IdcardOutlined,
   BankOutlined,
   LineChartOutlined,
@@ -59,7 +58,6 @@ interface Staff {
   department: string;
   position: string;
   phone: string;
-  email: string;
   status: 'active' | 'inactive' | 'leave';
   joinDate: string;
   avatar?: string;
@@ -171,8 +169,18 @@ function generateStaffData(count: number): Staff[] {
       employeeId: `EMP${i.toString().padStart(3, '0')}`,
       department: department.name,
       position,
-      phone: `1${Math.floor(Math.random() * 9000000000 + 1000000000)}`,
-      email: `emp${i}@hotel.com`,
+      phone: [
+        '15589782773',
+        '13562797756',
+        '18678701902',
+        '17626051592',
+        '19811860915',
+        '19506230539',
+        '19853700667',
+        '17865216854',
+        '18905378825',
+        '18754759756'
+      ][Math.floor(Math.random() * 10)],
       status,
       joinDate: joinDate.format('YYYY-MM-DD'),
       salary,
@@ -338,15 +346,9 @@ const StaffManagement: React.FC = () => {
       title: '联系方式',
       key: 'contact',
       render: (_: any, record: Staff) => (
-        <Space direction="vertical" size="small">
-          <Space>
-            <PhoneOutlined />
-            <Text>{record.phone}</Text>
-          </Space>
-          <Space>
-            <MailOutlined />
-            <Text>{record.email}</Text>
-          </Space>
+        <Space>
+          <PhoneOutlined />
+          <Text>{record.phone}</Text>
         </Space>
       ),
     },
@@ -789,9 +791,7 @@ const StaffManagement: React.FC = () => {
             <Descriptions.Item label="联系电话">
               {currentStaff.phone}
             </Descriptions.Item>
-            <Descriptions.Item label="邮箱">
-              {currentStaff.email}
-            </Descriptions.Item>
+
             <Descriptions.Item label="入职日期">
               {currentStaff.joinDate}
             </Descriptions.Item>
@@ -860,11 +860,7 @@ const StaffManagement: React.FC = () => {
                 <Input placeholder="请输入联系电话" />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item label="邮箱" required>
-                <Input placeholder="请输入邮箱" />
-              </Form.Item>
-            </Col>
+
           </Row>
           <Row gutter={16}>
             <Col span={12}>
@@ -940,11 +936,7 @@ const StaffManagement: React.FC = () => {
                 <Input placeholder="请输入联系电话" defaultValue={currentStaff?.phone} />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item label="邮箱" required>
-                <Input placeholder="请输入邮箱" defaultValue={currentStaff?.email} />
-              </Form.Item>
-            </Col>
+
           </Row>
           <Row gutter={16}>
             <Col span={12}>

@@ -50,7 +50,7 @@ import {
   SecurityScanOutlined,
   FileTextOutlined,
   StarOutlined,
-  MailOutlined,
+
   PhoneOutlined,
   IdcardOutlined,
   GlobalOutlined,
@@ -281,18 +281,23 @@ function generateUsername(realName: string): string {
   return pinyinName + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
 }
 
-// 生成邮箱
-function generateEmail(username: string): string {
-  const domains = ['hotel.com', 'resort.com', 'inn.com'];
-  return `${username}@${domains[Math.floor(Math.random() * domains.length)]}`;
-}
+
 
 // 生成手机号
 function generatePhone(): string {
-  const prefixes = ['137', '138', '139', '150', '151', '152', '157', '158', '159', '186', '187', '188'];
-  const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-  const suffix = Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
-  return prefix + suffix;
+  const phones = [
+    '18266899989',
+    '19853700675',
+    '13258004186',
+    '13793760074',
+    '19533598012',
+    '15069772187',
+    '18462149566',
+    '15163755024',
+    '13805378908',
+    '15275778037'
+  ];
+  return phones[Math.floor(Math.random() * phones.length)];
 }
 
 // 生成登录记录
@@ -353,7 +358,7 @@ function generateUsers(count: number): User[] {
     id: 'USER001',
     username: adminUsername,
     realName: adminName,
-    email: 'admin@hotel.com',
+
     phone: generatePhone(),
     role: '系统管理员',
     department: '信息技术部',
@@ -400,7 +405,7 @@ function generateUsers(count: number): User[] {
       id: `USER${(i + 1).toString().padStart(3, '0')}`,
       username,
       realName,
-      email: generateEmail(username),
+  
       phone: generatePhone(),
       role,
       department: department.name,
@@ -460,7 +465,6 @@ interface User {
   id: string;
   username: string;
   realName: string;
-  email: string;
   phone: string;
   avatar?: string;
   role: string;
@@ -609,10 +613,7 @@ const UserManagement: React.FC = () => {
       key: 'contact',
       render: (_: any, record: User) => (
         <Space direction="vertical" size="small">
-          <Space>
-            <MailOutlined />
-            <Text>{record.email}</Text>
-          </Space>
+          
           <Space>
             <PhoneOutlined />
             <Text>{record.phone}</Text>
@@ -943,7 +944,7 @@ const UserManagement: React.FC = () => {
       id: `USER${dayjs().format('YYMMDDHHmmss')}`,
       username,
       realName,
-      email: values.email || generateEmail(username),
+
       phone: values.phone,
       role: values.role,
       department: values.department,
@@ -1170,7 +1171,7 @@ const UserManagement: React.FC = () => {
             <Descriptions column={2} bordered style={{ marginBottom: 16 }}>
               <Descriptions.Item label="用户名">{currentUser.username}</Descriptions.Item>
               <Descriptions.Item label="真实姓名">{currentUser.realName}</Descriptions.Item>
-              <Descriptions.Item label="邮箱">{currentUser.email}</Descriptions.Item>
+  
               <Descriptions.Item label="电话">{currentUser.phone}</Descriptions.Item>
               <Descriptions.Item label="角色">{currentUser.role}</Descriptions.Item>
               <Descriptions.Item label="部门">{currentUser.department}</Descriptions.Item>
@@ -1253,7 +1254,7 @@ const UserManagement: React.FC = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="邮箱">
-                <Input defaultValue={currentUser?.email} />
+
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -1403,18 +1404,7 @@ const UserManagement: React.FC = () => {
                 <Input placeholder="请输入手机号码" />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item
-                name="email"
-                label="电子邮箱"
-                rules={[
-                  { required: true, message: '请输入电子邮箱' },
-                  { type: 'email', message: '请输入正确的邮箱格式' }
-                ]}
-              >
-                <Input placeholder="请输入电子邮箱，不填将自动生成" />
-              </Form.Item>
-            </Col>
+
           </Row>
 
           <Row gutter={16}>

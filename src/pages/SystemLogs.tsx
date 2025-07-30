@@ -400,7 +400,7 @@ const SystemLogs: React.FC = () => {
         return (
           <Tag icon={style.icon} color={style.color}>
             {style.text}
-          </Tag>
+        </Tag>
         );
       },
     },
@@ -473,31 +473,31 @@ const SystemLogs: React.FC = () => {
           </Space>
         </div>
 
-        <Table
+            <Table
           loading={loading}
           columns={columns}
-          dataSource={logList}
-          rowKey="id"
+              dataSource={logList}
+              rowKey="id"
           rowSelection={{
             selectedRowKeys: selectedLogs,
             onChange: (selectedRowKeys) => setSelectedLogs(selectedRowKeys as string[]),
           }}
-          pagination={{
-            total: logList.length,
+              pagination={{
+                total: logList.length,
             pageSize: 10,
-            showQuickJumper: true,
-            showSizeChanger: true,
+                showQuickJumper: true,
+                showSizeChanger: true,
           }}
         />
 
-        <Modal
-          title="日志详情"
-          open={detailsModalVisible}
-          onCancel={() => setDetailsModalVisible(false)}
-          footer={null}
+      <Modal
+        title="日志详情"
+        open={detailsModalVisible}
+        onCancel={() => setDetailsModalVisible(false)}
+        footer={null}
           width={800}
-        >
-          {currentLog && (
+      >
+        {currentLog && (
             <>
               <Alert
                 message={currentLog.message}
@@ -506,7 +506,7 @@ const SystemLogs: React.FC = () => {
                 style={{ marginBottom: 24 }}
               />
 
-              <Descriptions column={2} bordered>
+          <Descriptions column={2} bordered>
                 <Descriptions.Item label="日志ID" span={2}>
                   {currentLog.id}
                 </Descriptions.Item>
@@ -518,14 +518,14 @@ const SystemLogs: React.FC = () => {
                     {getTypeStyle(currentLog.type).text}
                   </Tag>
                 </Descriptions.Item>
-                <Descriptions.Item label="级别">
+            <Descriptions.Item label="级别">
                   <Tag
                     icon={getLevelStyle(currentLog.level).icon}
                     color={getLevelStyle(currentLog.level).color}
                   >
                     {getLevelStyle(currentLog.level).text}
-                  </Tag>
-                </Descriptions.Item>
+              </Tag>
+            </Descriptions.Item>
                 <Descriptions.Item label="来源">
                   {currentLog.source}
                 </Descriptions.Item>
@@ -538,24 +538,24 @@ const SystemLogs: React.FC = () => {
                 <Descriptions.Item label="状态">
                   <Tag color={getStatusStyle(currentLog.status).color}>
                     {getStatusStyle(currentLog.status).text}
-                  </Tag>
-                </Descriptions.Item>
+              </Tag>
+            </Descriptions.Item>
                 <Descriptions.Item label="处理人">
                   {currentLog.handler || '-'}
                 </Descriptions.Item>
                 <Descriptions.Item label="处理时间">
                   {generateTodayTime()}
-                </Descriptions.Item>
+            </Descriptions.Item>
                 <Descriptions.Item label="处理结果" span={2}>
                   {currentLog.handleResult || '-'}
-                </Descriptions.Item>
-                <Descriptions.Item label="详细信息" span={2}>
+            </Descriptions.Item>
+              <Descriptions.Item label="详细信息" span={2}>
                   {currentLog.details}
-                </Descriptions.Item>
-              </Descriptions>
+              </Descriptions.Item>
+          </Descriptions>
             </>
-          )}
-        </Modal>
+        )}
+      </Modal>
       </Card>
     </div>
   );

@@ -401,7 +401,7 @@ const GuestSatisfaction: React.FC = () => {
       guestName: '陈美玲',
       roomNumber: '301',
       checkInDate: '2025-07-12',
-      checkOutDate: '2025-07-23',
+      checkOutDate: '2025-07-28',
       overallRating: 5,
       cleanliness: 5,
       service: 4,
@@ -410,7 +410,7 @@ const GuestSatisfaction: React.FC = () => {
       value: 5,
       comment: '酒店环境很好，服务态度也不错，房间很干净，下次还会选择这里。',
       status: 'submitted',
-      timestamp: '2025-07-23 10:30:00',
+      timestamp: '2025-07-28 10:30:00',
     },
     {
       id: '2',
@@ -472,8 +472,8 @@ const GuestSatisfaction: React.FC = () => {
       description: '客房服务响应太慢，等了30分钟才送来毛巾。',
       status: 'resolved',
       assignedTo: '陈美玲',
-      createdAt: '2025-07-23 08:30:00',
-      resolvedAt: '2025-07-23 09:15:00',
+      createdAt: '2025-07-28 08:30:00',
+      resolvedAt: '2025-07-28 09:15:00',
       resolution: '已向客人道歉并免费提供客房服务，客人表示满意。',
     },
     {
@@ -485,7 +485,7 @@ const GuestSatisfaction: React.FC = () => {
       description: '空调不制冷，房间温度很高，影响休息。',
       status: 'processing',
       assignedTo: '张建国',
-      createdAt: '2025-07-23 14:20:00',
+      createdAt: '2025-07-28 14:20:00',
     },
     {
       id: '3',
@@ -509,7 +509,7 @@ const GuestSatisfaction: React.FC = () => {
       description: '房间地毯有污渍，床单不够干净。',
       status: 'pending',
       assignedTo: '王雅婷',
-      createdAt: '2025-07-23 11:00:00',
+      createdAt: '2025-07-28 11:00:00',
     },
   ];
 

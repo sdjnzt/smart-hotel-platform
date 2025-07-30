@@ -220,7 +220,7 @@ const DeliveryRobot: React.FC = () => {
       // 生成房间号（1-20层，每层20间）
       const floor = Math.floor(Math.random() * 20 + 1);
       const room = Math.floor(Math.random() * 20 + 1);
-      const roomNumber = `${floor}${room.toString().padStart(2, '0')}`;
+      const roomNumber = `${floor.toString().padStart(2, '0')}${room.toString().padStart(2, '0')}`;
 
       // 根据任务类型生成不同的任务内容
       let taskItems: string[] = [];
@@ -711,11 +711,7 @@ const DeliveryRobot: React.FC = () => {
              status === 'charging' ? '充电中' :
              status === 'maintenance' ? '维护中' : '故障'}
           </Tag>
-          {record.currentTask && (
-            <div style={{ fontSize: '12px', color: '#666', marginTop: 4 }}>
-              {record.currentTask}
-            </div>
-          )}
+
         </div>
       ),
     },

@@ -273,7 +273,7 @@ const BackupRestore: React.FC = () => {
       render: (type: string) => (
         <Tag color="blue">
           {BACKUP_TYPES[type as keyof typeof BACKUP_TYPES].name}
-        </Tag>
+            </Tag>
       ),
     },
     {
@@ -306,8 +306,8 @@ const BackupRestore: React.FC = () => {
       key: 'action',
       render: (_: unknown, record: BackupRecord) => (
         <Space>
-          <Button 
-            type="link" 
+          <Button
+            type="link"
             size="small"
             disabled={record.status === 'running' || record.status === 'failed'}
             onClick={() => handleDownload(record)}
@@ -328,9 +328,9 @@ const BackupRestore: React.FC = () => {
             okText="确定"
             cancelText="取消"
           >
-            <Button 
-              type="link" 
-              danger 
+          <Button
+            type="link"
+            danger
               size="small"
               disabled={record.status === 'running'}
             >
@@ -370,16 +370,16 @@ const BackupRestore: React.FC = () => {
           </Space>
         </div>
 
-        <Table
+            <Table
           columns={columns}
-          dataSource={backupList}
-          rowKey="id"
-          loading={loading}
-          pagination={{
-            total: backupList.length,
-            pageSize: 10,
+              dataSource={backupList}
+              rowKey="id"
+              loading={loading}
+              pagination={{
+                total: backupList.length,
+                pageSize: 10,
             showQuickJumper: true,
-            showSizeChanger: true,
+                showSizeChanger: true,
           }}
         />
 
@@ -440,11 +440,11 @@ const BackupRestore: React.FC = () => {
         </Modal>
 
         {/* 上传备份模态框 */}
-        <Modal
+      <Modal
           title="上传备份"
           open={uploadModalVisible}
           onCancel={() => setUploadModalVisible(false)}
-          footer={null}
+        footer={null}
         >
           <Alert
             message="请上传有效的备份文件"
@@ -468,22 +468,22 @@ const BackupRestore: React.FC = () => {
               支持单个或批量上传，严禁上传公司内部资料或其他违禁文件
             </p>
           </Dragger>
-        </Modal>
+      </Modal>
 
         {/* 恢复确认模态框 */}
-        <Modal
+      <Modal
           title="恢复确认"
-          open={restoreModalVisible}
-          onCancel={() => setRestoreModalVisible(false)}
+        open={restoreModalVisible}
+        onCancel={() => setRestoreModalVisible(false)}
           footer={null}
-        >
-          {currentBackup && (
+      >
+        {currentBackup && (
             <>
-              <Alert
+            <Alert
                 message="警告"
                 description="系统恢复将会覆盖当前数据，请确保已经做好相应的备份。恢复过程中系统将暂停服务，请在业务低峰期进行操作。"
-                type="warning"
-                showIcon
+              type="warning"
+              showIcon
                 style={{ marginBottom: 24 }}
               />
 
@@ -494,11 +494,11 @@ const BackupRestore: React.FC = () => {
                 <Descriptions.Item label="备份名称" span={2}>
                   {currentBackup.name}
                 </Descriptions.Item>
-                <Descriptions.Item label="备份类型">
+              <Descriptions.Item label="备份类型">
                   <Tag color="blue">
                     {BACKUP_TYPES[currentBackup.type].name}
-                  </Tag>
-                </Descriptions.Item>
+                </Tag>
+              </Descriptions.Item>
                 <Descriptions.Item label="备份大小">
                   {currentBackup.size}
                 </Descriptions.Item>
@@ -508,7 +508,7 @@ const BackupRestore: React.FC = () => {
                 <Descriptions.Item label="创建者">
                   {currentBackup.creator}
                 </Descriptions.Item>
-              </Descriptions>
+            </Descriptions>
 
               {restoreInProgress ? (
                 <div style={{ marginTop: 24, textAlign: 'center' }}>
@@ -527,11 +527,11 @@ const BackupRestore: React.FC = () => {
                       取消
                     </Button>
                   </Space>
-                </div>
+          </div>
               )}
             </>
-          )}
-        </Modal>
+        )}
+      </Modal>
       </Card>
     </div>
   );

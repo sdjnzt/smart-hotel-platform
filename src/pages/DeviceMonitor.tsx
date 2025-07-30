@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Card, Table, Tag, Row, Col, Statistic, Progress, Select, Input, Badge, Space, Button, Modal, Descriptions } from 'antd';
 import { MonitorOutlined, BulbOutlined, SnippetsOutlined, SafetyCertificateOutlined, VideoCameraOutlined, WarningOutlined, SearchOutlined, EyeOutlined, RobotOutlined, IdcardOutlined, VerticalAlignTopOutlined, FireOutlined, CameraOutlined } from '@ant-design/icons';
 import { hotelDevices, hotelRooms, HotelDevice, HotelRoom } from '../data/mockData';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 const { Search } = Input;
 
 const DeviceMonitor: React.FC = () => {
   const [devices, setDevices] = useState<HotelDevice[]>(hotelDevices);
-  const [rooms, setRooms] = useState<HotelRoom[]>(hotelRooms);
   const [filteredDevices, setFilteredDevices] = useState<HotelDevice[]>(hotelDevices);
   const [selectedFloor, setSelectedFloor] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -17,24 +17,45 @@ const DeviceMonitor: React.FC = () => {
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState<HotelDevice | null>(null);
 
+  // 生成当天的随机时间
+  const generateTodayTime = () => {
+    const now = dayjs();
+    const randomMinutes = Math.floor(Math.random() * 60);
+    const randomSeconds = Math.floor(Math.random() * 60);
+    return now.subtract(randomMinutes, 'minute')
+              .subtract(randomSeconds, 'second')
+              .format('YYYY-MM-DD HH:mm:ss');
+  };
+
   // 实时更新设备状态
   useEffect(() => {
-    const interval = setInterval(() => {
-      const updatedDevices = devices.map(device => ({
+    const updateDevice = (device: HotelDevice) => {
+      const shouldUpdate = Math.random() < 0.3; // 30%概率更新
+      if (!shouldUpdate) return device;
+
+      return {
         ...device,
-        lastUpdate: new Date().toLocaleString(),
-        // 模拟随机状态变化
+        lastUpdate: dayjs()
+          .subtract(Math.floor(Math.random() * 60), 'minute')
+          .subtract(Math.floor(Math.random() * 60), 'second')
+          .format('YYYY-MM-DD HH:mm:ss'),
         signal: Math.max(80, Math.min(100, device.signal! + (Math.random() - 0.5) * 4)),
         temperature: device.temperature ? Math.max(18, Math.min(30, device.temperature + (Math.random() - 0.5) * 2)) : undefined,
         humidity: device.humidity ? Math.max(30, Math.min(70, device.humidity + (Math.random() - 0.5) * 4)) : undefined,
         brightness: device.brightness ? Math.max(0, Math.min(100, device.brightness + (Math.random() - 0.5) * 10)) : undefined,
         power: device.power ? Math.max(0, device.power + (Math.random() - 0.5) * 20) : undefined,
-      }));
-      setDevices(updatedDevices);
-    }, 5000);
+      };
+    };
+
+    const interval = setInterval(() => {
+      setDevices(prevDevices => prevDevices.map(updateDevice));
+    }, 180000); // 3分钟更新一次
+
+    // 初始化设备时间
+    setDevices(devices.map(updateDevice));
 
     return () => clearInterval(interval);
-  }, [devices]);
+  }, []);
 
   // 过滤设备
   useEffect(() => {
@@ -67,7 +88,6 @@ const DeviceMonitor: React.FC = () => {
   const onlineDevices = devices.filter(d => d.status === 'online').length;
   const warningDevices = devices.filter(d => d.status === 'warning').length;
   const errorDevices = devices.filter(d => d.status === 'error').length;
-  const offlineDevices = devices.filter(d => d.status === 'offline').length;
   const totalEnergyConsumption = devices.reduce((sum, device) => sum + (device.energyConsumption || 0), 0);
   const averageUptime = (onlineDevices / totalDevices) * 100;
 

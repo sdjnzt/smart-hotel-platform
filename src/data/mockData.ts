@@ -119,7 +119,7 @@ export const devices: Device[] = [
     type: 'camera',
     status: 'online',
     location: '生产车间A区1号生产线',
-    lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-28 14:30:00',
     battery: 85,
     signal: 95,
   },
@@ -129,7 +129,7 @@ export const devices: Device[] = [
     type: 'camera',
     status: 'online',
     location: '厂区东门岗哨监控点',
-    lastUpdate: '2025-07-23 14:29:30',
+    lastUpdate: '2025-07-28 14:29:30',
     battery: 91,
     signal: 96,
   },
@@ -139,7 +139,7 @@ export const devices: Device[] = [
     type: 'camera',
     status: 'online',
     location: '生产车间中央监控塔',
-    lastUpdate: '2025-07-23 14:30:15',
+    lastUpdate: '2025-07-28 14:30:15',
     battery: 78,
     signal: 89,
   },
@@ -149,7 +149,7 @@ export const devices: Device[] = [
     type: 'camera',
     status: 'warning',
     location: '化学品存储区A-07货架',
-    lastUpdate: '2025-07-23 14:28:45',
+    lastUpdate: '2025-07-28 14:28:45',
     battery: 56,
     signal: 82,
   },
@@ -159,7 +159,7 @@ export const devices: Device[] = [
     type: 'camera',
     status: 'online',
     location: '厂区北围墙监控塔3号',
-    lastUpdate: '2025-07-23 14:30:10',
+    lastUpdate: '2025-07-28 14:30:10',
     battery: 94,
     signal: 91,
   },
@@ -169,7 +169,7 @@ export const devices: Device[] = [
     type: 'camera',
     status: 'online',
     location: '主厂房出入口闸机处',
-    lastUpdate: '2025-07-23 14:29:50',
+    lastUpdate: '2025-07-28 14:29:50',
     battery: 88,
     signal: 93,
   },
@@ -181,7 +181,7 @@ export const devices: Device[] = [
     type: 'phone',
     status: 'online',
     location: '生产车间A区班长岗位',
-    lastUpdate: '2025-07-23 14:29:00',
+    lastUpdate: '2025-07-28 14:29:00',
     battery: 92,
     signal: 98,
   },
@@ -191,7 +191,7 @@ export const devices: Device[] = [
     type: 'phone',
     status: 'online',
     location: '设备维修间工具台',
-    lastUpdate: '2025-07-23 14:29:45',
+    lastUpdate: '2025-07-28 14:29:45',
     battery: 82,
     signal: 85,
   },
@@ -201,7 +201,7 @@ export const devices: Device[] = [
     type: 'phone',
     status: 'online',
     location: '仓库B区3号叉车',
-    lastUpdate: '2025-07-23 14:30:20',
+    lastUpdate: '2025-07-28 14:30:20',
     battery: 71,
     signal: 79,
   },
@@ -211,7 +211,7 @@ export const devices: Device[] = [
     type: 'phone',
     status: 'online',
     location: '中央控制室调度台',
-    lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-28 14:30:00',
     signal: 98,
   },
   {
@@ -220,7 +220,7 @@ export const devices: Device[] = [
     type: 'phone',
     status: 'online',
     location: '安全管理部值班室',
-    lastUpdate: '2025-07-23 14:29:50',
+    lastUpdate: '2025-07-28 14:29:50',
     battery: 95,
     signal: 94,
   },
@@ -230,7 +230,7 @@ export const devices: Device[] = [
     type: 'phone',
     status: 'online',
     location: '厂区巡检路线B段',
-    lastUpdate: '2025-07-23 14:28:30',
+    lastUpdate: '2025-07-28 14:28:30',
     battery: 64,
     signal: 87,
   },
@@ -242,7 +242,7 @@ export const devices: Device[] = [
     type: 'sensor',
     status: 'online',
     location: '生产车间A区1号检测点',
-    lastUpdate: '2025-07-23 14:28:00',
+    lastUpdate: '2025-07-28 14:28:00',
     battery: 76,
     signal: 87,
   },
@@ -252,7 +252,7 @@ export const devices: Device[] = [
     type: 'sensor',
     status: 'online',
     location: '仓库B区3号货架顶部',
-    lastUpdate: '2025-07-23 14:29:55',
+    lastUpdate: '2025-07-28 14:29:55',
     battery: 68,
     signal: 83,
   },
@@ -262,7 +262,7 @@ export const devices: Device[] = [
     type: 'sensor',
     status: 'warning',
     location: '化学品处理区域西南角',
-    lastUpdate: '2025-07-23 14:25:00',
+    lastUpdate: '2025-07-28 14:25:00',
     battery: 45,
     signal: 76,
   },
@@ -272,7 +272,7 @@ export const devices: Device[] = [
     type: 'sensor',
     status: 'online',
     location: '主要生产设备机台01轴承',
-    lastUpdate: '2025-07-23 14:29:40',
+    lastUpdate: '2025-07-28 14:29:40',
     battery: 88,
     signal: 90,
   },
@@ -282,7 +282,7 @@ export const devices: Device[] = [
     type: 'sensor',
     status: 'online',
     location: '主管道A段3号监测点',
-    lastUpdate: '2025-07-23 14:30:05',
+    lastUpdate: '2025-07-28 14:30:05',
     battery: 72,
     signal: 86,
   },
@@ -292,7 +292,7 @@ export const devices: Device[] = [
     type: 'sensor',
     status: 'online',
     location: '生产车间中央噪声检测点',
-    lastUpdate: '2025-07-23 14:29:25',
+    lastUpdate: '2025-07-28 14:29:25',
     battery: 81,
     signal: 84,
   },
@@ -304,7 +304,7 @@ export const devices: Device[] = [
     type: 'controller',
     status: 'online',
     location: '生产车间A区照明控制柜',
-    lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-28 14:30:00',
     battery: 100,
     signal: 95,
   },
@@ -314,7 +314,7 @@ export const devices: Device[] = [
     type: 'controller',
     status: 'online',
     location: '办公楼C座空调机房',
-    lastUpdate: '2025-07-23 14:29:30',
+    lastUpdate: '2025-07-28 14:29:30',
     battery: 92,
     signal: 89,
   },
@@ -324,7 +324,7 @@ export const devices: Device[] = [
     type: 'controller',
     status: 'online',
     location: '办公楼主入口门禁系统',
-    lastUpdate: '2025-07-23 14:30:10',
+    lastUpdate: '2025-07-28 14:30:10',
     battery: 87,
     signal: 93,
   },
@@ -334,7 +334,7 @@ export const devices: Device[] = [
     type: 'controller',
     status: 'warning',
     location: '生产线A1电控柜',
-    lastUpdate: '2025-07-23 14:25:00',
+    lastUpdate: '2025-07-28 14:25:00',
     battery: 45,
     signal: 78,
   },
@@ -344,7 +344,7 @@ export const devices: Device[] = [
     type: 'controller',
     status: 'online',
     location: '应急指挥中心广播室',
-    lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-28 14:30:00',
     battery: 98,
     signal: 97,
   },
@@ -354,7 +354,7 @@ export const devices: Device[] = [
     type: 'controller',
     status: 'offline',
     location: '主办公楼消防控制室',
-    lastUpdate: '2025-07-23 13:45:00',
+    lastUpdate: '2025-07-28 13:45:00',
     battery: 0,
     signal: 0,
   },
@@ -1006,7 +1006,7 @@ export const commands: Command[] = [
     sender: '张主任',
     receiver: '全体车间主任',
     status: 'sent',
-    timestamp: '2025-07-23 14:30:00',
+    timestamp: '2025-07-28 14:30:00',
     priority: 'urgent',
   },
   {
@@ -1016,7 +1016,7 @@ export const commands: Command[] = [
     sender: '李工程师',
     receiver: '王技术员',
     status: 'received',
-    timestamp: '2025-07-23 14:25:00',
+    timestamp: '2025-07-28 14:25:00',
     priority: 'high',
   },
   {
@@ -1026,7 +1026,7 @@ export const commands: Command[] = [
     sender: '赵安全员',
     receiver: '安全员团队',
     status: 'completed',
-    timestamp: '2025-07-23 14:20:00',
+    timestamp: '2025-07-28 14:20:00',
     priority: 'medium',
   },
   {
@@ -1036,7 +1036,7 @@ export const commands: Command[] = [
     sender: '陈生产主管',
     receiver: '物流部门',
     status: 'pending',
-    timestamp: '2025-07-23 14:18:00',
+    timestamp: '2025-07-28 14:18:00',
     priority: 'high',
   },
   {
@@ -1046,7 +1046,7 @@ export const commands: Command[] = [
     sender: '维护部',
     receiver: 'C区生产组',
     status: 'sent',
-    timestamp: '2025-07-23 14:15:00',
+    timestamp: '2025-07-28 14:15:00',
     priority: 'medium',
   },
   {
@@ -1056,7 +1056,7 @@ export const commands: Command[] = [
     sender: '刘主管',
     receiver: '质检部',
     status: 'completed',
-    timestamp: '2025-07-23 14:12:00',
+    timestamp: '2025-07-28 14:12:00',
     priority: 'medium',
   },
   {
@@ -1066,7 +1066,7 @@ export const commands: Command[] = [
     sender: '环保部',
     receiver: '孙环保专员',
     status: 'received',
-    timestamp: '2025-07-23 14:08:00',
+    timestamp: '2025-07-28 14:08:00',
     priority: 'high',
   },
   {
@@ -1076,7 +1076,7 @@ export const commands: Command[] = [
     sender: '人事部',
     receiver: '各部门主管',
     status: 'sent',
-    timestamp: '2025-07-23 14:05:00',
+    timestamp: '2025-07-28 14:05:00',
     priority: 'medium',
   },
   {
@@ -1086,7 +1086,7 @@ export const commands: Command[] = [
     sender: '应急指挥中心',
     receiver: '全体作业人员',
     status: 'sent',
-    timestamp: '2025-07-23 14:02:00',
+    timestamp: '2025-07-28 14:02:00',
     priority: 'urgent',
   },
   {
@@ -1096,7 +1096,7 @@ export const commands: Command[] = [
     sender: '仓储部',
     receiver: '各仓管员',
     status: 'pending',
-    timestamp: '2025-07-23 14:00:00',
+    timestamp: '2025-07-28 14:00:00',
     priority: 'low',
   },
   {
@@ -1106,7 +1106,7 @@ export const commands: Command[] = [
     sender: 'IT部门',
     receiver: '各部门',
     status: 'sent',
-    timestamp: '2025-07-23 13:58:00',
+    timestamp: '2025-07-28 13:58:00',
     priority: 'medium',
   },
   {
@@ -1116,7 +1116,7 @@ export const commands: Command[] = [
     sender: '安全部',
     receiver: '全体员工',
     status: 'pending',
-    timestamp: '2025-07-23 13:55:00',
+    timestamp: '2025-07-28 13:55:00',
     priority: 'high',
   },
   {
@@ -1126,7 +1126,7 @@ export const commands: Command[] = [
     sender: '中控室',
     receiver: '设备维修组',
     status: 'received',
-    timestamp: '2025-07-23 13:52:00',
+    timestamp: '2025-07-28 13:52:00',
     priority: 'urgent',
   },
   {
@@ -1136,7 +1136,7 @@ export const commands: Command[] = [
     sender: '销售部',
     receiver: '物流部门',
     status: 'completed',
-    timestamp: '2025-07-23 13:50:00',
+    timestamp: '2025-07-28 13:50:00',
     priority: 'medium',
   },
   {
@@ -1146,7 +1146,7 @@ export const commands: Command[] = [
     sender: '动力部',
     receiver: '电工班',
     status: 'sent',
-    timestamp: '2025-07-23 13:48:00',
+    timestamp: '2025-07-28 13:48:00',
     priority: 'high',
   },
   {
@@ -1156,7 +1156,7 @@ export const commands: Command[] = [
     sender: '生产部',
     receiver: '环保部',
     status: 'pending',
-    timestamp: '2025-07-23 13:45:00',
+    timestamp: '2025-07-28 13:45:00',
     priority: 'medium',
   },
   {
@@ -1166,7 +1166,7 @@ export const commands: Command[] = [
     sender: '夜班班长',
     receiver: '早班班长',
     status: 'completed',
-    timestamp: '2025-07-23 13:42:00',
+    timestamp: '2025-07-28 13:42:00',
     priority: 'medium',
   },
   {
@@ -1176,7 +1176,7 @@ export const commands: Command[] = [
     sender: '客服部',
     receiver: '质检部,技术部',
     status: 'received',
-    timestamp: '2025-07-23 13:40:00',
+    timestamp: '2025-07-28 13:40:00',
     priority: 'high',
   },
   {
@@ -1186,7 +1186,7 @@ export const commands: Command[] = [
     sender: '能源管理部',
     receiver: '各车间主任',
     status: 'sent',
-    timestamp: '2025-07-23 13:38:00',
+    timestamp: '2025-07-28 13:38:00',
     priority: 'low',
   },
   {
@@ -1196,7 +1196,7 @@ export const commands: Command[] = [
     sender: '应急管理部',
     receiver: '采购部门',
     status: 'pending',
-    timestamp: '2025-07-23 13:35:00',
+    timestamp: '2025-07-28 13:35:00',
     priority: 'high',
   },
 ];
@@ -1209,7 +1209,7 @@ export const safetyEvents: SafetyEvent[] = [
     location: '化学品存储区A-07',
     severity: 'high',
     status: 'investigating',
-    timestamp: '2025-07-23 14:15:00',
+    timestamp: '2025-07-28 14:15:00',
     description: '可燃气体检测仪报警，检测到甲烷浓度超标，现场已疏散人员，正在排查泄漏源',
   },
   {
@@ -1218,7 +1218,7 @@ export const safetyEvents: SafetyEvent[] = [
     location: '主办公楼配电室',
     severity: 'critical',
     status: 'active',
-    timestamp: '2025-07-23 14:10:00',
+    timestamp: '2025-07-28 14:10:00',
     description: '配电室烟雾报警器触发，现场发现电缆起火，消防系统已自动启动，消防队正在赶来',
   },
   {
@@ -1227,7 +1227,7 @@ export const safetyEvents: SafetyEvent[] = [
     location: '厂区东门岗哨',
     severity: 'low',
     status: 'resolved',
-    timestamp: '2025-07-23 13:45:00',
+    timestamp: '2025-07-28 13:45:00',
     description: '门禁系统检测到未授权刷卡尝试，经核实为新员工首日上班忘记激活门禁卡',
   },
   {
@@ -1236,7 +1236,7 @@ export const safetyEvents: SafetyEvent[] = [
     location: '生产车间A区1号生产线',
     severity: 'medium',
     status: 'investigating',
-    timestamp: '2025-07-23 13:30:00',
+    timestamp: '2025-07-28 13:30:00',
     description: '设备异常停机，疑似机械故障，维修人员正在现场检查，暂停该生产线作业',
   },
   {
@@ -1245,7 +1245,7 @@ export const safetyEvents: SafetyEvent[] = [
     location: '危化品仓库B区',
     severity: 'low',
     status: 'resolved',
-    timestamp: '2025-07-23 12:20:00',
+    timestamp: '2025-07-28 12:20:00',
     description: '氨气浓度轻微超标，经检查为通风系统滤网堵塞，已清理并恢复正常',
   },
   {
@@ -1254,7 +1254,7 @@ export const safetyEvents: SafetyEvent[] = [
     location: '仓库B区3号货架',
     severity: 'medium',
     status: 'resolved',
-    timestamp: '2025-07-23 11:15:00',
+    timestamp: '2025-07-28 11:15:00',
     description: '红外监控发现夜间有人员在非工作时间进入仓库，经查证为夜班员工加班处理紧急订单',
   },
   {
@@ -1263,7 +1263,7 @@ export const safetyEvents: SafetyEvent[] = [
     location: '生产车间B区焊接工位',
     severity: 'low',
     status: 'resolved',
-    timestamp: '2025-07-23 10:30:00',
+    timestamp: '2025-07-28 10:30:00',
     description: '焊接作业时火花引燃附近杂物，现场人员及时扑灭，无人员受伤，已加强现场管理',
   },
   {
@@ -1272,7 +1272,7 @@ export const safetyEvents: SafetyEvent[] = [
     location: '办公楼C座电梯',
     severity: 'medium',
     status: 'resolved',
-    timestamp: '2025-07-23 09:45:00',
+    timestamp: '2025-07-28 09:45:00',
     description: '电梯突然停电困人，应急响应小组5分钟内到达现场，手动开门救出3名被困人员',
   },
   {
@@ -1305,7 +1305,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'temperature',
     value: 25.6,
     unit: '°C',
-    timestamp: '2025-07-23 14:30:00',
+    timestamp: '2025-07-28 14:30:00',
     location: '生产车间A区1号检测点',
   },
   {
@@ -1315,7 +1315,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'humidity',
     value: 65.2,
     unit: '%',
-    timestamp: '2025-07-23 14:30:00',
+    timestamp: '2025-07-28 14:30:00',
     location: '生产车间A区1号检测点',
   },
   {
@@ -1325,7 +1325,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'temperature',
     value: 22.8,
     unit: '°C',
-    timestamp: '2025-07-23 14:29:55',
+    timestamp: '2025-07-28 14:29:55',
     location: '仓库B区3号货架顶部',
   },
   {
@@ -1335,7 +1335,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'humidity',
     value: 58.9,
     unit: '%',
-    timestamp: '2025-07-23 14:29:55',
+    timestamp: '2025-07-28 14:29:55',
     location: '仓库B区3号货架顶部',
   },
   
@@ -1347,7 +1347,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'pressure',
     value: 2.45,
     unit: 'MPa',
-    timestamp: '2025-07-23 14:30:05',
+    timestamp: '2025-07-28 14:30:05',
     location: '主管道A段3号监测点',
   },
   {
@@ -1357,7 +1357,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'pressure',
     value: 2.48,
     unit: 'MPa',
-    timestamp: '2025-07-23 14:25:05',
+    timestamp: '2025-07-28 14:25:05',
     location: '主管道A段3号监测点',
   },
   
@@ -1369,7 +1369,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'vibration',
     value: 1.82,
     unit: 'mm/s',
-    timestamp: '2025-07-23 14:29:40',
+    timestamp: '2025-07-28 14:29:40',
     location: '主要生产设备机台01轴承',
   },
   {
@@ -1379,7 +1379,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'vibration',
     value: 1.75,
     unit: 'mm/s',
-    timestamp: '2025-07-23 14:24:40',
+    timestamp: '2025-07-28 14:24:40',
     location: '主要生产设备机台01轴承',
   },
   
@@ -1391,7 +1391,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'voltage',
     value: 220.5,
     unit: 'V',
-    timestamp: '2025-07-23 14:29:00',
+    timestamp: '2025-07-28 14:29:00',
     location: '生产线A1电控柜',
   },
   {
@@ -1401,7 +1401,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'voltage',
     value: 380.2,
     unit: 'V',
-    timestamp: '2025-07-23 14:30:00',
+    timestamp: '2025-07-28 14:30:00',
     location: '生产车间A区照明控制柜',
   },
   {
@@ -1411,7 +1411,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'voltage',
     value: 380.8,
     unit: 'V',
-    timestamp: '2025-07-23 14:29:30',
+    timestamp: '2025-07-28 14:29:30',
     location: '办公楼C座空调机房',
   },
   
@@ -1423,7 +1423,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'temperature',
     value: 24.8,
     unit: '°C',
-    timestamp: '2025-07-23 14:25:00',
+    timestamp: '2025-07-28 14:25:00',
     location: '生产车间A区1号检测点',
   },
   {
@@ -1433,7 +1433,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'humidity',
     value: 63.7,
     unit: '%',
-    timestamp: '2025-07-23 14:25:00',
+    timestamp: '2025-07-28 14:25:00',
     location: '生产车间A区1号检测点',
   },
   {
@@ -1443,7 +1443,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'pressure',
     value: 1.01,
     unit: 'kPa',
-    timestamp: '2025-07-23 14:25:00',
+    timestamp: '2025-07-28 14:25:00',
     location: '化学品处理区域西南角',
   },
   {
@@ -1453,7 +1453,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'vibration',
     value: 75.6,
     unit: 'dB',
-    timestamp: '2025-07-23 14:29:25',
+    timestamp: '2025-07-28 14:29:25',
     location: '生产车间中央噪声检测点',
   },
   
@@ -1465,7 +1465,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'temperature',
     value: 26.2,
     unit: '°C',
-    timestamp: '2025-07-23 14:20:00',
+    timestamp: '2025-07-28 14:20:00',
     location: '生产车间A区1号检测点',
   },
   {
@@ -1475,7 +1475,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'temperature',
     value: 25.1,
     unit: '°C',
-    timestamp: '2025-07-23 14:15:00',
+    timestamp: '2025-07-28 14:15:00',
     location: '生产车间A区1号检测点',
   },
   {
@@ -1485,7 +1485,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'temperature',
     value: 24.9,
     unit: '°C',
-    timestamp: '2025-07-23 14:10:00',
+    timestamp: '2025-07-28 14:10:00',
     location: '生产车间A区1号检测点',
   },
   
@@ -1497,7 +1497,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'pressure',
     value: 2.52,
     unit: 'MPa',
-    timestamp: '2025-07-23 14:20:05',
+    timestamp: '2025-07-28 14:20:05',
     location: '主管道A段3号监测点',
   },
   {
@@ -1507,7 +1507,7 @@ export const dataRecords: DataRecord[] = [
     dataType: 'vibration',
     value: 1.91,
     unit: 'mm/s',
-    timestamp: '2025-07-23 14:19:40',
+    timestamp: '2025-07-28 14:19:40',
     location: '主要生产设备机台01轴承',
   },
 ];
@@ -1948,8 +1948,8 @@ export const inspectionRecords: InspectionRecord[] = [
     location: '生产车间A区',
     status: 'completed',
     priority: 'medium',
-    scheduledDate: '2025-07-23',
-    completedDate: '2025-07-23',
+    scheduledDate: '2025-07-28',
+    completedDate: '2025-07-28',
     score: 85,
     issuesFound: 3,
     rectificationItems: 2,
@@ -2031,9 +2031,9 @@ export const rectificationItems: RectificationItem[] = [
     assignee: '消防维修班',
     department: '设备维护部',
     dueDate: '2025-07-25',
-    createdDate: '2025-07-23',
+    createdDate: '2025-07-28',
     completedDate: '2025-07-22',
-    verifiedDate: '2025-07-23',
+    verifiedDate: '2025-07-28',
     progress: 100,
     cost: 1200,
     remarks: '已更换新型消防栓，水压测试正常'
@@ -2049,7 +2049,7 @@ export const rectificationItems: RectificationItem[] = [
     assignee: '维修班',
     department: '设备维护部',
     dueDate: '2025-07-30',
-    createdDate: '2025-07-23',
+    createdDate: '2025-07-28',
     completedDate: '2025-07-28',
     verifiedDate: '2025-07-29',
     progress: 100,
@@ -2322,7 +2322,7 @@ function generateHotelDevices(): HotelDevice[] {
         roomNumber: roomNumber,
         floor: floor,
         location: `${floor}楼${roomNumber}房间`,
-    lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-28 14:30:00',
         temperature: Number((20 + Math.random() * 4).toFixed(1)),  // 温度保留1位小数
         humidity: Math.round(40 + Math.random() * 20),  // 湿度取整数
     power: 1200,
@@ -2341,7 +2341,7 @@ function generateHotelDevices(): HotelDevice[] {
         roomNumber: roomNumber,
         floor: floor,
         location: `${floor}楼${roomNumber}房间`,
-    lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-28 14:30:00',
         brightness: Math.round(Math.random() * 100),  // 亮度取整数
     power: 45,
         energyConsumption: Number((Math.random() * 3).toFixed(2)),  // 能耗保留2位小数
@@ -2360,7 +2360,7 @@ function generateHotelDevices(): HotelDevice[] {
           roomNumber: roomNumber,
           floor: floor,
           location: `${floor}楼${roomNumber}房间`,
-    lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-28 14:30:00',
           temperature: Number((4 + Math.random() * 2).toFixed(1)),  // 温度保留1位小数
           power: 80,
           energyConsumption: Number((Math.random() * 2).toFixed(2)),  // 能耗保留2位小数
@@ -2381,7 +2381,7 @@ function generateHotelDevices(): HotelDevice[] {
     status: 'online',
         floor: floor,
         location: `${floor}楼走廊`,
-    lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-28 14:30:00',
         power: 25,
         energyConsumption: 0.6,
     isOnline: true,
@@ -2401,7 +2401,7 @@ function generateHotelDevices(): HotelDevice[] {
     status: 'online',
         floor: floor,
         location: `${floor}楼安全门`,
-    lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-28 14:30:00',
     power: 15,
     energyConsumption: 0.3,
     isOnline: true,
@@ -2420,7 +2420,7 @@ function generateHotelDevices(): HotelDevice[] {
     status: 'online',
       floor: Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1,
       location: '电梯井',
-    lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-28 14:30:00',
     power: 500,
       energyConsumption: 7 + Math.random() * 3,
     isOnline: true,
@@ -2441,7 +2441,7 @@ function generateHotelDevices(): HotelDevice[] {
     status: 'online',
       floor: Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1,
       location: '正在服务中',
-    lastUpdate: '2025-07-23 14:30:00',
+    lastUpdate: '2025-07-28 14:30:00',
       battery: 60 + Math.random() * 40,
       power: 200,
       energyConsumption: 2 + Math.random() * 2,
@@ -2449,7 +2449,7 @@ function generateHotelDevices(): HotelDevice[] {
       signal: 90 + Math.random() * 10,
       currentTask: Math.random() > 0.3 ? '送餐中' : '空闲',
       destination: Math.random() > 0.3 ? `${Math.floor(Math.random() * HOTEL_CONFIG.FLOORS) + 1}${Math.floor(Math.random() * HOTEL_CONFIG.ROOMS_PER_FLOOR) + 1}` : '',
-      estimatedArrival: '2025-07-23 14:35:00'
+      estimatedArrival: '2025-07-28 14:35:00'
     });
   }
   
@@ -2488,7 +2488,7 @@ function generateHotelRooms(): HotelRoom[] {
         type: roomType,
         status: isOccupied ? 'occupied' : (Math.random() > 0.5 ? 'vacant_clean' : 'vacant_dirty'),
         guestName: isOccupied ? `客人${Math.floor(Math.random() * 1000)}` : undefined,
-        checkInTime: isOccupied ? '2025-07-23 14:00:00' : undefined,
+        checkInTime: isOccupied ? '2025-07-28 14:00:00' : undefined,
         checkOutTime: isOccupied ? '2025-07-25 12:00:00' : undefined,
         deviceCount: deviceCount,
         onlineDeviceCount: deviceCount - Math.floor(Math.random() * 2),
@@ -2496,7 +2496,7 @@ function generateHotelRooms(): HotelRoom[] {
         humidity: Math.round(40 + Math.random() * 20),  // 湿度取整数
         lightLevel: isOccupied ? Math.round(Math.random() * 100) : 0,  // 亮度取整数
         energyConsumption: Number((isOccupied ? 10 + Math.random() * 10 : 2 + Math.random() * 3).toFixed(2)),  // 能耗保留2位小数
-        lastCleanTime: '2025-07-23 09:30:00',
+        lastCleanTime: '2025-07-28 09:30:00',
         maintenanceScheduled: Math.random() > 0.95
       });
     }
@@ -2519,7 +2519,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'high',
     status: 'active',
-    timestamp: '2025-07-23 14:20:00',
+    timestamp: '2025-07-28 14:20:00',
     description: '环境传感器连接断开，无法获取温湿度数据',
     recommendedAction: '检查传感器电源和网络连接，必要时更换传感器',
     estimatedCost: 280
@@ -2532,7 +2532,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'temperature_abnormal',
     severity: 'medium',
     status: 'acknowledged',
-    timestamp: '2025-07-23 14:25:00',
+    timestamp: '2025-07-28 14:25:00',
     description: '空调温度传感器读数异常，可能影响温控效果',
     predictedFailureTime: '2025-07-16 08:00:00',
     recommendedAction: '校准温度传感器或安排维修检查',
@@ -2546,7 +2546,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'low',
     status: 'active',
-    timestamp: '2025-07-23 09:00:00',
+    timestamp: '2025-07-28 09:00:00',
     description: '设备运行时间已达到维护周期，建议进行预防性维护',
     recommendedAction: '安排设备维护保养，更换滤网和检查制冷剂',
     estimatedCost: 450
@@ -2559,7 +2559,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'energy_overconsumption',
     severity: 'medium',
     status: 'active',
-    timestamp: '2025-07-23 13:30:00',
+    timestamp: '2025-07-28 13:30:00',
     description: '迷你吧能耗超出正常范围30%，可能存在制冷系统问题',
     recommendedAction: '检查制冷系统密封性和温控设置',
     estimatedCost: 320
@@ -2573,9 +2573,9 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'critical',
     status: 'active',
-    timestamp: '2025-07-23 15:45:00',
+    timestamp: '2025-07-28 15:45:00',
     description: '电梯主控制器电源异常，可能导致电梯停运',
-    predictedFailureTime: '2025-07-23 16:30:00',
+    predictedFailureTime: '2025-07-28 16:30:00',
     recommendedAction: '立即检查电源系统，联系电梯维保公司',
     estimatedCost: 1200
   },
@@ -2587,7 +2587,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'high',
     status: 'active',
-    timestamp: '2025-07-23 15:30:00',
+    timestamp: '2025-07-28 15:30:00',
     description: '烟雾传感器检测灵敏度下降，可能影响火灾预警',
     recommendedAction: '清洁传感器或更换感烟元件',
     estimatedCost: 180
@@ -2600,7 +2600,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'medium',
     status: 'acknowledged',
-    timestamp: '2025-07-23 08:00:00',
+    timestamp: '2025-07-28 08:00:00',
     description: '门禁控制器运行12个月，需要进行定期保养',
     recommendedAction: '安排门禁系统维护，更新软件和清理设备',
     estimatedCost: 300
@@ -2613,7 +2613,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'medium',
     status: 'resolved',
-    timestamp: '2025-07-23 12:15:00',
+    timestamp: '2025-07-28 12:15:00',
     description: '摄像头图像模糊，影响监控效果',
     recommendedAction: '清洁镜头或调整焦距',
     estimatedCost: 50
@@ -2626,7 +2626,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'low',
     status: 'active',
-    timestamp: '2025-07-23 16:20:00',
+    timestamp: '2025-07-28 16:20:00',
     description: '部分LED灯条无法正常点亮',
     recommendedAction: '检查LED驱动器和线路连接',
     estimatedCost: 120
@@ -2639,7 +2639,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'temperature_abnormal',
     severity: 'low',
     status: 'false_alarm',
-    timestamp: '2025-07-23 11:45:00',
+    timestamp: '2025-07-28 11:45:00',
     description: '电视背板温度偏高报警',
     recommendedAction: '检查散热系统和环境温度',
     estimatedCost: 0
@@ -2652,7 +2652,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'medium',
     status: 'acknowledged',
-    timestamp: '2025-07-23 14:50:00',
+    timestamp: '2025-07-28 14:50:00',
     description: '机器人电池续航能力下降，充电时间延长',
     predictedFailureTime: '2025-07-16 10:00:00',
     recommendedAction: '检查电池状态，必要时更换电池组',
@@ -2666,7 +2666,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'low',
     status: 'active',
-    timestamp: '2025-07-23 07:30:00',
+    timestamp: '2025-07-28 07:30:00',
     description: '窗帘电机运行声音异常，需要润滑保养',
     recommendedAction: '对电机进行润滑保养，检查传动机构',
     estimatedCost: 150
@@ -2679,7 +2679,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'energy_overconsumption',
     severity: 'high',
     status: 'active',
-    timestamp: '2025-07-23 16:00:00',
+    timestamp: '2025-07-28 16:00:00',
     description: '空调能耗超出正常值40%，疑似制冷剂泄漏',
     predictedFailureTime: '2025-07-16 12:00:00',
     recommendedAction: '检查制冷剂管路，补充制冷剂或维修泄漏点',
@@ -2693,7 +2693,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'medium',
     status: 'active',
-    timestamp: '2025-07-23 15:15:00',
+    timestamp: '2025-07-28 15:15:00',
     description: '摄像头间歇性断电，影响录像连续性',
     recommendedAction: '检查电源适配器和供电线路',
     estimatedCost: 200
@@ -2706,7 +2706,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'medium',
     status: 'resolved',
-    timestamp: '2025-07-23 10:30:00',
+    timestamp: '2025-07-28 10:30:00',
     description: '湿度传感器读数异常，显示100%湿度',
     recommendedAction: '重新校准传感器或更换感湿元件',
     estimatedCost: 160
@@ -2719,7 +2719,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'low',
     status: 'acknowledged',
-    timestamp: '2025-07-23 06:00:00',
+    timestamp: '2025-07-28 06:00:00',
     description: '门禁读卡器需要清洁维护',
     recommendedAction: '清洁读卡器感应区域，检查天线连接',
     estimatedCost: 80
@@ -2732,7 +2732,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'temperature_abnormal',
     severity: 'medium',
     status: 'active',
-    timestamp: '2025-07-23 15:00:00',
+    timestamp: '2025-07-28 15:00:00',
     description: '电梯机房温度过高，影响设备运行',
     recommendedAction: '检查通风系统，确保机房散热正常',
     estimatedCost: 350
@@ -2745,7 +2745,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'energy_overconsumption',
     severity: 'low',
     status: 'resolved',
-    timestamp: '2025-07-23 13:00:00',
+    timestamp: '2025-07-28 13:00:00',
     description: '迷你吧制冷效率下降，能耗增加15%',
     recommendedAction: '清洁冷凝器，检查制冷剂充注量',
     estimatedCost: 100
@@ -2758,9 +2758,9 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'critical',
     status: 'active',
-    timestamp: '2025-07-23 16:30:00',
+    timestamp: '2025-07-28 16:30:00',
     description: '报警器主电源故障，已切换到备用电源',
-    predictedFailureTime: '2025-07-23 20:00:00',
+    predictedFailureTime: '2025-07-28 20:00:00',
     recommendedAction: '立即检查主电源线路，修复供电故障',
     estimatedCost: 400
   },
@@ -2772,7 +2772,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'medium',
     status: 'active',
-    timestamp: '2025-07-23 14:00:00',
+    timestamp: '2025-07-28 14:00:00',
     description: '门锁机械部件磨损，开锁时间延长',
     recommendedAction: '润滑锁体机械部件，检查电机状态',
     estimatedCost: 200
@@ -2785,7 +2785,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'low',
     status: 'acknowledged',
-    timestamp: '2025-07-23 09:30:00',
+    timestamp: '2025-07-28 09:30:00',
     description: '电梯内摄像头夜视功能异常',
     recommendedAction: '检查红外补光灯和摄像头设置',
     estimatedCost: 120
@@ -2798,7 +2798,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'sensor_error',
     severity: 'medium',
     status: 'active',
-    timestamp: '2025-07-23 15:40:00',
+    timestamp: '2025-07-28 15:40:00',
     description: '激光雷达传感器精度下降，影响导航',
     recommendedAction: '清洁激光雷达镜面，重新校准导航系统',
     estimatedCost: 250
@@ -2811,9 +2811,9 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'temperature_abnormal',
     severity: 'high',
     status: 'active',
-    timestamp: '2025-07-23 16:10:00',
+    timestamp: '2025-07-28 16:10:00',
     description: '压缩机过热保护频繁触发',
-    predictedFailureTime: '2025-07-23 18:00:00',
+    predictedFailureTime: '2025-07-28 18:00:00',
     recommendedAction: '立即停机检查，清洁冷凝器和检查制冷剂',
     estimatedCost: 500
   },
@@ -2825,7 +2825,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'power_failure',
     severity: 'low',
     status: 'resolved',
-    timestamp: '2025-07-23 12:45:00',
+    timestamp: '2025-07-28 12:45:00',
     description: '调光器故障，无法调节亮度',
     recommendedAction: '更换调光模块',
     estimatedCost: 80
@@ -2838,7 +2838,7 @@ export const faultWarnings: FaultWarning[] = [
     warningType: 'maintenance_due',
     severity: 'low',
     status: 'active',
-    timestamp: '2025-07-23 05:00:00',
+    timestamp: '2025-07-28 05:00:00',
     description: '传感器校准周期到期，需要重新校准',
     recommendedAction: '使用标准样品对传感器进行校准',
     estimatedCost: 100
@@ -2876,7 +2876,7 @@ export const deviceLinkages: DeviceLinkage[] = [
     isEnabled: true,
     roomNumbers: ['101', '102', '201', '202'],
     executionCount: 24,
-    lastExecuted: '2025-07-23 16:00:00'
+    lastExecuted: '2025-07-28 16:00:00'
   },
   {
     id: 'linkage_002',
@@ -2907,7 +2907,7 @@ export const deviceLinkages: DeviceLinkage[] = [
     isEnabled: true,
     roomNumbers: ['101', '102', '201', '202', '301'],
     executionCount: 156,
-    lastExecuted: '2025-07-23 13:45:00'
+    lastExecuted: '2025-07-28 13:45:00'
   },
   {
     id: 'linkage_003',
