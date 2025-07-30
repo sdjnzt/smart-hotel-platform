@@ -173,7 +173,7 @@ const DeliveryRobot: React.FC = () => {
                        status === 'maintenance' ? '维修间' :
                        ['厨房', '餐厅', '大堂', '电梯间', '走廊'][Math.floor(Math.random() * 5)],
         currentTask: status === 'online' && Math.random() > 0.3 ? 
-                    `配送房间${Math.floor(Math.random() * 20 + 1)}${Math.floor(Math.random() * 20 + 1)}${Math.floor(Math.random() * 10)}的${['早餐', '午餐', '晚餐', '夜宵', '下午茶'][Math.floor(Math.random() * 5)]}` : 
+                    `配送房间${(Math.floor(Math.random() * 20 + 1)).toString().padStart(2, '0')}${(Math.floor(Math.random() * 20 + 1)).toString().padStart(2, '0')}的${['早餐', '午餐', '晚餐', '夜宵', '下午茶'][Math.floor(Math.random() * 5)]}` : 
                     undefined,
         speed: status === 'online' ? formatNumber(1 + Math.random() * 2) : 0, // 1-3 km/h
         temperature: formatNumber(20 + Math.random() * 10), // 20-30°C
@@ -1256,7 +1256,7 @@ const DeliveryRobot: React.FC = () => {
                 label="目标位置"
                 rules={[{ required: true, message: '请输入目标位置' }]}
               >
-                <Input placeholder="如：房间201、维修间" />
+                <Input placeholder="如：房间0201、维修间" />
               </Form.Item>
             </Col>
           </Row>
@@ -1275,7 +1275,7 @@ const DeliveryRobot: React.FC = () => {
                 name="roomNumber"
                 label="房间号"
               >
-                <Input placeholder="房间号（可选）" />
+                <Input placeholder="房间号，如：0101（可选）" />
               </Form.Item>
             </Col>
           </Row>

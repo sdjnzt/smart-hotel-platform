@@ -33,7 +33,7 @@ const DeviceAdjustmentPage: React.FC = () => {
   // 使用useEffect来确保每次访问页面时都获取最新数据
   const [devices, setDevices] = useState<HotelDevice[]>([]);
   const [adjustmentHistory, setAdjustmentHistory] = useState<DeviceAdjustment[]>([]);
-  const [selectedRoom, setSelectedRoom] = useState<string>('101');
+  const [selectedRoom, setSelectedRoom] = useState<string>('0101');
   const [historyVisible, setHistoryVisible] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -56,7 +56,20 @@ const DeviceAdjustmentPage: React.FC = () => {
   const roomDevices = devices.filter(device => device.roomNumber === selectedRoom);
   
   // 获取房间列表
-  const roomNumbers = Array.from(new Set(devices.map(device => device.roomNumber))).sort();
+  const roomNumbers = Array.from(new Set(devices.map(device => device.roomNumber)))
+    .filter((room): room is string => !!room) // 过滤掉undefined或null
+    .sort((a, b) => {
+      // 按楼层和房间号排序
+      const floorA = parseInt(a.substring(0, 2));
+      const roomA = parseInt(a.substring(2, 4));
+      const floorB = parseInt(b.substring(0, 2));
+      const roomB = parseInt(b.substring(2, 4));
+      
+      if (floorA !== floorB) {
+        return floorA - floorB;
+      }
+      return roomA - roomB;
+    });
 
   // 计算统计数据
   const calculateStats = () => {
@@ -658,7 +671,8 @@ const DeviceAdjustmentPage: React.FC = () => {
                 optionLabelProp="label"
               >
                 {roomNumbers.map(room => {
-                  const floor = Math.floor(Number(room) / 100);
+                  if (!room) return null;
+                  const floor = parseInt(room.substring(0, 2));
                   let roomType = '标准间';
                   if (floor >= 19) roomType = '总统套房';
                   else if (floor >= 16) roomType = '豪华套房';

@@ -290,6 +290,11 @@ const AppLayout: React.FC = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  // 监听路由变化，自动滚动到顶部
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   // 管理员下拉菜单项
   const adminMenuItems = [
     {
@@ -346,14 +351,17 @@ const AppLayout: React.FC = () => {
       case 'profile':
         // 跳转到个人资料页面
         navigate('/user-profile');
+        window.scrollTo(0, 0);
         break;
       case 'settings':
         // 跳转到系统设置页面
         navigate('/system-settings');
+        window.scrollTo(0, 0);
         break;
       case 'notifications':
         // 跳转到消息通知页面
         navigate('/notifications');
+        window.scrollTo(0, 0);
         break;
       case 'language':
         // 处理语言设置
@@ -366,10 +374,12 @@ const AppLayout: React.FC = () => {
       case 'help':
         // 跳转到帮助文档
         navigate('/user-guide');
+        window.scrollTo(0, 0);
         break;
       case 'about':
         // 跳转到关于系统
         navigate('/about-system');
+        window.scrollTo(0, 0);
         break;
       case 'logout':
         // 处理退出登录
@@ -409,6 +419,8 @@ const AppLayout: React.FC = () => {
           items={menuItems}
           onClick={({ key }) => {
             navigate(key);
+            // 页面切换后滚动到顶部
+            window.scrollTo(0, 0);
           }}
         />
       </Sider>

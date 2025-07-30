@@ -180,7 +180,7 @@ function generateStaffData(count: number): Staff[] {
         '17865216854',
         '18905378825',
         '18754759756'
-      ][Math.floor(Math.random() * 10)],
+      ][(i - 1) % 10],
       status,
       joinDate: joinDate.format('YYYY-MM-DD'),
       salary,

@@ -947,7 +947,7 @@ const InventoryManagement: React.FC = () => {
   const lowItems = inventoryItems.filter(item => item.status === 'low').length;
   const outItems = inventoryItems.filter(item => item.status === 'out').length;
   const overstockItems = inventoryItems.filter(item => item.status === 'overstock').length;
-  const totalValue = inventoryItems.reduce((sum, item) => sum + (item.currentStock * item.price), 0);
+  const totalValue = Number(inventoryItems.reduce((sum, item) => sum + (item.currentStock * item.price), 0).toFixed(2));
   const activeSuppliers = suppliers.filter(supplier => supplier.status === 'active').length;
 
   return (

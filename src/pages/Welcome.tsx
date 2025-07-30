@@ -172,17 +172,17 @@ const Welcome: React.FC = () => {
   const recentActivities = [
     {
       time: '2分钟前',
-      action: '房间101客人入住场景已执行',
+              action: '房间0101客人入住场景已执行',
       icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />
     },
     {
       time: '5分钟前',
-      action: '房间201空调温度调节至22°C',
+              action: '房间0201空调温度调节至22°C',
       icon: <ThunderboltOutlined style={{ color: '#1890ff' }} />
     },
     {
       time: '10分钟前',
-      action: '房间102传感器异常预警已确认',
+              action: '房间0102传感器异常预警已确认',
       icon: <WarningOutlined style={{ color: '#fa8c16' }} />
     },
     {

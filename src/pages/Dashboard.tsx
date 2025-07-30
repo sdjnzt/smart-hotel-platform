@@ -88,10 +88,10 @@ const Dashboard: React.FC = () => {
   
   // 房间状态分布图
   const roomStatusData: RoomStatusData[] = [
-    { value: 70, name: '空闲', itemStyle: { color: '#FFB800' } },
-    { value: 20, name: '已入住', itemStyle: { color: '#2F54EB' } },
-    { value: 7, name: '维护中', itemStyle: { color: '#52C41A' } },
-    { value: 3, name: '已预订', itemStyle: { color: '#FF4D4F' } }
+    { value: 120, name: '空闲', itemStyle: { color: '#FFB800' } },
+    { value: 140, name: '已入住', itemStyle: { color: '#2F54EB' } },
+    { value: 35, name: '维护中', itemStyle: { color: '#52C41A' } },
+    { value: 30, name: '已预订', itemStyle: { color: '#FF4D4F' } }
   ];
 
   const roomStatusOption = {
@@ -521,7 +521,7 @@ const Dashboard: React.FC = () => {
                       <div>
                       <div style={{ fontWeight: 'bold' }}>设备联动执行</div>
                       <div style={{ color: '#666', fontSize: '12px' }}>
-                        房间101客人入住场景已执行 • 2分钟前
+                        房间0101客人入住场景已执行 • 2分钟前
                         </div>
                       </div>
                   )
@@ -532,7 +532,7 @@ const Dashboard: React.FC = () => {
                     <div>
                       <div style={{ fontWeight: 'bold' }}>设备状态更新</div>
                       <div style={{ color: '#666', fontSize: '12px' }}>
-                        房间201空调温度调节至22°C • 5分钟前
+                        房间0201空调温度调节至22°C • 5分钟前
                       </div>
                     </div>
                   )
@@ -543,7 +543,7 @@ const Dashboard: React.FC = () => {
                       <div>
                       <div style={{ fontWeight: 'bold' }}>预警处理</div>
                       <div style={{ color: '#666', fontSize: '12px' }}>
-                        房间102传感器异常预警已确认 • 10分钟前
+                        房间0102传感器异常预警已确认 • 10分钟前
                       </div>
                     </div>
                   )
@@ -554,7 +554,7 @@ const Dashboard: React.FC = () => {
                   <div>
                       <div style={{ fontWeight: 'bold' }}>设备故障</div>
                       <div style={{ color: '#666', fontSize: '12px' }}>
-                        房间102环境传感器连接断开 • 15分钟前
+                        房间0102环境传感器连接断开 • 15分钟前
                   </div>
                     </div>
                   )

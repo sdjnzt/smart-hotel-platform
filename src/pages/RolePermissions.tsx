@@ -300,40 +300,50 @@ const RolePermissions: React.FC = () => {
     },
   ];
 
+  // 生成一个月内的随机时间
+  const generateRandomTimeInLastMonth = () => {
+    const now = dayjs();
+    const oneMonthAgo = now.subtract(1, 'month');
+    const randomDays = Math.floor(Math.random() * 30); // 0-29天
+    const randomHours = Math.floor(Math.random() * 24); // 0-23小时
+    const randomMinutes = Math.floor(Math.random() * 60); // 0-59分钟
+    return oneMonthAgo.add(randomDays, 'day').add(randomHours, 'hour').add(randomMinutes, 'minute').format('YYYY-MM-DD HH:mm:ss');
+  };
+
   const mockPermissions: Permission[] = [
     // 用户管理权限
-    { id: '1', name: '查看用户', code: 'user:read', description: '查看用户列表和详情', module: '用户管理', type: 'menu', status: 'active', createTime: '2023-01-01' },
-    { id: '2', name: '创建用户', code: 'user:create', description: '创建新用户', module: '用户管理', type: 'button', status: 'active', createTime: '2023-01-01' },
-    { id: '3', name: '编辑用户', code: 'user:write', description: '编辑用户信息', module: '用户管理', type: 'button', status: 'active', createTime: '2023-01-01' },
-    { id: '4', name: '删除用户', code: 'user:delete', description: '删除用户', module: '用户管理', type: 'button', status: 'active', createTime: '2023-01-01' },
+    { id: '1', name: '查看用户', code: 'user:read', description: '查看用户列表和详情', module: '用户管理', type: 'menu', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '2', name: '创建用户', code: 'user:create', description: '创建新用户', module: '用户管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '3', name: '编辑用户', code: 'user:write', description: '编辑用户信息', module: '用户管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '4', name: '删除用户', code: 'user:delete', description: '删除用户', module: '用户管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
     
     // 角色管理权限
-    { id: '5', name: '查看角色', code: 'role:read', description: '查看角色列表和详情', module: '角色管理', type: 'menu', status: 'active', createTime: '2023-01-01' },
-    { id: '6', name: '创建角色', code: 'role:create', description: '创建新角色', module: '角色管理', type: 'button', status: 'active', createTime: '2023-01-01' },
-    { id: '7', name: '编辑角色', code: 'role:write', description: '编辑角色信息', module: '角色管理', type: 'button', status: 'active', createTime: '2023-01-01' },
-    { id: '8', name: '删除角色', code: 'role:delete', description: '删除角色', module: '角色管理', type: 'button', status: 'active', createTime: '2023-01-01' },
+    { id: '5', name: '查看角色', code: 'role:read', description: '查看角色列表和详情', module: '角色管理', type: 'menu', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '6', name: '创建角色', code: 'role:create', description: '创建新角色', module: '角色管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '7', name: '编辑角色', code: 'role:write', description: '编辑角色信息', module: '角色管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '8', name: '删除角色', code: 'role:delete', description: '删除角色', module: '角色管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
     
     // 房间管理权限
-    { id: '9', name: '查看房间', code: 'room:read', description: '查看房间列表和详情', module: '房间管理', type: 'menu', status: 'active', createTime: '2023-01-01' },
-    { id: '10', name: '创建房间', code: 'room:create', description: '创建新房间', module: '房间管理', type: 'button', status: 'active', createTime: '2023-01-01' },
-    { id: '11', name: '编辑房间', code: 'room:write', description: '编辑房间信息', module: '房间管理', type: 'button', status: 'active', createTime: '2023-01-01' },
-    { id: '12', name: '删除房间', code: 'room:delete', description: '删除房间', module: '房间管理', type: 'button', status: 'active', createTime: '2023-01-01' },
+    { id: '9', name: '查看房间', code: 'room:read', description: '查看房间列表和详情', module: '房间管理', type: 'menu', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '10', name: '创建房间', code: 'room:create', description: '创建新房间', module: '房间管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '11', name: '编辑房间', code: 'room:write', description: '编辑房间信息', module: '房间管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '12', name: '删除房间', code: 'room:delete', description: '删除房间', module: '房间管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
     
     // 库存管理权限
-    { id: '13', name: '查看库存', code: 'inventory:read', description: '查看库存列表和详情', module: '库存管理', type: 'menu', status: 'active', createTime: '2023-01-01' },
-    { id: '14', name: '入库操作', code: 'inventory:in', description: '执行入库操作', module: '库存管理', type: 'button', status: 'active', createTime: '2023-01-01' },
-    { id: '15', name: '出库操作', code: 'inventory:out', description: '执行出库操作', module: '库存管理', type: 'button', status: 'active', createTime: '2023-01-01' },
-    { id: '16', name: '库存调整', code: 'inventory:adjust', description: '调整库存数量', module: '库存管理', type: 'button', status: 'active', createTime: '2023-01-01' },
+    { id: '13', name: '查看库存', code: 'inventory:read', description: '查看库存列表和详情', module: '库存管理', type: 'menu', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '14', name: '入库操作', code: 'inventory:in', description: '执行入库操作', module: '库存管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '15', name: '出库操作', code: 'inventory:out', description: '执行出库操作', module: '库存管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '16', name: '库存调整', code: 'inventory:adjust', description: '调整库存数量', module: '库存管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
     
     // 财务权限
-    { id: '17', name: '查看财务', code: 'finance:read', description: '查看财务数据', module: '财务管理', type: 'menu', status: 'active', createTime: '2023-01-01' },
-    { id: '18', name: '财务录入', code: 'finance:write', description: '录入财务数据', module: '财务管理', type: 'button', status: 'active', createTime: '2023-01-01' },
-    { id: '19', name: '财务审核', code: 'finance:approve', description: '审核财务数据', module: '财务管理', type: 'button', status: 'active', createTime: '2023-01-01' },
+    { id: '17', name: '查看财务', code: 'finance:read', description: '查看财务数据', module: '财务管理', type: 'menu', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '18', name: '财务录入', code: 'finance:write', description: '录入财务数据', module: '财务管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '19', name: '财务审核', code: 'finance:approve', description: '审核财务数据', module: '财务管理', type: 'button', status: 'active', createTime: generateRandomTimeInLastMonth() },
     
     // 系统管理权限
-    { id: '20', name: '系统设置', code: 'system:config', description: '系统配置管理', module: '系统管理', type: 'menu', status: 'active', createTime: '2023-01-01' },
-    { id: '21', name: '日志查看', code: 'system:log', description: '查看系统日志', module: '系统管理', type: 'menu', status: 'active', createTime: '2023-01-01' },
-    { id: '22', name: '备份恢复', code: 'system:backup', description: '系统备份恢复', module: '系统管理', type: 'menu', status: 'active', createTime: '2023-01-01' },
+    { id: '20', name: '系统设置', code: 'system:config', description: '系统配置管理', module: '系统管理', type: 'menu', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '21', name: '日志查看', code: 'system:log', description: '查看系统日志', module: '系统管理', type: 'menu', status: 'active', createTime: generateRandomTimeInLastMonth() },
+    { id: '22', name: '备份恢复', code: 'system:backup', description: '系统备份恢复', module: '系统管理', type: 'menu', status: 'active', createTime: generateRandomTimeInLastMonth() },
   ];
 
   useEffect(() => {

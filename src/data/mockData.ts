@@ -2310,7 +2310,7 @@ function generateHotelDevices(): HotelDevice[] {
     else if (floor >= 11) roomType = 'deluxe';
     
     for (let room = 1; room <= roomsOnFloor; room++) {
-      let roomNumber = `${floor}${room.toString().padStart(2, '0')}`;
+      let roomNumber = `${floor.toString().padStart(2, '0')}${room.toString().padStart(2, '0')}`;
       
       // 基础设备
       devices.push({
@@ -2478,8 +2478,11 @@ function generateHotelRooms(): HotelRoom[] {
     }
     
     for (let room = 1; room <= roomsOnFloor; room++) {
-      let roomNumber = `${floor}${room.toString().padStart(2, '0')}`;
-      let isOccupied = Math.random() > 0.4;
+      let roomNumber = `${floor.toString().padStart(2, '0')}${room.toString().padStart(2, '0')}`;
+      // 计算当前房间索引，用于控制入住率
+      const roomIndex = (floor - 1) * roomsOnFloor + room;
+      // 前160间房设为已入住，其余为空闲
+      let isOccupied = roomIndex <= 160;
       
       rooms.push({
         id: `room_${roomNumber}`,
@@ -2513,9 +2516,9 @@ export const hotelRooms = generateHotelRooms();
 export const faultWarnings: FaultWarning[] = [
   {
     id: 'warning_001',
-    deviceId: 'room102_sensor',
-    deviceName: '环境传感器-客房102',
-    roomNumber: '102',
+    deviceId: 'room0102_sensor',
+    deviceName: '环境传感器-客房0102',
+    roomNumber: '0102',
     warningType: 'sensor_error',
     severity: 'high',
     status: 'active',
@@ -2526,9 +2529,9 @@ export const faultWarnings: FaultWarning[] = [
   },
   {
     id: 'warning_002',
-    deviceId: 'room102_ac',
-    deviceName: '中央空调-客房102',
-    roomNumber: '102',
+    deviceId: 'room0102_ac',
+    deviceName: '中央空调-客房0102',
+    roomNumber: '0102',
     warningType: 'temperature_abnormal',
     severity: 'medium',
     status: 'acknowledged',
@@ -2540,9 +2543,9 @@ export const faultWarnings: FaultWarning[] = [
   },
   {
     id: 'warning_003',
-    deviceId: 'room301_ac',
-    deviceName: '中央空调-套房301',
-    roomNumber: '301',
+    deviceId: 'room0301_ac',
+    deviceName: '中央空调-套房0301',
+    roomNumber: '0301',
     warningType: 'maintenance_due',
     severity: 'low',
     status: 'active',
@@ -2553,9 +2556,9 @@ export const faultWarnings: FaultWarning[] = [
   },
   {
     id: 'warning_004',
-    deviceId: 'room201_minibar',
-    deviceName: '智能迷你吧-客房201',
-    roomNumber: '201',
+    deviceId: 'room0201_minibar',
+    deviceName: '智能迷你吧-客房0201',
+    roomNumber: '0201',
     warningType: 'energy_overconsumption',
     severity: 'medium',
     status: 'active',
@@ -3092,7 +3095,7 @@ function generateDeviceAdjustments(count: number): DeviceAdjustment[] {
   const roomNumbers: string[] = [];
   for (let floor = 1; floor <= 20; floor++) {
     for (let room = 1; room <= 15; room++) {
-      roomNumbers.push(`${floor}${room.toString().padStart(2, '0')}`);
+      roomNumbers.push(`${floor.toString().padStart(2, '0')}${room.toString().padStart(2, '0')}`);
     }
   }
 
@@ -3115,7 +3118,7 @@ function generateDeviceAdjustments(count: number): DeviceAdjustment[] {
         if (roomTypeRand < 0.4) {  // 40%概率选择高级房型
           const floor = 16 + Math.floor(Math.random() * 5);  // 16-20层
           const room = Math.floor(Math.random() * 15) + 1;
-          roomNumber = `${floor}${room.toString().padStart(2, '0')}`;
+          roomNumber = `${floor.toString().padStart(2, '0')}${room.toString().padStart(2, '0')}`;
         } else {
           roomNumber = roomNumbers[Math.floor(Math.random() * roomNumbers.length)];
         }

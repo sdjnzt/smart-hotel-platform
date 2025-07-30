@@ -254,8 +254,20 @@ function generateBookingData(rooms: Room[]): Booking[] {
     const guestName = lastNames[Math.floor(Math.random() * lastNames.length)] + 
                      titles[Math.floor(Math.random() * titles.length)];
 
-    // 生成手机号
-    const phone = `1${Math.floor(Math.random() * 9000000000 + 1000000000)}`;
+    // 生成手机号 - 按顺序循环使用
+    const phones = [
+      '18766845069',
+      '13964907636',
+      '18253727866',
+      '18266899909',
+      '13793790407',
+      '13791713736',
+      '15020588089',
+      '13287217849',
+      '13356650225',
+      '19853761734'
+    ];
+    const phone = phones[(id - 1) % phones.length];
 
     // 生成入住日期（未来10天内）
     const checkInDate = dayjs().add(Math.floor(Math.random() * 10), 'days').format('YYYY-MM-DD');
@@ -312,8 +324,10 @@ const RoomManagement: React.FC = () => {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [bookingModalVisible, setBookingModalVisible] = useState(false);
+  const [addBookingModalVisible, setAddBookingModalVisible] = useState(false);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [currentRoom, setCurrentRoom] = useState<Room | null>(null);
+  const [currentBooking, setCurrentBooking] = useState<Booking | null>(null);
   const [activeTab, setActiveTab] = useState('rooms');
   const [dateRangeModalVisible, setDateRangeModalVisible] = useState(false);
   const [trendModalVisible, setTrendModalVisible] = useState(false);
@@ -837,27 +851,42 @@ const RoomManagement: React.FC = () => {
     setEditModalVisible(false);
   };
 
+  const handleAddBooking = () => {
+    setCurrentBooking(null);
+    setAddBookingModalVisible(true);
+  };
+
   const handleSaveBooking = (values: any) => {
-    const newBooking: Booking = {
-      id: `booking${Date.now()}`,
-      ...values,
-      status: 'confirmed',
-      totalAmount: values.totalAmount || 0,
-      deposit: values.deposit || 0,
-    };
-    setBookingList([...bookingList, newBooking]);
-    
-    // 更新房间状态为已预订
-    if (currentRoom) {
-      setRoomList(roomList.map(room => 
-        room.roomNumber === currentRoom.roomNumber 
-          ? { ...room, status: 'reserved', guestName: values.guestName }
-          : room
+    if (currentBooking) {
+      // 编辑预订
+      setBookingList(bookingList.map(booking => 
+        booking.id === currentBooking.id ? { ...booking, ...values } : booking
       ));
+      message.success('预订信息更新成功');
+    } else {
+      // 新增预订
+      const newBooking: Booking = {
+        id: `booking${Date.now()}`,
+        ...values,
+        status: 'confirmed',
+        totalAmount: values.totalAmount || 0,
+        deposit: values.deposit || 0,
+      };
+      setBookingList([...bookingList, newBooking]);
+      
+      // 更新房间状态为已预订
+      if (values.roomNumber) {
+        setRoomList(roomList.map(room => 
+          room.roomNumber === values.roomNumber 
+            ? { ...room, status: 'reserved', guestName: values.guestName }
+            : room
+        ));
+      }
+      
+      message.success('预订创建成功');
     }
-    
-    message.success('预订创建成功');
     setBookingModalVisible(false);
+    setAddBookingModalVisible(false);
   };
 
   const handleDeleteRoom = (roomId: string) => {
@@ -986,7 +1015,7 @@ const RoomManagement: React.FC = () => {
           <Card>
             <Statistic
               title="总房间数"
-              value={300}
+              value={260}
               prefix={<HomeOutlined />}
               valueStyle={{ color: '#1890ff' }}
             />
@@ -996,7 +1025,7 @@ const RoomManagement: React.FC = () => {
           <Card>
             <Statistic
               title="已入住"
-              value={160}
+              value={140}
               prefix={<UserOutlined />}
               valueStyle={{ color: '#52c41a' }}
             />
@@ -1006,7 +1035,7 @@ const RoomManagement: React.FC = () => {
           <Card>
             <Statistic
               title="空闲房间"
-              value={140}
+              value={120}
               prefix={<CheckCircleOutlined />}
               valueStyle={{ color: '#1890ff' }}
             />
@@ -1087,7 +1116,7 @@ const RoomManagement: React.FC = () => {
           <TabPane tab="预订管理" key="bookings">
             <div style={{ marginBottom: 16 }}>
               <Space>
-                <Button type="primary" icon={<CalendarOutlined />}>
+                <Button type="primary" icon={<CalendarOutlined />} onClick={handleAddBooking}>
                   新增预订
                 </Button>
                 <Button icon={<ExportOutlined />}>
@@ -1553,6 +1582,99 @@ const RoomManagement: React.FC = () => {
               <Option value="浪漫装饰">浪漫装饰</Option>
               <Option value="办公桌">办公桌</Option>
             </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* 新增预订模态框 */}
+      <Modal
+        title="新增预订"
+        open={addBookingModalVisible}
+        onCancel={() => setAddBookingModalVisible(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setAddBookingModalVisible(false)}>
+            取消
+          </Button>,
+          <Button key="submit" type="primary" onClick={() => {
+            // 这里需要获取表单数据并提交
+            const formData = {
+              roomNumber: '待选择',
+              guestName: '待填写',
+              phone: '待填写',
+              checkInDate: new Date().toISOString(),
+              checkOutDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+              totalAmount: 0,
+              deposit: 0,
+              specialRequests: ''
+            };
+            handleSaveBooking(formData);
+          }}>
+            确认预订
+          </Button>,
+        ]}
+        width={600}
+      >
+        <Form layout="vertical">
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="房间号" rules={[{ required: true, message: '请选择房间' }]}>
+                <Select placeholder="请选择房间">
+                  {roomList.filter(room => room.status === 'vacant').map(room => (
+                    <Option key={room.roomNumber} value={room.roomNumber}>
+                      {room.roomNumber} - {room.type}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="预订状态" rules={[{ required: true, message: '请选择预订状态' }]}>
+                <Select placeholder="请选择预订状态" defaultValue="confirmed">
+                  <Option value="confirmed">已确认</Option>
+                  <Option value="pending">待确认</Option>
+                  <Option value="cancelled">已取消</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="客人姓名" rules={[{ required: true, message: '请输入客人姓名' }]}>
+                <Input placeholder="请输入客人姓名" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="联系电话" rules={[{ required: true, message: '请输入联系电话' }]}>
+                <Input placeholder="请输入联系电话" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="入住日期" rules={[{ required: true, message: '请选择入住日期' }]}>
+                <DatePicker style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="退房日期" rules={[{ required: true, message: '请选择退房日期' }]}>
+                <DatePicker style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="总金额" rules={[{ required: true, message: '请输入总金额' }]}>
+                <Input type="number" placeholder="请输入总金额" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="押金" rules={[{ required: true, message: '请输入押金' }]}>
+                <Input type="number" placeholder="请输入押金" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Form.Item label="特殊要求">
+            <Input.TextArea rows={3} placeholder="请输入特殊要求" />
           </Form.Item>
         </Form>
       </Modal>
