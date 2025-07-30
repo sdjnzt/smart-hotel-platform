@@ -484,7 +484,7 @@ const RemoteControl: React.FC = () => {
           <Card size="small">
             <Statistic
               title="房间总数"
-              value={systemStats.totalRooms}
+              value={260}
               prefix={<HomeOutlined />}
               valueStyle={{ color: '#1890ff' }}
             />
@@ -494,10 +494,10 @@ const RemoteControl: React.FC = () => {
           <Card size="small">
             <Statistic
               title="已入住"
-              value={systemStats.occupiedRooms}
+              value={140}
               prefix={<UserOutlined />}
               valueStyle={{ color: '#52c41a' }}
-              suffix={`/ ${systemStats.totalRooms}`}
+              suffix={`/ ${260}`}
             />
           </Card>
         </Col>

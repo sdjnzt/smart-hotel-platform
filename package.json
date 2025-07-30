@@ -2,7 +2,7 @@
   "name": "zecheng-smart-hotel-platform",
   "version": "1.0.0",
   "description": "邹城市择邻山庄有限公司智慧酒店管理平台",
-  "homepage": "https://zecheng-smart-hotel.github.io/smart-hotel-platform",
+  "homepage": "https://sdjnzt.github.io/smart-hotel-platform",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
@@ -31,7 +31,9 @@
     "start": "cross-env PORT=5137 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -53,6 +55,7 @@
   },
   "devDependencies": {
     "@types/echarts": "^4.9.22",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "gh-pages": "^6.1.0"
   }
 }

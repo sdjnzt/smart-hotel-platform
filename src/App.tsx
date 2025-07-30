@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Layout, Menu, theme, Button, Avatar, Dropdown, Space, Typography } from 'antd';
 import {
   HomeOutlined,
@@ -578,7 +578,7 @@ const AppLayout: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <Router basename="/smart-hotel-platform">
+    <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={

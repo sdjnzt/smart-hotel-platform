@@ -31,7 +31,7 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/sdjnzt/smart-hotel-platform.git
 cd your-repo-name
 
 # 安装依赖
@@ -54,7 +54,7 @@ npm start
 
 3. **自动部署**：
    - 推送代码到main/master分支会自动触发部署
-   - 部署完成后可通过 `https://your-username.github.io/your-repo-name` 访问
+   - 部署完成后可通过 `https://sdjnzt.github.io/smart-hotel-platform` 访问
 
 ### 手动部署
 
@@ -69,7 +69,7 @@ gh-pages -d build
 
 ## 🌐 在线演示
 
-- **GitHub Pages**: [https://your-username.github.io/your-repo-name](https://your-username.github.io/your-repo-name)
+- **GitHub Pages**: [https://sdjnzt.github.io/smart-hotel-platform](https://sdjnzt.github.io/smart-hotel-platform)
 - **本地开发**: http://localhost:3000
 
 ## 技术栈

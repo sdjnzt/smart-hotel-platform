@@ -359,7 +359,7 @@ const Dashboard: React.FC = () => {
           <Card>
             <Statistic
               title="房间入住率"
-              value={occupancyRate.toFixed(1)}
+              value={53.8}
               precision={1}
               suffix="%"
               prefix={<HomeOutlined />}

@@ -1012,14 +1012,14 @@ const RoomManagement: React.FC = () => {
       {/* 统计卡片 */}
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={12} md={4}>
-          <Card>
+          <Card>房间总数
             <Statistic
               title="总房间数"
               value={260}
               prefix={<HomeOutlined />}
               valueStyle={{ color: '#1890ff' }}
             />
-          </Card>
+          </Card>房间总数
         </Col>
         <Col xs={24} sm={12} md={4}>
           <Card>
@@ -1065,7 +1065,7 @@ const RoomManagement: React.FC = () => {
           <Card>
             <Statistic
               title="入住率"
-              value={statistics.occupancyRate}
+              value={53.8}
               suffix="%"
               prefix={<StarOutlined />}
               valueStyle={{ color: '#722ed1' }}

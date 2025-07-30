@@ -146,9 +146,9 @@ const MapVisualization: React.FC = () => {
       { id: 'task005', title: '培训准备', assignee: '刘招聘', status: 'pending', priority: 'medium', x: 500, y: 180, region: '行政楼' }
     ],
     emergencies: [
-      { id: 'em001', type: 'fire', location: '生产厂区A区1号车间', status: 'active', level: 'high', x: 250, y: 200, time: '2025-07-28 14:30' },
-      { id: 'em002', type: 'equipment', location: '生产厂区B区仓库', status: 'investigating', level: 'medium', x: 450, y: 320, time: '2025-07-28 15:15' },
-      { id: 'em003', type: 'safety', location: '研发楼实验室', status: 'resolved', level: 'low', x: 650, y: 180, time: '2025-07-28 13:45' }
+      { id: 'em001', type: 'fire', location: '生产厂区A区1号车间', status: 'active', level: 'high', x: 250, y: 200, time: '2025-07-30 14:30' },
+      { id: 'em002', type: 'equipment', location: '生产厂区B区仓库', status: 'investigating', level: 'medium', x: 450, y: 320, time: '2025-07-30 15:15' },
+      { id: 'em003', type: 'safety', location: '研发楼实验室', status: 'resolved', level: 'low', x: 650, y: 180, time: '2025-07-30 13:45' }
     ]
   };
 
@@ -333,8 +333,8 @@ const IntelligentScheduling: React.FC = () => {
         assignee: '刘维护',
         department: '生产制造部',
         priority: 'high',
-        startTime: '2025-07-28 09:00',
-        endTime: '2025-07-28 12:00',
+        startTime: '2025-07-30 09:00',
+        endTime: '2025-07-30 12:00',
         status: 'in_progress',
         location: '生产厂区A区1号车间',
         description: '对1号生产线进行定期维护检查',
@@ -347,8 +347,8 @@ const IntelligentScheduling: React.FC = () => {
         assignee: '孙管理',
         department: '安全环保部',
         priority: 'medium',
-        startTime: '2025-07-28 14:00',
-        endTime: '2025-07-28 16:00',
+        startTime: '2025-07-30 14:00',
+        endTime: '2025-07-30 16:00',
         status: 'pending',
         location: '全厂区',
         description: '日常安全巡检，检查消防设施和安全隐患',
@@ -361,8 +361,8 @@ const IntelligentScheduling: React.FC = () => {
         assignee: '陈质检',
         department: '生产制造部',
         priority: 'urgent',
-        startTime: '2025-07-28 10:30',
-        endTime: '2025-07-28 11:30',
+        startTime: '2025-07-30 10:30',
+        endTime: '2025-07-30 11:30',
         status: 'completed',
         location: '质检中心',
         description: '对新生产的批次进行质量检测',
@@ -375,7 +375,7 @@ const IntelligentScheduling: React.FC = () => {
         assignee: '韩开发',
         department: '信息技术部',
         priority: 'high',
-        startTime: '2025-07-28 20:00',
+        startTime: '2025-07-30 20:00',
         endTime: '2025-07-16 02:00',
         status: 'scheduled',
         location: '机房',
@@ -905,18 +905,18 @@ const ComprehensiveManagement: React.FC<{ setActiveTab: (tab: string) => void }>
 
     // 模拟告警数据
     setAlertData([
-      { id: 1, type: 'error', message: '设备离线警告', time: '2025-07-28 14:30', level: 'high' },
-      { id: 2, type: 'warning', message: '人员未到岗', time: '2025-07-28 14:25', level: 'medium' },
-      { id: 3, type: 'info', message: '任务即将到期', time: '2025-07-28 14:20', level: 'low' }
+      { id: 1, type: 'error', message: '设备离线警告', time: '2025-07-30 14:30', level: 'high' },
+      { id: 2, type: 'warning', message: '人员未到岗', time: '2025-07-30 14:25', level: 'medium' },
+      { id: 3, type: 'info', message: '任务即将到期', time: '2025-07-30 14:20', level: 'low' }
     ]);
 
     // 模拟最近活动
     setRecentActivities([
-      { id: 1, user: '张伟民', action: '完成了设备维护任务', time: '2025-07-28 14:30' },
-      { id: 2, user: '陈志远', action: '创建了新的研发项目', time: '2025-07-28 14:25' },
-      { id: 3, user: '刘营销', action: '更新了客户信息', time: '2025-07-28 14:20' },
-      { id: 4, user: '马安全', action: '处理了安全事件', time: '2025-07-28 14:15' },
-      { id: 5, user: '孙人力', action: '审核了员工申请', time: '2025-07-28 14:10' }
+      { id: 1, user: '张伟民', action: '完成了设备维护任务', time: '2025-07-30 14:30' },
+      { id: 2, user: '陈志远', action: '创建了新的研发项目', time: '2025-07-30 14:25' },
+      { id: 3, user: '刘营销', action: '更新了客户信息', time: '2025-07-30 14:20' },
+      { id: 4, user: '马安全', action: '处理了安全事件', time: '2025-07-30 14:15' },
+      { id: 5, user: '孙人力', action: '审核了员工申请', time: '2025-07-30 14:10' }
     ]);
   }, []);
 
@@ -1156,9 +1156,9 @@ const ERPPlatform: React.FC = () => {
       title: '系统通知',
       content: (
         <div>
-          <p>• 设备离线警告 (2025-07-28 14:30)</p>
-          <p>• 人员未到岗提醒 (2025-07-28 14:25)</p>
-          <p>• 任务即将到期 (2025-07-28 14:20)</p>
+          <p>• 设备离线警告 (2025-07-30 14:30)</p>
+          <p>• 人员未到岗提醒 (2025-07-30 14:25)</p>
+          <p>• 任务即将到期 (2025-07-30 14:20)</p>
         </div>
       ),
       onOk() {},
