@@ -224,7 +224,7 @@ const Welcome: React.FC = () => {
               />
               <Statistic 
                 title="入住率" 
-                value={occupancyRate.toFixed(1)} 
+                value={53.8}
                 suffix="%" 
                 valueStyle={{ color: '#1890ff' }}
                 prefix={<HomeOutlined />}
